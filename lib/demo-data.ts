@@ -1,0 +1,72 @@
+import type { MetricRow } from "./types";
+
+export const demoRows: MetricRow[] = [
+  {
+    date: "2026-06-03",
+    appId: "demo_app_1",
+    appName: "Idle Ocean",
+    placementId: "reward_home",
+    placementName: "Rewarded Home",
+    country: "US",
+    network: "TopOn Aggregate",
+    revenue: 128.42,
+    ecpm: 18.7,
+    impressions: 6868,
+    requests: 9200,
+    fills: 7100,
+    clicks: 318,
+    fillRate: 77.17,
+    ctr: 4.63
+  },
+  {
+    date: "2026-06-04",
+    appId: "demo_app_1",
+    appName: "Idle Ocean",
+    placementId: "reward_home",
+    placementName: "Rewarded Home",
+    country: "US",
+    network: "TopOn Aggregate",
+    revenue: 91.84,
+    ecpm: 12.9,
+    impressions: 7119,
+    requests: 9800,
+    fills: 7220,
+    clicks: 288,
+    fillRate: 73.67,
+    ctr: 4.05
+  },
+  {
+    date: "2026-06-03",
+    appId: "demo_app_2",
+    appName: "Merge Farm",
+    placementId: "inter_level",
+    placementName: "Interstitial Level",
+    country: "BR",
+    network: "TopOn Aggregate",
+    revenue: 42.11,
+    ecpm: 5.4,
+    impressions: 7798,
+    requests: 13000,
+    fills: 9100,
+    clicks: 151,
+    fillRate: 70,
+    ctr: 1.94
+  },
+  {
+    date: "2026-06-04",
+    appId: "demo_app_2",
+    appName: "Merge Farm",
+    placementId: "inter_level",
+    placementName: "Interstitial Level",
+    country: "BR",
+    network: "TopOn Aggregate",
+    revenue: 45.02,
+    ecpm: 5.7,
+    impressions: 7898,
+    requests: 12100,
+    fills: 8950,
+    clicks: 166,
+    fillRate: 73.97,
+    ctr: 2.1
+  }
+];

@@ -1,0 +1,14 @@
+.next/
+out/
+node_modules/
+data/
+.env*
+!.env.example
+npm-debug.log*
+dev-server.*.log
+personal-site.*.log
+*.png
+dashboard-smoke.png
+.chrome-smoke-profile/
+.playwright-mcp/
+.reddit-posting-chrome/
