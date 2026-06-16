@@ -3,7 +3,6 @@
 import { useState } from "react";
 import {
   ArrowUpRight,
-  BarChart3,
   CheckCircle2,
   CircleDot,
   Globe2,
@@ -25,6 +24,7 @@ const copy = {
     role: "eCPM Bazaar 发起人",
     navProduct: "产品",
     navFunction: "功能",
+    navDemo: "演示",
     navContact: "联系",
     contact: "联系我",
     languageLabel: "语言",
@@ -32,8 +32,8 @@ const copy = {
     title: "我在做一个帮开发者看懂广告收入波动的工具。",
     lede:
       "eCPM Bazaar 是一个广告数据集市，服务小游戏/App 小团队。它的核心能力不是做一张更漂亮的报表，而是帮助开发者定位收入异常来自哪里。",
-    primary: "查看产品定位",
-    secondary: "聊聊真实数据",
+    primary: "试用公开演示",
+    secondary: "查看产品定位",
     productLabel: "Product Direction",
     productTitle: "eCPM Bazaar",
     productText:
@@ -93,6 +93,7 @@ const copy = {
     role: "Founder of eCPM Bazaar",
     navProduct: "Product",
     navFunction: "Function",
+    navDemo: "Demo",
     navContact: "Contact",
     contact: "Contact",
     languageLabel: "Language",
@@ -100,8 +101,8 @@ const copy = {
     title: "I am building a tool that helps developers understand ad revenue changes.",
     lede:
       "eCPM Bazaar is an ad data bazaar for small mini game and app teams. Its core value is not another prettier dashboard, but helping developers locate where revenue anomalies come from.",
-    primary: "View positioning",
-    secondary: "Talk real data",
+    primary: "Try public demo",
+    secondary: "View positioning",
     productLabel: "Product Direction",
     productTitle: "eCPM Bazaar",
     productText:
@@ -176,6 +177,7 @@ export default function Home() {
         <div className="nav-links">
           <a href="#product">{t.navProduct}</a>
           <a href="#function">{t.navFunction}</a>
+          <a href="demo/">{t.navDemo}</a>
           <a href="#contact">{t.navContact}</a>
           <div className="language-switch" aria-label={t.languageLabel}>
             <button
@@ -211,11 +213,11 @@ export default function Home() {
           <h1>{t.title}</h1>
           <p className="hero-lede">{t.lede}</p>
           <div className="hero-actions">
-            <a className="primary-action" href="#product">
+            <a className="primary-action" href="demo/">
               {t.primary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
-            <a className="secondary-action" href={mailto}>
+            <a className="secondary-action" href="#product">
               {t.secondary}
             </a>
           </div>
