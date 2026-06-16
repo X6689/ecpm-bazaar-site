@@ -1,7 +1,19 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { AlertTriangle, ArrowLeft, CheckCircle2, FileUp, Mail, Play, RotateCcw, Table2 } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  CheckCircle2,
+  Copy,
+  Download,
+  FileUp,
+  Mail,
+  Play,
+  RotateCcw,
+  ShieldCheck,
+  Table2
+} from "lucide-react";
 import { demoRows } from "@/lib/demo-data";
 import type { MetricRow } from "@/lib/types";
 
@@ -26,9 +38,13 @@ const copy = {
     lede:
       "Use the sample data or upload a CSV. eCPM Bazaar compares the latest day with the previous day and explains whether revenue moved because of eCPM, impressions, fill rate, country, placement, or ad source changes.",
     useSample: "Load sample CSV",
+    downloadSample: "Download sample CSV",
+    copyLink: "Copy demo link",
+    copied: "Copied",
     reset: "Reset demo",
     upload: "Upload CSV",
     uploadHelp: "CSV columns: date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks.",
+    privacy: "CSV files are parsed in your browser for this public demo. Nothing is uploaded or stored.",
     contact: "Join tester list",
     sourceSample: "Sample CSV loaded",
     sourceDemo: "Built-in demo data",
@@ -68,9 +84,13 @@ const copy = {
     lede:
       "使用样例数据或上传 CSV。eCPM Bazaar 会比较最近一天和前一天，判断收入变化更可能来自 eCPM、展示量、填充率、国家地区、广告位还是广告来源。",
     useSample: "载入样例 CSV",
+    downloadSample: "下载样例 CSV",
+    copyLink: "复制演示链接",
+    copied: "已复制",
     reset: "重置演示",
     upload: "上传 CSV",
     uploadHelp: "CSV 字段：date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks。",
+    privacy: "这个公开演示只在浏览器本地解析 CSV，不上传、不保存你的文件。",
     contact: "加入测试名单",
     sourceSample: "已载入样例 CSV",
     sourceDemo: "内置演示数据",
@@ -255,6 +275,7 @@ export default function DemoPage() {
   const [rows, setRows] = useState<MetricRow[]>(demoRows);
   const [source, setSource] = useState<"demo" | "sample" | "upload">("demo");
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
   const t = copy[lang];
   const report = useMemo(() => diagnose(rows), [rows]);
   const sourceLabel = source === "upload" ? t.sourceUpload : source === "sample" ? t.sourceSample : t.sourceDemo;
@@ -274,6 +295,17 @@ export default function DemoPage() {
     setRows(parseCsv(sampleCsv));
     setSource("sample");
     setError("");
+  }
+
+  async function copyDemoLink() {
+    const url = typeof window === "undefined" ? "" : window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      setCopied(false);
+    }
   }
 
   return (
@@ -307,11 +339,23 @@ export default function DemoPage() {
             <Table2 size={18} aria-hidden="true" />
             {t.useSample}
           </button>
+          <a
+            className="secondary-action"
+            download="ecpm-bazaar-sample.csv"
+            href={`data:text/csv;charset=utf-8,${encodeURIComponent(sampleCsv)}`}
+          >
+            <Download size={18} aria-hidden="true" />
+            {t.downloadSample}
+          </a>
           <label className="secondary-action upload-action">
             <FileUp size={18} aria-hidden="true" />
             {t.upload}
             <input accept=".csv,text/csv" type="file" onChange={(event) => onUpload(event.target.files?.[0])} />
           </label>
+          <button className="ghost-action" type="button" onClick={copyDemoLink}>
+            <Copy size={17} aria-hidden="true" />
+            {copied ? t.copied : t.copyLink}
+          </button>
           <button className="ghost-action" type="button" onClick={() => setRows(demoRows)}>
             <RotateCcw size={17} aria-hidden="true" />
             {t.reset}
@@ -323,6 +367,10 @@ export default function DemoPage() {
         <span>{sourceLabel}</span>
         <span>{rows.length} {t.rows}</span>
         <span>{t.uploadHelp}</span>
+      </section>
+      <section className="demo-privacy">
+        <ShieldCheck size={18} aria-hidden="true" />
+        <span>{t.privacy}</span>
       </section>
       {error ? <p className="demo-error">{error}</p> : null}
 
