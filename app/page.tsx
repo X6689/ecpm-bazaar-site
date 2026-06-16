@@ -17,19 +17,7 @@ import {
 
 type Lang = "zh" | "en";
 
-const signals = [
-  { label: "Revenue", value: "$428", trend: "-18.4%", tone: "warn" },
-  { label: "eCPM", value: "$3.84", trend: "+2.6%", tone: "good" },
-  { label: "Fill Rate", value: "54.2%", trend: "-21.8%", tone: "warn" }
-];
-
-const drivers = [
-  { label: "Rewarded Video / US", value: "Main drop", width: "92%" },
-  { label: "Interstitial / BR", value: "Stable", width: "48%" },
-  { label: "Banner / JP", value: "Minor lift", width: "33%" }
-];
-
-const contactEmail = "xiashi6689@163.com";
+const contactEmail = "xmmyy168@gmail.com";
 
 const copy = {
   zh: {
@@ -39,6 +27,7 @@ const copy = {
     navFunction: "功能",
     navContact: "联系",
     contact: "联系我",
+    languageLabel: "语言",
     eyebrow: "个人网站 / 第一个产品",
     title: "我在做一个帮开发者看懂广告收入波动的工具。",
     lede:
@@ -56,6 +45,23 @@ const copy = {
     diagnosisTitle: "诊断示例",
     diagnosisText:
       "美国激励视频收入下降主要由填充率从 78% 降到 54% 导致，eCPM 基本稳定。建议优先检查该广告位的广告源填充、底价配置和平台状态。",
+    previewTitle: "广告收入异常诊断",
+    previewStatus: "诊断中",
+    signals: [
+      { label: "收入", value: "$428", trend: "-18.4%", tone: "warn" },
+      { label: "eCPM", value: "$3.84", trend: "+2.6%", tone: "good" },
+      { label: "填充率", value: "54.2%", trend: "-21.8%", tone: "warn" }
+    ],
+    drivers: [
+      { label: "激励视频 / 美国", value: "主要下滑", width: "92%" },
+      { label: "插屏 / 巴西", value: "稳定", width: "48%" },
+      { label: "横幅 / 日本", value: "小幅增长", width: "33%" }
+    ],
+    steps: [
+      { title: "导入数据", note: "CSV / Excel / API" },
+      { title: "识别异常", note: "收入、eCPM、填充率" },
+      { title: "输出建议", note: "先查最可能原因" }
+    ],
     cards: [
       {
         icon: LineChart,
@@ -89,6 +95,7 @@ const copy = {
     navFunction: "Function",
     navContact: "Contact",
     contact: "Contact",
+    languageLabel: "Language",
     eyebrow: "Personal site / First product",
     title: "I am building a tool that helps developers understand ad revenue changes.",
     lede:
@@ -106,6 +113,23 @@ const copy = {
     diagnosisTitle: "Diagnosis Example",
     diagnosisText:
       "US rewarded video revenue fell mainly because fill rate dropped from 78% to 54%, while eCPM stayed stable. Prioritize checking ad source fill, floor settings, and platform status for this placement.",
+    previewTitle: "Revenue anomaly diagnosis",
+    previewStatus: "Watching",
+    signals: [
+      { label: "Revenue", value: "$428", trend: "-18.4%", tone: "warn" },
+      { label: "eCPM", value: "$3.84", trend: "+2.6%", tone: "good" },
+      { label: "Fill Rate", value: "54.2%", trend: "-21.8%", tone: "warn" }
+    ],
+    drivers: [
+      { label: "Rewarded Video / US", value: "Main drop", width: "92%" },
+      { label: "Interstitial / BR", value: "Stable", width: "48%" },
+      { label: "Banner / JP", value: "Minor lift", width: "33%" }
+    ],
+    steps: [
+      { title: "Import data", note: "CSV / Excel / API" },
+      { title: "Detect anomaly", note: "Revenue, eCPM, fill rate" },
+      { title: "Explain next step", note: "Check the likely cause first" }
+    ],
     cards: [
       {
         icon: LineChart,
@@ -135,7 +159,7 @@ const copy = {
 };
 
 export default function Home() {
-  const [lang, setLang] = useState<Lang>("zh");
+  const [lang, setLang] = useState<Lang>("en");
   const t = copy[lang];
   const mailto = `mailto:${contactEmail}`;
 
@@ -153,12 +177,22 @@ export default function Home() {
           <a href="#product">{t.navProduct}</a>
           <a href="#function">{t.navFunction}</a>
           <a href="#contact">{t.navContact}</a>
-          <div className="language-switch" aria-label="Language switch">
-            <button className={lang === "zh" ? "active" : ""} type="button" onClick={() => setLang("zh")}>
+          <div className="language-switch" aria-label={t.languageLabel}>
+            <button
+              aria-pressed={lang === "zh"}
+              className={lang === "zh" ? "active" : ""}
+              type="button"
+              onClick={() => setLang("zh")}
+            >
               中文
             </button>
-            <button className={lang === "en" ? "active" : ""} type="button" onClick={() => setLang("en")}>
-              EN
+            <button
+              aria-pressed={lang === "en"}
+              className={lang === "en" ? "active" : ""}
+              type="button"
+              onClick={() => setLang("en")}
+            >
+              English
             </button>
           </div>
           <a className="nav-action" href={mailto}>
@@ -191,15 +225,15 @@ export default function Home() {
           <div className="preview-top">
             <div>
               <p className="preview-kicker">eCPM Bazaar</p>
-              <h2>{lang === "zh" ? "广告收入异常诊断" : "Revenue anomaly diagnosis"}</h2>
+              <h2>{t.previewTitle}</h2>
             </div>
             <span className="status-pill">
               <CircleDot size={14} aria-hidden="true" />
-              {lang === "zh" ? "诊断中" : "Watching"}
+              {t.previewStatus}
             </span>
           </div>
           <div className="signal-grid">
-            {signals.map((signal) => (
+            {t.signals.map((signal) => (
               <div className="signal-card" key={signal.label}>
                 <span>{signal.label}</span>
                 <strong>{signal.value}</strong>
@@ -217,7 +251,7 @@ export default function Home() {
             </div>
           </div>
           <div className="driver-list">
-            {drivers.map((driver) => (
+            {t.drivers.map((driver) => (
               <div className="driver-row" key={driver.label}>
                 <div>
                   <span>{driver.label}</span>
@@ -245,20 +279,7 @@ export default function Home() {
           <p>{t.functionText}</p>
         </div>
         <div className="function-steps">
-          {[
-            {
-              title: lang === "zh" ? "导入数据" : "Import data",
-              note: "CSV / Excel / API"
-            },
-            {
-              title: lang === "zh" ? "识别异常" : "Detect anomaly",
-              note: lang === "zh" ? "收入、eCPM、填充率" : "Revenue, eCPM, fill rate"
-            },
-            {
-              title: lang === "zh" ? "输出建议" : "Explain next step",
-              note: lang === "zh" ? "先查最可能原因" : "Check the likely cause first"
-            }
-          ].map((step, index) => (
+          {t.steps.map((step, index) => (
             <div className="step-row" key={step.title}>
               <span>{index + 1}</span>
               <div>
