@@ -329,6 +329,18 @@ export default function Home() {
           </a>
         </div>
       </section>
+
+      <section className="launch-badge-section" aria-label="Launch badges">
+        <a className="fazier-badge" href="https://fazier.com" target="_blank" rel="noreferrer">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=featured&theme=light"
+            width={250}
+            height={106}
+            alt="Fazier badge"
+          />
+        </a>
+      </section>
     </main>
   );
 }

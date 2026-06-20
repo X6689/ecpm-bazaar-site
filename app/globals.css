@@ -543,6 +543,28 @@ p {
   font-weight: 750;
 }
 
+.launch-badge-section {
+  display: flex;
+  justify-content: center;
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 14px 0 54px;
+}
+
+.fazier-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+.fazier-badge img {
+  display: block;
+  width: 250px;
+  max-width: 100%;
+  height: auto;
+}
+
 @media (max-width: 880px) {
   .nav-shell {
     align-items: flex-start;
