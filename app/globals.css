@@ -490,6 +490,69 @@ p {
   line-height: 1.75;
 }
 
+.resource-link-section {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.55fr) minmax(0, 1fr);
+  gap: 34px;
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 70px 0 0;
+}
+
+.resource-link-heading h2 {
+  margin-top: 10px;
+  font-size: 34px;
+  line-height: 1.2;
+}
+
+.resource-link-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.resource-link-card {
+  position: relative;
+  display: grid;
+  min-height: 152px;
+  padding: 20px 52px 20px 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 74%);
+}
+
+.resource-link-card strong,
+.resource-link-card span {
+  display: block;
+}
+
+.resource-link-card strong {
+  color: var(--deep);
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.resource-link-card span {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.resource-link-card em {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 8px;
+  background: #e5f6f1;
+  color: var(--teal);
+  font-style: normal;
+}
+
 .about-copy > p:last-child {
   margin-top: 16px;
   color: #4e5b56;
@@ -580,7 +643,8 @@ p {
   .hero,
   .intro-band,
   .function-section,
-  .about-section {
+  .about-section,
+  .resource-link-section {
     grid-template-columns: 1fr;
     gap: 30px;
   }
@@ -605,7 +669,8 @@ p {
   }
 
   .signal-grid,
-  .focus-grid {
+  .focus-grid,
+  .resource-link-grid {
     grid-template-columns: 1fr;
     flex-direction: column;
   }
@@ -614,10 +679,20 @@ p {
 @media (max-width: 560px) {
   .nav-links {
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
   }
 
   .nav-links a:not(.nav-action) {
-    display: none;
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgb(255 255 255 / 72%);
+    font-size: 13px;
+    font-weight: 750;
   }
 
   .language-switch {
@@ -808,6 +883,14 @@ p {
   margin-bottom: 16px;
 }
 
+.demo-assist-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  gap: 16px;
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto 16px;
+}
+
 .demo-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -817,7 +900,9 @@ p {
 
 .diagnosis-panel,
 .metric-panel,
-.data-panel {
+.data-panel,
+.field-check-panel,
+.quality-panel {
   padding: 22px;
 }
 
@@ -930,6 +1015,102 @@ p {
   line-height: 1.7;
 }
 
+.field-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.field-chip {
+  display: grid;
+  gap: 5px;
+  min-height: 92px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfdfb;
+}
+
+.field-chip strong,
+.field-chip em,
+.field-chip small {
+  display: block;
+}
+
+.field-chip strong {
+  color: var(--deep);
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.field-chip em {
+  width: fit-content;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #eef2f0;
+  color: #52615b;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.field-chip small {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.field-chip.matched {
+  border-color: #bbf7d0;
+  background: #f4fff7;
+}
+
+.field-chip.matched em {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.field-chip.missing {
+  border-color: #fed7aa;
+  background: #fff7ed;
+}
+
+.field-chip.missing em {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.quality-list {
+  display: grid;
+  gap: 10px;
+}
+
+.quality-list span {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.quality-list .quality-good {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.quality-list svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
 .metric-panel {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1000,11 +1181,16 @@ p {
 
 @media (max-width: 880px) {
   .demo-hero,
-  .demo-grid {
+  .demo-grid,
+  .demo-assist-grid {
     grid-template-columns: 1fr;
   }
 
   .demo-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .field-chip-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -1033,7 +1219,8 @@ p {
   }
 
   .demo-actions,
-  .metric-panel {
+  .metric-panel,
+  .field-chip-grid {
     grid-template-columns: 1fr;
   }
 

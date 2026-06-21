@@ -37,6 +37,13 @@ Execution focus:
 - Do not claim to magically increase eCPM; explain the likely driver first.
 - Prioritize real user data, copied diagnosis output, CSV templates, and anonymized cases before login/API/payment.
 
+2026-06-21 product progress:
+
+- Public demo now supports copying a diagnosis result for Reddit/email follow-up.
+- Demo CSV upload recognizes common exported field aliases such as estimated earnings, ad impressions, ad unit, match rate, and ad source.
+- Demo shows a CSV field check and data-quality notes before the diagnosis.
+- Homepage now links directly to demo, templates, anonymized cases, and free diagnosis.
+
 ## Product Directory / Launch Platform Status
 
 | Platform | Status | Public / Admin URL | Date / Schedule | Account / Notes | Next Action |

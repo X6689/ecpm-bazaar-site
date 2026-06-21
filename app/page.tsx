@@ -81,6 +81,14 @@ const copy = {
         text: "把异常转成开发者能行动的排查清单，先查最可能影响收入的地方。"
       }
     ],
+    resourceLabel: "Validation Resources",
+    resourceTitle: "先用真实报表验证诊断是否有用。",
+    resources: [
+      { title: "公开 Demo", text: "上传 CSV 或使用样例数据，直接生成一段诊断结果。", href: "demo/" },
+      { title: "CSV 模板", text: "下载 AdMob、AppLovin MAX、LevelPlay / TopOn 模板。", href: "templates/" },
+      { title: "脱敏案例", text: "查看 eCPM、填充率、国家结构三类常见变化案例。", href: "cases/" },
+      { title: "免费诊断", text: "用匿名数据发邮件，不需要账号密码或 API key。", href: "free-diagnosis/" }
+    ],
     serviceLabel: "Who I Serve",
     serviceTitle: "先服务小团队，不做大而全的平台。",
     serviceText:
@@ -151,6 +159,14 @@ const copy = {
         title: "Suggest Checks",
         text: "Turn anomalies into a practical checklist so developers can inspect the most likely cause first."
       }
+    ],
+    resourceLabel: "Validation Resources",
+    resourceTitle: "Validate the diagnosis with real report data first.",
+    resources: [
+      { title: "Public demo", text: "Upload a CSV or use sample data to copy a diagnosis result.", href: "demo/" },
+      { title: "CSV templates", text: "Download AdMob, AppLovin MAX, and LevelPlay / TopOn templates.", href: "templates/" },
+      { title: "Anonymized cases", text: "Review eCPM, fill-rate, and country-mix diagnosis examples.", href: "cases/" },
+      { title: "Free diagnosis", text: "Send anonymized rows by email. No login or API key needed.", href: "free-diagnosis/" }
     ],
     serviceLabel: "Who I Serve",
     serviceTitle: "Starting with small teams, not a giant platform.",
@@ -312,6 +328,24 @@ export default function Home() {
             </article>
           );
         })}
+      </section>
+
+      <section className="resource-link-section" aria-label="eCPM Bazaar resources">
+        <div className="resource-link-heading">
+          <p className="section-label">{t.resourceLabel}</p>
+          <h2>{t.resourceTitle}</h2>
+        </div>
+        <div className="resource-link-grid">
+          {t.resources.map((resource) => (
+            <a className="resource-link-card" href={resource.href} key={resource.title}>
+              <strong>{resource.title}</strong>
+              <span>{resource.text}</span>
+              <em>
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </em>
+            </a>
+          ))}
+        </div>
       </section>
 
       <section className="about-section" id="contact">

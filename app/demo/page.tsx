@@ -19,6 +19,123 @@ import type { MetricRow } from "@/lib/types";
 
 type Lang = "en" | "zh";
 type Driver = "revenue" | "impressions" | "ecpm" | "fillRate";
+type CsvField =
+  | "date"
+  | "appName"
+  | "placementName"
+  | "country"
+  | "network"
+  | "revenue"
+  | "ecpm"
+  | "impressions"
+  | "requests"
+  | "fills"
+  | "clicks"
+  | "fillRate";
+
+type FieldStatus = {
+  field: CsvField;
+  label: string;
+  required: boolean;
+  matchedHeader?: string;
+};
+
+type IssueKey = "fallbackIssue" | "twoDatesIssue" | "fillIssue" | "ecpmIssue" | "rowMatchIssue" | "lowVolumeIssue";
+
+type ParseCsvResult = {
+  rows: MetricRow[];
+  fields: FieldStatus[];
+  issues: IssueKey[];
+};
+
+const fieldLabels: Record<CsvField, string> = {
+  date: "date",
+  appName: "appName",
+  placementName: "placementName",
+  country: "country",
+  network: "network",
+  revenue: "revenue",
+  ecpm: "ecpm",
+  impressions: "impressions",
+  requests: "requests",
+  fills: "fills",
+  clicks: "clicks",
+  fillRate: "fillRate"
+};
+
+const fieldAliases: Record<CsvField, string[]> = {
+  date: ["date", "day", "report date", "report_date", "reportdate"],
+  appName: ["appName", "app name", "app_name", "app", "application", "application name"],
+  placementName: [
+    "placementName",
+    "placement name",
+    "placement",
+    "ad unit",
+    "ad_unit",
+    "ad unit name",
+    "adUnit",
+    "adUnitName",
+    "unit name",
+    "unit_name",
+    "format",
+    "ad format"
+  ],
+  country: ["country", "country code", "country_code", "geo", "region", "location"],
+  network: [
+    "network",
+    "adSource",
+    "ad source",
+    "ad_source",
+    "adsource",
+    "demand source",
+    "demand_source",
+    "mediation",
+    "platform"
+  ],
+  revenue: [
+    "revenue",
+    "estimated revenue",
+    "estimated_revenue",
+    "estimatedRevenue",
+    "estimated earnings",
+    "estimated_earnings",
+    "earnings",
+    "income",
+    "ad revenue"
+  ],
+  ecpm: ["ecpm", "eCPM", "observed eCPM", "observed_ecpm", "observedEcpm", "avg eCPM", "average eCPM"],
+  impressions: ["impressions", "impression", "ad impressions", "ad_impressions", "adImpressions", "shows"],
+  requests: ["requests", "request", "ad requests", "ad_requests", "adRequests", "attempts"],
+  fills: [
+    "fills",
+    "fill",
+    "matched requests",
+    "matched_requests",
+    "matchedRequests",
+    "filled requests",
+    "filled_requests",
+    "responses",
+    "matches"
+  ],
+  clicks: ["clicks", "click", "ad clicks", "ad_clicks", "adClicks"],
+  fillRate: ["fillRate", "fill rate", "fill_rate", "matchRate", "match rate", "match_rate", "matched rate"]
+};
+
+const requiredFields: CsvField[] = ["date", "revenue", "impressions"];
+const displayFields: CsvField[] = [
+  "date",
+  "appName",
+  "placementName",
+  "country",
+  "network",
+  "revenue",
+  "ecpm",
+  "impressions",
+  "requests",
+  "fills",
+  "clicks",
+  "fillRate"
+];
 
 const sampleCsv = `date,appName,placementName,country,network,revenue,ecpm,impressions,requests,fills,clicks
 2026-06-14,Idle Ocean,Rewarded Home,US,AdMob,128.42,18.70,6868,9200,7100,318
@@ -44,6 +161,15 @@ const copy = {
     upload: "Upload CSV",
     uploadHelp: "CSV columns: date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks.",
     privacy: "CSV files are parsed in your browser for this public demo. Nothing is uploaded or stored.",
+    fieldCheck: "CSV field check",
+    dataQuality: "Data quality notes",
+    matched: "Matched",
+    missing: "Missing",
+    required: "Required",
+    recommended: "Recommended",
+    ready: "Ready for diagnosis",
+    needsWork: "Needs field mapping",
+    templates: "CSV templates",
     contact: "Free diagnosis",
     sourceSample: "Sample CSV loaded",
     sourceDemo: "Built-in demo data",
@@ -61,6 +187,12 @@ const copy = {
     dataPreview: "Data preview",
     noRows: "No rows loaded yet.",
     parseError: "Could not read this CSV. Check the column names and try again.",
+    fallbackIssue: "Some optional fields are missing, so the diagnosis will be less precise.",
+    twoDatesIssue: "Add at least two dates to compare the latest day with the previous day.",
+    fillIssue: "Requests and fills are missing or zero, so fill-rate diagnosis is limited.",
+    ecpmIssue: "eCPM was missing for some rows and was calculated from revenue and impressions.",
+    rowMatchIssue: "No matching app / placement / country / source rows were found across the two latest dates.",
+    lowVolumeIssue: "Some rows have low impressions. Treat row-level eCPM changes carefully.",
     driverLabels: {
       revenue: "Revenue",
       impressions: "Impressions",
@@ -91,6 +223,15 @@ const copy = {
     upload: "上传 CSV",
     uploadHelp: "CSV 字段：date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks。",
     privacy: "这个公开演示只在浏览器本地解析 CSV，不上传、不保存你的文件。",
+    fieldCheck: "CSV 字段检查",
+    dataQuality: "数据质量提示",
+    matched: "已识别",
+    missing: "缺失",
+    required: "必填",
+    recommended: "建议",
+    ready: "可以诊断",
+    needsWork: "需要调整字段",
+    templates: "CSV 模板",
     contact: "免费诊断",
     sourceSample: "已载入样例 CSV",
     sourceDemo: "内置演示数据",
@@ -108,6 +249,12 @@ const copy = {
     dataPreview: "数据预览",
     noRows: "还没有载入数据。",
     parseError: "无法读取这个 CSV，请检查字段名后再试。",
+    fallbackIssue: "部分可选字段缺失，诊断精度会降低。",
+    twoDatesIssue: "至少需要两个日期，才能比较最近一天和前一天。",
+    fillIssue: "requests 和 fills 缺失或为 0，填充率诊断会受限。",
+    ecpmIssue: "部分行缺少 eCPM，已用收入和展示量自动计算。",
+    rowMatchIssue: "最近两个日期之间没有找到相同 App / 广告位 / 国家 / 广告源的行。",
+    lowVolumeIssue: "部分行展示量较低，行级 eCPM 变化需要谨慎判断。",
     driverLabels: {
       revenue: "收入",
       impressions: "展示量",
@@ -128,6 +275,43 @@ const copy = {
 function numberValue(value: unknown) {
   const parsed = Number(String(value ?? "").replace(/[$,%]/g, "").trim());
   return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function normalizeHeader(header: string) {
+  return header.replace(/^\uFEFF/, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+const aliasLookup = new Map<string, CsvField>();
+for (const field of displayFields) {
+  for (const alias of fieldAliases[field]) {
+    aliasLookup.set(normalizeHeader(alias), field);
+  }
+}
+
+function createFieldStatuses(fieldMap?: Map<CsvField, string>): FieldStatus[] {
+  return displayFields.map((field) => ({
+    field,
+    label: fieldLabels[field],
+    required: requiredFields.includes(field),
+    matchedHeader: fieldMap?.get(field) ?? fieldLabels[field]
+  }));
+}
+
+function buildFieldMap(headers: string[]) {
+  const fieldMap = new Map<CsvField, string>();
+
+  for (const header of headers) {
+    const field = aliasLookup.get(normalizeHeader(header));
+    if (field && !fieldMap.has(field)) {
+      fieldMap.set(field, header);
+    }
+  }
+
+  return fieldMap;
+}
+
+function valueFrom(record: Record<CsvField, string>, field: CsvField) {
+  return record[field] ?? "";
 }
 
 function parseCsvLine(line: string) {
@@ -152,36 +336,48 @@ function parseCsvLine(line: string) {
   return values;
 }
 
-function parseCsv(text: string): MetricRow[] {
+function parseCsv(text: string): ParseCsvResult {
   const lines = text
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean);
 
   const headers = parseCsvLine(lines[0] ?? "").map((header) => header.trim());
-  if (!headers.includes("date") || !headers.includes("revenue") || !headers.includes("impressions")) {
+  const fieldMap = buildFieldMap(headers);
+  const missingRequired = requiredFields.filter((field) => !fieldMap.has(field));
+  if (missingRequired.length) {
     throw new Error("Missing required columns");
   }
 
-  return lines.slice(1).map((line, index) => {
+  const rows = lines.slice(1).map((line, index) => {
     const values = parseCsvLine(line);
-    const record = Object.fromEntries(headers.map((header, columnIndex) => [header, values[columnIndex] ?? ""]));
-    const requests = numberValue(record.requests);
-    const fills = numberValue(record.fills);
-    const impressions = numberValue(record.impressions);
-    const revenue = numberValue(record.revenue);
-    const ecpm = numberValue(record.ecpm) || (impressions ? (revenue / impressions) * 1000 : 0);
-    const fillRate = numberValue(record.fillRate) || (requests ? (fills / requests) * 100 : 0);
-    const clicks = numberValue(record.clicks);
+    const record = Object.fromEntries(displayFields.map((field) => [field, ""])) as Record<CsvField, string>;
+
+    headers.forEach((header, columnIndex) => {
+      const field = aliasLookup.get(normalizeHeader(header));
+      if (field) {
+        record[field] = values[columnIndex] ?? "";
+      }
+    });
+
+    const requests = numberValue(valueFrom(record, "requests"));
+    const fills = numberValue(valueFrom(record, "fills"));
+    const impressions = numberValue(valueFrom(record, "impressions"));
+    const revenue = numberValue(valueFrom(record, "revenue"));
+    const providedEcpm = numberValue(valueFrom(record, "ecpm"));
+    const ecpm = providedEcpm || (impressions ? (revenue / impressions) * 1000 : 0);
+    const providedFillRate = numberValue(valueFrom(record, "fillRate"));
+    const fillRate = providedFillRate || (requests ? (fills / requests) * 100 : 0);
+    const clicks = numberValue(valueFrom(record, "clicks"));
 
     return {
-      date: String(record.date || `row-${index + 1}`),
-      appId: String(record.appId || record.appName || "app").toLowerCase().replace(/\s+/g, "_"),
-      appName: String(record.appName || "Uploaded App"),
-      placementId: String(record.placementId || record.placementName || "placement").toLowerCase().replace(/\s+/g, "_"),
-      placementName: String(record.placementName || "All Placements"),
-      country: String(record.country || "ALL"),
-      network: String(record.network || record.adSource || "Uploaded Source"),
+      date: String(valueFrom(record, "date") || `row-${index + 1}`),
+      appId: String(valueFrom(record, "appName") || "app").toLowerCase().replace(/\s+/g, "_"),
+      appName: String(valueFrom(record, "appName") || "Uploaded App"),
+      placementId: String(valueFrom(record, "placementName") || "placement").toLowerCase().replace(/\s+/g, "_"),
+      placementName: String(valueFrom(record, "placementName") || "All Placements"),
+      country: String(valueFrom(record, "country") || "ALL"),
+      network: String(valueFrom(record, "network") || "Uploaded Source"),
       revenue,
       ecpm,
       impressions,
@@ -192,6 +388,40 @@ function parseCsv(text: string): MetricRow[] {
       ctr: impressions ? (clicks / impressions) * 100 : 0
     };
   });
+
+  return {
+    rows,
+    fields: createFieldStatuses(fieldMap),
+    issues: analyzeCsvIssues(rows, fieldMap)
+  };
+}
+
+function analyzeCsvIssues(rows: MetricRow[], fieldMap: Map<CsvField, string>): IssueKey[] {
+  const issues = new Set<IssueKey>();
+  const dates = new Set(rows.map((row) => row.date));
+  const optionalFields: CsvField[] = ["appName", "placementName", "country", "network", "ecpm", "requests", "fills"];
+
+  if (optionalFields.some((field) => !fieldMap.has(field))) {
+    issues.add("fallbackIssue");
+  }
+
+  if (dates.size < 2) {
+    issues.add("twoDatesIssue");
+  }
+
+  if (!fieldMap.has("requests") || !fieldMap.has("fills") || rows.every((row) => row.requests === 0 || row.fills === 0)) {
+    issues.add("fillIssue");
+  }
+
+  if (!fieldMap.has("ecpm")) {
+    issues.add("ecpmIssue");
+  }
+
+  if (rows.some((row) => row.impressions > 0 && row.impressions < 1000)) {
+    issues.add("lowVolumeIssue");
+  }
+
+  return [...issues];
 }
 
 function sum(rows: MetricRow[], field: "revenue" | "impressions" | "requests" | "fills") {
@@ -273,6 +503,8 @@ function diagnose(rows: MetricRow[]) {
 export default function DemoPage() {
   const [lang, setLang] = useState<Lang>("en");
   const [rows, setRows] = useState<MetricRow[]>(demoRows);
+  const [fieldStatuses, setFieldStatuses] = useState<FieldStatus[]>(createFieldStatuses());
+  const [csvIssues, setCsvIssues] = useState<IssueKey[]>([]);
   const [source, setSource] = useState<"demo" | "sample" | "upload">("demo");
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
@@ -280,6 +512,16 @@ export default function DemoPage() {
   const t = copy[lang];
   const report = useMemo(() => diagnose(rows), [rows]);
   const sourceLabel = source === "upload" ? t.sourceUpload : source === "sample" ? t.sourceSample : t.sourceDemo;
+  const dataIssues = useMemo(() => {
+    const issues = new Set(csvIssues);
+    if (rows.length > 0 && report.previousDate && report.currentDate && !report.largestDrop) {
+      issues.add("rowMatchIssue");
+    }
+    return [...issues];
+  }, [csvIssues, report.currentDate, report.largestDrop, report.previousDate, rows.length]);
+  const hasRequiredFields = fieldStatuses
+    .filter((field) => field.required)
+    .every((field) => Boolean(field.matchedHeader));
   const diagnosisText = useMemo(() => {
     const largestDrop = report.largestDrop
       ? `${report.largestDrop.row.appName} / ${report.largestDrop.row.placementName} / ${report.largestDrop.row.country} / ${report.largestDrop.row.network}: ${money(report.largestDrop.previousRow?.revenue ?? 0)} -> ${money(report.largestDrop.row.revenue)}`
@@ -317,7 +559,10 @@ export default function DemoPage() {
   async function onUpload(file?: File) {
     if (!file) return;
     try {
-      setRows(parseCsv(await file.text()));
+      const parsed = parseCsv(await file.text());
+      setRows(parsed.rows);
+      setFieldStatuses(parsed.fields);
+      setCsvIssues(parsed.issues);
       setSource("upload");
       setError("");
     } catch {
@@ -326,8 +571,19 @@ export default function DemoPage() {
   }
 
   function loadSample() {
-    setRows(parseCsv(sampleCsv));
+    const parsed = parseCsv(sampleCsv);
+    setRows(parsed.rows);
+    setFieldStatuses(parsed.fields);
+    setCsvIssues(parsed.issues);
     setSource("sample");
+    setError("");
+  }
+
+  function resetDemo() {
+    setRows(demoRows);
+    setFieldStatuses(createFieldStatuses());
+    setCsvIssues([]);
+    setSource("demo");
     setError("");
   }
 
@@ -400,7 +656,7 @@ export default function DemoPage() {
             <Copy size={17} aria-hidden="true" />
             {copied ? t.copied : t.copyLink}
           </button>
-          <button className="ghost-action" type="button" onClick={() => setRows(demoRows)}>
+          <button className="ghost-action" type="button" onClick={resetDemo}>
             <RotateCcw size={17} aria-hidden="true" />
             {t.reset}
           </button>
@@ -417,6 +673,54 @@ export default function DemoPage() {
         <span>{t.privacy}</span>
       </section>
       {error ? <p className="demo-error">{error}</p> : null}
+
+      <section className="demo-assist-grid" aria-label={lang === "zh" ? "CSV 检查" : "CSV checks"}>
+        <article className="demo-panel field-check-panel">
+          <div className="demo-panel-header">
+            <div>
+              <p className="section-label">{t.fieldCheck}</p>
+              <h2>{hasRequiredFields ? t.ready : t.needsWork}</h2>
+            </div>
+            <a href="../templates/">
+              <Download size={17} aria-hidden="true" />
+              {t.templates}
+            </a>
+          </div>
+          <div className="field-chip-grid">
+            {fieldStatuses.map((field) => (
+              <span className={field.matchedHeader ? "field-chip matched" : "field-chip missing"} key={field.field}>
+                <strong>{field.label}</strong>
+                <em>{field.required ? t.required : t.recommended}</em>
+                <small>{field.matchedHeader ? `${t.matched}: ${field.matchedHeader}` : t.missing}</small>
+              </span>
+            ))}
+          </div>
+        </article>
+
+        <article className="demo-panel quality-panel">
+          <div className="demo-panel-header">
+            <div>
+              <p className="section-label">{t.dataQuality}</p>
+              <h2>{dataIssues.length ? `${dataIssues.length} ${lang === "zh" ? "条提示" : "notes"}` : t.ready}</h2>
+            </div>
+          </div>
+          <div className="quality-list">
+            {dataIssues.length ? (
+              dataIssues.map((issue) => (
+                <span key={issue}>
+                  <AlertTriangle size={17} aria-hidden="true" />
+                  {t[issue]}
+                </span>
+              ))
+            ) : (
+              <span className="quality-good">
+                <CheckCircle2 size={17} aria-hidden="true" />
+                {lang === "zh" ? "字段和对比数据足够开始一次基础诊断。" : "Fields and comparison data are enough for a basic diagnosis."}
+              </span>
+            )}
+          </div>
+        </article>
+      </section>
 
       <section className="demo-grid">
         <article className="demo-panel diagnosis-panel">
