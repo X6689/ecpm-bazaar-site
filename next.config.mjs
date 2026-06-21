@@ -1,12 +1,12 @@
 /** @type {import('next').NextConfig} */
-const isGitHubPages = process.env.GITHUB_PAGES === "true";
+const useGitHubRepoPath = process.env.GITHUB_PAGES_REPO_PATH === "true";
 const repoName = "ecpm-bazaar-site";
 
 const nextConfig = {
   output: "export",
   reactStrictMode: true,
   trailingSlash: true,
-  ...(isGitHubPages
+  ...(useGitHubRepoPath
     ? {
         assetPrefix: `/${repoName}/`,
         basePath: `/${repoName}`

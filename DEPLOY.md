@@ -2,6 +2,31 @@
 
 This project is configured as a static Next.js export for Pages/CDN hosting.
 
+## GitHub Pages Custom Domain
+
+The canonical public site is:
+
+```text
+https://ecpmbazaar.com/
+https://ecpmbazaar.com/demo/
+```
+
+Build the custom-domain version without a repo `basePath`:
+
+```bash
+npm install
+npm run build
+```
+
+`public/CNAME` is copied into `out/CNAME` during export so GitHub Pages can bind
+the custom domain.
+
+For the old GitHub repository-path URL, use this only as a fallback:
+
+```bash
+GITHUB_PAGES_REPO_PATH=true npm run build
+```
+
 ## Tencent Cloud EdgeOne Pages
 
 1. Push this project to GitHub or Gitee.
