@@ -49,6 +49,9 @@ Execution focus:
 - Free diagnosis page now supports copying the email template and field list before opening an email draft.
 - FAQ page added for common trust and workflow questions before users try eCPM Bazaar.
 - Data safety page added to explain browser-only demo behavior, anonymized sharing, and private fields users should not send.
+- Demo now includes a segment-level driver breakdown ranked by revenue loss across app, placement, country, and ad source.
+- Copied diagnosis output now includes the top segment drops so users can paste a more useful summary into Reddit, email, or support conversations.
+- Demo and free-diagnosis copy buttons now use a clipboard fallback; demo also shows a manual-copy textarea when browser clipboard access is blocked.
 
 ## Product Directory / Launch Platform Status
 

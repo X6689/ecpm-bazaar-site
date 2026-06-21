@@ -68,5 +68,39 @@ export const demoRows: MetricRow[] = [
     clicks: 166,
     fillRate: 73.97,
     ctr: 2.1
+  },
+  {
+    date: "2026-06-03",
+    appId: "demo_app_2",
+    appName: "Merge Farm",
+    placementId: "banner_bottom",
+    placementName: "Banner Bottom",
+    country: "JP",
+    network: "TopOn Aggregate",
+    revenue: 36.2,
+    ecpm: 2.8,
+    impressions: 12928,
+    requests: 16500,
+    fills: 15100,
+    clicks: 93,
+    fillRate: 91.52,
+    ctr: 0.72
+  },
+  {
+    date: "2026-06-04",
+    appId: "demo_app_2",
+    appName: "Merge Farm",
+    placementId: "banner_bottom",
+    placementName: "Banner Bottom",
+    country: "JP",
+    network: "TopOn Aggregate",
+    revenue: 31.08,
+    ecpm: 2.76,
+    impressions: 11260,
+    requests: 16300,
+    fills: 14980,
+    clicks: 81,
+    fillRate: 91.9,
+    ctr: 0.72
   }
 ];

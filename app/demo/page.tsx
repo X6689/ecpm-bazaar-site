@@ -14,11 +14,21 @@ import {
   ShieldCheck,
   Table2
 } from "lucide-react";
+import { writeClipboardText } from "@/lib/clipboard";
 import { demoRows } from "@/lib/demo-data";
 import type { MetricRow } from "@/lib/types";
 
 type Lang = "en" | "zh";
 type Driver = "revenue" | "impressions" | "ecpm" | "fillRate";
+type BreakdownRow = {
+  key: string;
+  label: string;
+  current: ReturnType<typeof totals>;
+  previous: ReturnType<typeof totals>;
+  changes: Record<Driver, number>;
+  driver: Driver;
+  revenueDelta: number;
+};
 type CsvField =
   | "date"
   | "appName"
@@ -178,6 +188,19 @@ const copy = {
     headlineStable: "No major revenue drop detected",
     headlineDrop: "Revenue drop detected",
     likelyDriver: "Likely driver",
+    driverBreakdown: "Driver breakdown",
+    driverBreakdownTitle: "Top segment drops",
+    driverBreakdownNote:
+      "Ranked by revenue loss across matching app, placement, country, and ad source segments. Use this to decide where to investigate first.",
+    segment: "Segment",
+    revenueChange: "Revenue change",
+    ecpmChange: "eCPM",
+    impressionChange: "Impressions",
+    fillChange: "Fill",
+    reason: "Likely reason",
+    noBreakdown: "No comparable segment drop found for the latest two dates.",
+    manualCopyTitle: "Copy manually",
+    manualCopyHelp: "Automatic clipboard access was blocked. Select this text and copy it manually.",
     nextCheck: "What to check first",
     totalRevenue: "Revenue",
     weightedEcpm: "Weighted eCPM",
@@ -240,6 +263,19 @@ const copy = {
     headlineStable: "没有发现明显收入下滑",
     headlineDrop: "发现收入下滑",
     likelyDriver: "最可能原因",
+    driverBreakdown: "驱动明细",
+    driverBreakdownTitle: "主要下滑分组",
+    driverBreakdownNote:
+      "按 App、广告位、国家地区、广告源组合聚合，并按收入损失排序。先看这里，再决定优先排查哪里。",
+    segment: "分组",
+    revenueChange: "收入变化",
+    ecpmChange: "eCPM",
+    impressionChange: "展示量",
+    fillChange: "填充",
+    reason: "可能原因",
+    noBreakdown: "最近两个日期没有找到可比较的下滑分组。",
+    manualCopyTitle: "手动复制",
+    manualCopyHelp: "浏览器阻止了自动复制。选中下面这段文本手动复制即可。",
     nextCheck: "优先排查",
     totalRevenue: "收入",
     weightedEcpm: "加权 eCPM",
@@ -454,6 +490,54 @@ function totals(rows: MetricRow[]) {
   };
 }
 
+function chooseDriver(changes: Record<Driver, number>): Driver {
+  const dropDrivers: Array<{ driver: Driver; change: number }> = [
+    { driver: "fillRate" as const, change: changes.fillRate },
+    { driver: "ecpm" as const, change: changes.ecpm },
+    { driver: "impressions" as const, change: changes.impressions },
+    { driver: "revenue" as const, change: changes.revenue }
+  ].filter((item) => item.change < -3);
+
+  return dropDrivers.sort((a, b) => a.change - b.change)[0]?.driver ?? "revenue";
+}
+
+function segmentKey(row: MetricRow) {
+  return `${row.appName}|${row.placementName}|${row.country}|${row.network}`;
+}
+
+function segmentLabelFromKey(key: string) {
+  const [appName, placementName, country, network] = key.split("|");
+  return `${appName} / ${placementName} / ${country} / ${network}`;
+}
+
+function buildBreakdowns(currentRows: MetricRow[], previousRows: MetricRow[]): BreakdownRow[] {
+  const keys = new Set([...currentRows.map(segmentKey), ...previousRows.map(segmentKey)]);
+
+  return [...keys]
+    .map((key) => {
+      const current = totals(currentRows.filter((row) => segmentKey(row) === key));
+      const previous = totals(previousRows.filter((row) => segmentKey(row) === key));
+      const changes = {
+        revenue: percentChange(current.revenue, previous.revenue),
+        impressions: percentChange(current.impressions, previous.impressions),
+        ecpm: percentChange(current.ecpm, previous.ecpm),
+        fillRate: percentChange(current.fillRate, previous.fillRate)
+      };
+
+      return {
+        key,
+        label: segmentLabelFromKey(key),
+        current,
+        previous,
+        changes,
+        driver: chooseDriver(changes),
+        revenueDelta: current.revenue - previous.revenue
+      };
+    })
+    .filter((item) => item.revenueDelta < 0)
+    .sort((a, b) => a.revenueDelta - b.revenueDelta);
+}
+
 function diagnose(rows: MetricRow[]) {
   const dates = [...new Set(rows.map((row) => row.date))].sort();
   const currentDate = dates.at(-1);
@@ -469,20 +553,14 @@ function diagnose(rows: MetricRow[]) {
     fillRate: percentChange(current.fillRate, previous.fillRate)
   };
 
-  const dropDrivers: Array<{ driver: Driver; change: number }> = [
-    { driver: "fillRate" as const, change: changes.fillRate },
-    { driver: "ecpm" as const, change: changes.ecpm },
-    { driver: "impressions" as const, change: changes.impressions },
-    { driver: "revenue" as const, change: changes.revenue }
-  ].filter((item) => item.change < -3);
-  const driver = (dropDrivers.sort((a, b) => a.change - b.change)[0]?.driver ?? "revenue") as Driver;
-
+  const driver = chooseDriver(changes);
+  const breakdowns = buildBreakdowns(currentRows, previousRows);
   const previousByKey = new Map(
-    previousRows.map((row) => [`${row.appName}|${row.placementName}|${row.country}|${row.network}`, row])
+    previousRows.map((row) => [segmentKey(row), row])
   );
   const largestDrop = currentRows
     .map((row) => {
-      const previousRow = previousByKey.get(`${row.appName}|${row.placementName}|${row.country}|${row.network}`);
+      const previousRow = previousByKey.get(segmentKey(row));
       return { row, previousRow, delta: row.revenue - (previousRow?.revenue ?? 0) };
     })
     .filter((item) => item.previousRow)
@@ -495,6 +573,7 @@ function diagnose(rows: MetricRow[]) {
     currentDate,
     previousDate,
     driver,
+    breakdowns,
     largestDrop,
     hasDrop: changes.revenue <= -5
   };
@@ -509,6 +588,7 @@ export default function DemoPage() {
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   const [copiedResult, setCopiedResult] = useState(false);
+  const [manualCopyText, setManualCopyText] = useState("");
   const t = copy[lang];
   const report = useMemo(() => diagnose(rows), [rows]);
   const sourceLabel = source === "upload" ? t.sourceUpload : source === "sample" ? t.sourceSample : t.sourceDemo;
@@ -526,6 +606,9 @@ export default function DemoPage() {
     const largestDrop = report.largestDrop
       ? `${report.largestDrop.row.appName} / ${report.largestDrop.row.placementName} / ${report.largestDrop.row.country} / ${report.largestDrop.row.network}: ${money(report.largestDrop.previousRow?.revenue ?? 0)} -> ${money(report.largestDrop.row.revenue)}`
       : "No row-level drop found";
+    const topBreakdowns = report.breakdowns.slice(0, 3).map((item) => {
+      return `- ${item.label}: ${money(item.previous.revenue)} -> ${money(item.current.revenue)} (${pct(item.changes.revenue)}), ${t.driverLabels[item.driver]}`;
+    });
 
     if (lang === "zh") {
       return [
@@ -537,9 +620,11 @@ export default function DemoPage() {
         `填充率：${report.previous.fillRate.toFixed(1)}% -> ${report.current.fillRate.toFixed(1)}% (${pct(report.changes.fillRate)})`,
         `最可能原因：${t.driverLabels[report.driver]}`,
         `最大下滑：${largestDrop}`,
+        topBreakdowns.length ? "主要下滑分组：" : "",
+        ...topBreakdowns,
         `优先排查：${t.advice[report.driver]}`,
         "Demo: https://ecpmbazaar.com/demo/"
-      ].join("\n");
+      ].filter(Boolean).join("\n");
     }
 
     return [
@@ -551,9 +636,11 @@ export default function DemoPage() {
       `Fill rate: ${report.previous.fillRate.toFixed(1)}% -> ${report.current.fillRate.toFixed(1)}% (${pct(report.changes.fillRate)})`,
       `Likely driver: ${t.driverLabels[report.driver]}`,
       `Largest row-level drop: ${largestDrop}`,
+      topBreakdowns.length ? "Top segment drops:" : "",
+      ...topBreakdowns,
       `Check first: ${t.advice[report.driver]}`,
       "Demo: https://ecpmbazaar.com/demo/"
-    ].join("\n");
+    ].filter(Boolean).join("\n");
   }, [lang, report, t.advice, t.driverLabels]);
 
   async function onUpload(file?: File) {
@@ -589,22 +676,24 @@ export default function DemoPage() {
 
   async function copyDemoLink() {
     const url = typeof window === "undefined" ? "" : window.location.href;
-    try {
-      await navigator.clipboard.writeText(url);
+    if (await writeClipboardText(url)) {
       setCopied(true);
+      setManualCopyText("");
       window.setTimeout(() => setCopied(false), 1600);
-    } catch {
+    } else {
       setCopied(false);
+      setManualCopyText(url);
     }
   }
 
   async function copyDiagnosis() {
-    try {
-      await navigator.clipboard.writeText(diagnosisText);
+    if (await writeClipboardText(diagnosisText)) {
       setCopiedResult(true);
+      setManualCopyText("");
       window.setTimeout(() => setCopiedResult(false), 1600);
-    } catch {
+    } else {
       setCopiedResult(false);
+      setManualCopyText(diagnosisText);
     }
   }
 
@@ -753,6 +842,14 @@ export default function DemoPage() {
             <strong>{t.driverLabels[report.driver]}</strong>
             <p>{t.advice[report.driver]}</p>
           </div>
+
+          {manualCopyText ? (
+            <div className="manual-copy-panel">
+              <strong>{t.manualCopyTitle}</strong>
+              <p>{t.manualCopyHelp}</p>
+              <textarea readOnly value={manualCopyText} onFocus={(event) => event.currentTarget.select()} />
+            </div>
+          ) : null}
         </article>
 
         <article className="demo-panel metric-panel">
@@ -769,6 +866,77 @@ export default function DemoPage() {
             </div>
           ))}
         </article>
+      </section>
+
+      <section className="demo-panel breakdown-panel" aria-label={t.driverBreakdown}>
+        <div className="demo-panel-header">
+          <div>
+            <p className="section-label">{t.driverBreakdown}</p>
+            <h2>{t.driverBreakdownTitle}</h2>
+          </div>
+        </div>
+        <p className="breakdown-note">{t.driverBreakdownNote}</p>
+        {report.breakdowns.length ? (
+          <div className="breakdown-table-wrap">
+            <table className="breakdown-table">
+              <thead>
+                <tr>
+                  <th>{t.segment}</th>
+                  <th>{t.revenueChange}</th>
+                  <th>{t.ecpmChange}</th>
+                  <th>{t.impressionChange}</th>
+                  <th>{t.fillChange}</th>
+                  <th>{t.reason}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {report.breakdowns.slice(0, 5).map((item) => (
+                  <tr key={item.key}>
+                    <td className="segment-cell">
+                      <strong>{item.label}</strong>
+                      <small>
+                        {money(item.previous.revenue)}
+                        {" -> "}
+                        {money(item.current.revenue)}
+                      </small>
+                    </td>
+                    <td>
+                      <strong className="delta-negative">{money(item.revenueDelta)}</strong>
+                      <span>{pct(item.changes.revenue)}</span>
+                    </td>
+                    <td>
+                      {money(item.previous.ecpm)}
+                      {" -> "}
+                      {money(item.current.ecpm)}
+                      <span className={item.changes.ecpm < 0 ? "delta-negative" : "delta-positive"}>{pct(item.changes.ecpm)}</span>
+                    </td>
+                    <td>
+                      {Math.round(item.previous.impressions).toLocaleString("en-US")}
+                      {" -> "}
+                      {Math.round(item.current.impressions).toLocaleString("en-US")}
+                      <span className={item.changes.impressions < 0 ? "delta-negative" : "delta-positive"}>
+                        {pct(item.changes.impressions)}
+                      </span>
+                    </td>
+                    <td>
+                      {item.previous.fillRate.toFixed(1)}%
+                      {" -> "}
+                      {item.current.fillRate.toFixed(1)}%
+                      <span className={item.changes.fillRate < 0 ? "delta-negative" : "delta-positive"}>
+                        {pct(item.changes.fillRate)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="driver-tag">{t.driverLabels[item.driver]}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="empty-breakdown">{t.noBreakdown}</p>
+        )}
       </section>
 
       <section className="demo-panel data-panel">

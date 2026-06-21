@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CheckCircle2, Copy, Mail } from "lucide-react";
+import { writeClipboardText } from "@/lib/clipboard";
 
 type CopyEmailPanelProps = {
   body: string;
@@ -13,11 +14,10 @@ export function CopyEmailPanel({ body, fieldList, mailto }: CopyEmailPanelProps)
   const [copied, setCopied] = useState<"body" | "fields" | null>(null);
 
   async function copyText(kind: "body" | "fields", text: string) {
-    try {
-      await navigator.clipboard.writeText(text);
+    if (await writeClipboardText(text)) {
       setCopied(kind);
       window.setTimeout(() => setCopied(null), 1600);
-    } catch {
+    } else {
       setCopied(null);
     }
   }
