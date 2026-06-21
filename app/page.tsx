@@ -10,8 +10,10 @@ import {
   Mail,
   MapPinned,
   Radar,
+  ShieldCheck,
   Sparkles,
-  TriangleAlert
+  TriangleAlert,
+  Users
 } from "lucide-react";
 
 type Lang = "zh" | "en";
@@ -27,15 +29,37 @@ const copy = {
     navDemo: "演示",
     navTemplates: "模板",
     navCases: "案例",
+    navFree: "免费诊断",
     navContact: "联系",
     contact: "联系我",
     languageLabel: "语言",
     eyebrow: "移动广告收入诊断助手",
-    title: "帮小型游戏/App 团队快速诊断广告收入为什么变了。",
+    title: "诊断移动游戏/App 广告收入为什么下降。",
     lede:
-      "eCPM Bazaar 服务没有专职数据分析师的小团队。上传 CSV 或使用样例数据后，它会把收入变化拆成 eCPM、展示量、填充率、国家地区、广告位和广告源等可排查原因。",
-    primary: "试用公开演示",
-    secondary: "下载 CSV 模板",
+      "eCPM Bazaar 帮没有专职数据分析师的小团队判断收入变化来自 eCPM、展示量、填充率、国家结构、广告位还是广告源。你可以试公开 Demo，也可以发送脱敏报表申请免费测试诊断。",
+    primary: "申请免费诊断",
+    secondary: "试用公开演示",
+    tertiary: "下载 CSV 模板",
+    trustItems: ["无需注册或后台登录", "无需 SDK 或 API 授权", "只看脱敏报表字段", "可复制结果到 Reddit / 邮件讨论"],
+    driverChips: ["eCPM", "展示量", "填充率", "国家结构", "广告位", "广告源"],
+    validationLabel: "Free Test Diagnosis",
+    validationTitle: "正在寻找首批 10 个小型游戏/App 团队测试诊断流程。",
+    validationText:
+      "如果你的 AdMob、AppLovin MAX、Unity Ads、Unity LevelPlay 或 TopOn 收入最近有波动，可以发送两段可对比的匿名报表字段。我会返回一段简单诊断，说明最可能的变化驱动因素。",
+    validationItems: [
+      {
+        title: "匿名数据即可",
+        text: "替换 App 名、广告位 ID 和账号标识，不需要发送用户级数据。"
+      },
+      {
+        title: "先诊断原因",
+        text: "优先判断是 eCPM、展示量、填充率、国家结构、广告位还是广告源导致。"
+      },
+      {
+        title: "输出可粘贴结论",
+        text: "返回适合贴到 Reddit、邮件或团队讨论里的短诊断结果。"
+      }
+    ],
     productLabel: "Product Direction",
     productTitle: "eCPM Bazaar",
     productText:
@@ -98,7 +122,7 @@ const copy = {
     aboutLabel: "About Me",
     aboutTitle: "我会先用真实开发者数据验证这个方向。",
     aboutText:
-      "在有足够真实数据之前，我不会急着把产品做重。先把诊断能力做准，再决定是否做完整 Web 工具、API 接入或微信小程序入口。"
+      "当前目标不是把功能做重，而是先找到真实测试用户、沉淀匿名案例和反馈。诊断逻辑验证清楚后，再考虑登录系统、真实 API 接入或更完整的 Web 工具。"
   },
   en: {
     name: "Xia Yu",
@@ -108,15 +132,37 @@ const copy = {
     navDemo: "Demo",
     navTemplates: "Templates",
     navCases: "Cases",
+    navFree: "Free diagnosis",
     navContact: "Contact",
     contact: "Contact",
     languageLabel: "Language",
     eyebrow: "Mobile ad revenue diagnosis assistant",
-    title: "Diagnose why mobile game and app ad revenue changed.",
+    title: "Diagnose why mobile game and app ad revenue dropped.",
     lede:
-      "eCPM Bazaar helps small mobile game and app teams diagnose why ad revenue changed. Upload a CSV or use sample data to split the movement by eCPM, impressions, fill rate, country, placement, and ad source.",
-    primary: "Try public demo",
-    secondary: "Download CSV templates",
+      "eCPM Bazaar helps small teams without a dedicated analyst understand whether a revenue movement came from eCPM, impressions, fill rate, country mix, placement, or ad source performance. Try the public demo or request a free test diagnosis with anonymized report rows.",
+    primary: "Request free diagnosis",
+    secondary: "Try public demo",
+    tertiary: "Download CSV templates",
+    trustItems: ["No signup or dashboard login", "No SDK or API permission", "Anonymized report fields only", "Copy results into Reddit or email"],
+    driverChips: ["eCPM", "Impressions", "Fill rate", "Country mix", "Placement", "Ad source"],
+    validationLabel: "Free Test Diagnosis",
+    validationTitle: "Looking for the first 10 small game/app teams to test the workflow.",
+    validationText:
+      "If your AdMob, AppLovin MAX, Unity Ads, Unity LevelPlay, or TopOn revenue recently moved, send two comparable anonymized report periods. I will return a simple diagnosis explaining the most likely driver.",
+    validationItems: [
+      {
+        title: "Anonymized rows are enough",
+        text: "Replace app names, ad unit IDs, and account identifiers. No user-level data needed."
+      },
+      {
+        title: "Find the likely driver first",
+        text: "Separate eCPM, impressions, fill rate, country mix, placement exposure, and ad source issues."
+      },
+      {
+        title: "Get a paste-ready answer",
+        text: "Use the result in Reddit threads, support emails, or internal team discussions."
+      }
+    ],
     productLabel: "Product Direction",
     productTitle: "eCPM Bazaar",
     productText:
@@ -179,7 +225,7 @@ const copy = {
     aboutLabel: "About Me",
     aboutTitle: "I will validate this with real developer data first.",
     aboutText:
-      "Before making the product heavy, I want to make the diagnosis useful and accurate. After real data validation, I can decide whether to build a full web tool, API integrations, or a WeChat mini program entry."
+      "The current goal is not to overbuild. I want real test users, anonymized cases, and direct feedback first. After the diagnosis logic proves useful, the next step can be login, real API integrations, or a fuller web tool."
   }
 };
 
@@ -204,6 +250,7 @@ export default function Home() {
           <a href="demo/">{t.navDemo}</a>
           <a href="templates/">{t.navTemplates}</a>
           <a href="cases/">{t.navCases}</a>
+          <a href="free-diagnosis/">{t.navFree}</a>
           <a href="#contact">{t.navContact}</a>
           <div className="language-switch" aria-label={t.languageLabel}>
             <button
@@ -239,13 +286,29 @@ export default function Home() {
           <h1>{t.title}</h1>
           <p className="hero-lede">{t.lede}</p>
           <div className="hero-actions">
-            <a className="primary-action" href="demo/">
+            <a className="primary-action" href="free-diagnosis/">
               {t.primary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
-            <a className="secondary-action" href="templates/">
+            <a className="secondary-action" href="demo/">
               {t.secondary}
             </a>
+            <a className="secondary-action" href="templates/">
+              {t.tertiary}
+            </a>
+          </div>
+          <div className="hero-trust-list" aria-label="Safe testing notes">
+            {t.trustItems.map((item) => (
+              <span key={item}>
+                <CheckCircle2 size={15} aria-hidden="true" />
+                {item}
+              </span>
+            ))}
+          </div>
+          <div className="driver-chip-row" aria-label="Diagnosis drivers">
+            {t.driverChips.map((chip) => (
+              <span key={chip}>{chip}</span>
+            ))}
           </div>
         </div>
 
@@ -289,6 +352,37 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="validation-section" aria-label="Free test diagnosis program">
+        <div className="validation-copy">
+          <p className="section-label">
+            <Users size={16} aria-hidden="true" />
+            {t.validationLabel}
+          </p>
+          <h2>{t.validationTitle}</h2>
+          <p>{t.validationText}</p>
+          <div className="validation-actions">
+            <a className="primary-action" href="free-diagnosis/">
+              {t.primary}
+              <ArrowUpRight size={18} aria-hidden="true" />
+            </a>
+            <a className="secondary-action" href="templates/">
+              {t.tertiary}
+            </a>
+          </div>
+        </div>
+        <div className="validation-card-grid">
+          {t.validationItems.map((item) => (
+            <article className="validation-card" key={item.title}>
+              <span className="focus-icon">
+                <ShieldCheck size={22} aria-hidden="true" />
+              </span>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </article>
+          ))}
         </div>
       </section>
 

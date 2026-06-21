@@ -41,6 +41,10 @@ Execution focus:
 
 2026-06-21 product progress:
 
+- Homepage now leads with the narrower promise: diagnose why mobile game/app ad revenue dropped.
+- Homepage primary CTA now points to the free test diagnosis flow; demo and CSV templates remain secondary CTAs.
+- Homepage added trust notes: no signup, no SDK/API permission, anonymized report fields only, and paste-ready results.
+- Homepage added a first-testers section for the first 10 small game/app teams.
 - Public demo now supports copying a diagnosis result for Reddit/email follow-up.
 - Demo CSV upload recognizes common exported field aliases such as estimated earnings, ad impressions, ad unit, match rate, and ad source.
 - Demo shows a CSV field check and data-quality notes before the diagnosis.
@@ -55,6 +59,98 @@ Execution focus:
 - Demo now supports pasted CSV or tab-separated report rows, so users can test rows copied from spreadsheets without selecting a file.
 - Free diagnosis now has a browser-only request builder for contact email, ad platform, change type, comparison period, notes, and anonymized rows; it generates an email draft to `xmmyy168@gmail.com`.
 - Demo now includes a shareable diagnosis report with driver ranking, suggested checks, caveats, and a copy-ready report preview for Reddit/email/team discussion.
+
+## X / Twitter Positioning Assets
+
+Recommended account direction:
+
+```text
+Do not run the account as a generic tool promotion account.
+Run it as a mobile game ad revenue diagnosis account.
+```
+
+Bio option 1:
+
+```text
+I help indie mobile game/app teams find why ad revenue dropped: eCPM, impressions, fill rate, country, placement, and ad source.
+Building eCPM Bazaar. Free test reports available.
+```
+
+Short bio option:
+
+```text
+Find why your mobile ad revenue dropped.
+eCPM · impressions · fill rate · country · placement · ad source
+Built for indie game/app teams.
+```
+
+Banner line:
+
+```text
+Why did your ad revenue drop? Find the real driver in minutes.
+```
+
+Pinned post:
+
+```text
+Mobile game ad revenue dropped?
+Don't only check eCPM.
+
+Revenue can drop because of:
+
+impressions
+fill rate
+country mix
+placement exposure
+ad source performance
+eCPM
+
+I'm building eCPM Bazaar, a small diagnosis tool for indie game/app teams.
+
+If you have AdMob / AppLovin / Unity Ads data and want a free test diagnosis, reply "audit" or DM me.
+```
+
+Daily content buckets:
+
+- Problem diagnosis posts: what to check when revenue drops.
+- Case breakdown posts: eCPM stable but fill rate/country mix changed.
+- Build-in-public updates: what diagnosis function was added today.
+- Question posts: ask developers what they check first.
+
+Useful X search keywords:
+
+```text
+AdMob eCPM dropped
+AppLovin revenue drop
+Unity Ads low eCPM
+Ad revenue dropped mobile game
+fill rate dropped AdMob
+MAX mediation issue
+rewarded ads revenue down
+```
+
+Helpful reply template:
+
+```text
+It may not be only an eCPM issue.
+I would check: impressions, fill rate, country mix, placement exposure, and ad source performance.
+
+If fill rate dropped while impressions stayed stable, it may be mediation or source availability.
+
+I'm building a small tool for this. Happy to test with anonymized data.
+```
+
+## 7-Day Outreach Plan
+
+| Day | Action |
+| --- | --- |
+| Day 1 | Update X bio, pinned post, and website Free test diagnosis framing. |
+| Day 2 | Post three diagnosis posts: eCPM drop, fill-rate drop, and country-mix change. |
+| Day 3 | Search X keywords and write helpful replies to relevant posts. Target quality over count. |
+| Day 4 | Turn the DEV article into an X long thread. |
+| Day 5 | Publish or comment on Reddit / Indie Hackers / DEV with the angle: `What I check when mobile game ad revenue drops`. |
+| Day 6 | Share an anonymous demo case image: `Revenue down 28%, but eCPM is stable. What happened?` |
+| Day 7 | Recruit testers: `I'm looking for 10 indie game/app teams to test eCPM Bazaar. Send anonymized ad revenue data. I'll return a simple diagnosis report for free.` |
 
 ## Product Directory / Launch Platform Status
 

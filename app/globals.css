@@ -190,6 +190,44 @@ p {
   margin-top: 6px;
 }
 
+.hero-trust-list,
+.driver-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.hero-trust-list {
+  max-width: 690px;
+}
+
+.hero-trust-list span,
+.driver-chip-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 78%);
+  color: #30443d;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.hero-trust-list svg {
+  flex: 0 0 auto;
+  color: var(--teal);
+}
+
+.driver-chip-row span {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
 .primary-action,
 .secondary-action {
   display: inline-flex;
@@ -349,6 +387,78 @@ p {
   height: 7px;
   border-radius: 999px;
   background: #f59e0b;
+}
+
+.validation-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+  gap: 16px;
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 0 0 70px;
+}
+
+.validation-copy {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.validation-copy h2 {
+  color: var(--deep);
+  font-size: 32px;
+  line-height: 1.16;
+}
+
+.validation-copy > p:last-of-type {
+  color: #255f3b;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.validation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.validation-actions .secondary-action {
+  background: #ffffff;
+}
+
+.validation-card-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.validation-card {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 14px;
+  min-height: 118px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 76%);
+}
+
+.validation-card h3 {
+  margin-bottom: 7px;
+  color: var(--deep);
+  font-size: 19px;
+  line-height: 1.22;
+}
+
+.validation-card p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
 }
 
 .intro-band,
@@ -641,6 +751,7 @@ p {
   }
 
   .hero,
+  .validation-section,
   .intro-band,
   .function-section,
   .about-section,
@@ -708,13 +819,19 @@ p {
     width: 100%;
   }
 
+  .validation-actions .primary-action,
+  .validation-actions .secondary-action {
+    width: 100%;
+  }
+
   .preview-top {
     align-items: flex-start;
     flex-direction: column;
   }
 
   .diagnosis-box,
-  .founder-note {
+  .founder-note,
+  .validation-card {
     grid-template-columns: 1fr;
   }
 
