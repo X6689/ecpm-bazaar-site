@@ -908,6 +908,7 @@ p {
 .metric-panel,
 .data-panel,
 .breakdown-panel,
+.paste-panel,
 .field-check-panel,
 .quality-panel {
   padding: 22px;
@@ -940,6 +941,48 @@ p {
   font-size: 14px;
   font-weight: 750;
   white-space: nowrap;
+}
+
+.paste-panel {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.paste-panel .demo-panel-header {
+  margin-bottom: 0;
+}
+
+.paste-panel > p {
+  max-width: 760px;
+  color: #4e5b56;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.paste-panel textarea {
+  width: 100%;
+  min-height: 170px;
+  resize: vertical;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.paste-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.paste-actions .primary-action,
+.paste-actions .secondary-action {
+  cursor: pointer;
 }
 
 .diagnosis-badge {
@@ -1775,6 +1818,8 @@ p {
   .resource-cta .primary-action,
   .resource-cta .secondary-action,
   .copy-actions .primary-action,
+  .paste-actions .primary-action,
+  .paste-actions .secondary-action,
   .copy-action-button {
     width: 100%;
   }

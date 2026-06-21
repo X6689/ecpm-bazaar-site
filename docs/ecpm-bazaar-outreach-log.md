@@ -52,6 +52,7 @@ Execution focus:
 - Demo now includes a segment-level driver breakdown ranked by revenue loss across app, placement, country, and ad source.
 - Copied diagnosis output now includes the top segment drops so users can paste a more useful summary into Reddit, email, or support conversations.
 - Demo and free-diagnosis copy buttons now use a clipboard fallback; demo also shows a manual-copy textarea when browser clipboard access is blocked.
+- Demo now supports pasted CSV or tab-separated report rows, so users can test rows copied from spreadsheets without selecting a file.
 
 ## Product Directory / Launch Platform Status
 

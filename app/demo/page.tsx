@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   ArrowLeft,
   CheckCircle2,
+  Clipboard,
   Copy,
   Download,
   FileUp,
@@ -170,6 +171,13 @@ const copy = {
     reset: "Reset demo",
     upload: "Upload CSV",
     uploadHelp: "CSV columns: date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks.",
+    pasteCsv: "Paste CSV",
+    pasteCsvTitle: "Paste CSV or copied report rows",
+    pasteCsvHelp: "Paste comma-separated CSV or tab-separated rows copied from a spreadsheet export.",
+    pastePlaceholder:
+      "date,appName,placementName,country,network,revenue,ecpm,impressions,requests,fills,clicks\n2026-06-14,Game A,Rewarded Home,US,AdMob,128.42,18.70,6868,9200,7100,318",
+    analyzePastedCsv: "Analyze pasted data",
+    clearPaste: "Clear",
     privacy: "CSV files are parsed in your browser for this public demo. Nothing is uploaded or stored.",
     fieldCheck: "CSV field check",
     dataQuality: "Data quality notes",
@@ -184,6 +192,7 @@ const copy = {
     sourceSample: "Sample CSV loaded",
     sourceDemo: "Built-in demo data",
     sourceUpload: "Uploaded CSV",
+    sourcePaste: "Pasted CSV",
     diagnosis: "Diagnosis",
     headlineStable: "No major revenue drop detected",
     headlineDrop: "Revenue drop detected",
@@ -245,6 +254,13 @@ const copy = {
     reset: "重置演示",
     upload: "上传 CSV",
     uploadHelp: "CSV 字段：date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks。",
+    pasteCsv: "粘贴 CSV",
+    pasteCsvTitle: "粘贴 CSV 或报表行",
+    pasteCsvHelp: "可粘贴英文逗号分隔 CSV，也可粘贴从表格导出的制表符分隔行。",
+    pastePlaceholder:
+      "date,appName,placementName,country,network,revenue,ecpm,impressions,requests,fills,clicks\n2026-06-14,Game A,Rewarded Home,US,AdMob,128.42,18.70,6868,9200,7100,318",
+    analyzePastedCsv: "分析粘贴数据",
+    clearPaste: "清空",
     privacy: "这个公开演示只在浏览器本地解析 CSV，不上传、不保存你的文件。",
     fieldCheck: "CSV 字段检查",
     dataQuality: "数据质量提示",
@@ -259,6 +275,7 @@ const copy = {
     sourceSample: "已载入样例 CSV",
     sourceDemo: "内置演示数据",
     sourceUpload: "已上传 CSV",
+    sourcePaste: "已粘贴 CSV",
     diagnosis: "诊断结论",
     headlineStable: "没有发现明显收入下滑",
     headlineDrop: "发现收入下滑",
@@ -350,7 +367,13 @@ function valueFrom(record: Record<CsvField, string>, field: CsvField) {
   return record[field] ?? "";
 }
 
-function parseCsvLine(line: string) {
+function detectDelimiter(headerLine: string) {
+  const tabCount = headerLine.split("\t").length;
+  const commaCount = headerLine.split(",").length;
+  return tabCount > commaCount ? "\t" : ",";
+}
+
+function parseCsvLine(line: string, delimiter = ",") {
   const values: string[] = [];
   let current = "";
   let inQuotes = false;
@@ -360,7 +383,7 @@ function parseCsvLine(line: string) {
       inQuotes = !inQuotes;
       continue;
     }
-    if (char === "," && !inQuotes) {
+    if (char === delimiter && !inQuotes) {
       values.push(current.trim());
       current = "";
       continue;
@@ -378,7 +401,8 @@ function parseCsv(text: string): ParseCsvResult {
     .map((line) => line.trim())
     .filter(Boolean);
 
-  const headers = parseCsvLine(lines[0] ?? "").map((header) => header.trim());
+  const delimiter = detectDelimiter(lines[0] ?? "");
+  const headers = parseCsvLine(lines[0] ?? "", delimiter).map((header) => header.trim());
   const fieldMap = buildFieldMap(headers);
   const missingRequired = requiredFields.filter((field) => !fieldMap.has(field));
   if (missingRequired.length) {
@@ -386,7 +410,7 @@ function parseCsv(text: string): ParseCsvResult {
   }
 
   const rows = lines.slice(1).map((line, index) => {
-    const values = parseCsvLine(line);
+    const values = parseCsvLine(line, delimiter);
     const record = Object.fromEntries(displayFields.map((field) => [field, ""])) as Record<CsvField, string>;
 
     headers.forEach((header, columnIndex) => {
@@ -584,14 +608,16 @@ export default function DemoPage() {
   const [rows, setRows] = useState<MetricRow[]>(demoRows);
   const [fieldStatuses, setFieldStatuses] = useState<FieldStatus[]>(createFieldStatuses());
   const [csvIssues, setCsvIssues] = useState<IssueKey[]>([]);
-  const [source, setSource] = useState<"demo" | "sample" | "upload">("demo");
+  const [source, setSource] = useState<"demo" | "sample" | "upload" | "paste">("demo");
   const [error, setError] = useState("");
+  const [pastedCsv, setPastedCsv] = useState("");
   const [copied, setCopied] = useState(false);
   const [copiedResult, setCopiedResult] = useState(false);
   const [manualCopyText, setManualCopyText] = useState("");
   const t = copy[lang];
   const report = useMemo(() => diagnose(rows), [rows]);
-  const sourceLabel = source === "upload" ? t.sourceUpload : source === "sample" ? t.sourceSample : t.sourceDemo;
+  const sourceLabel =
+    source === "upload" ? t.sourceUpload : source === "paste" ? t.sourcePaste : source === "sample" ? t.sourceSample : t.sourceDemo;
   const dataIssues = useMemo(() => {
     const issues = new Set(csvIssues);
     if (rows.length > 0 && report.previousDate && report.currentDate && !report.largestDrop) {
@@ -652,6 +678,21 @@ export default function DemoPage() {
       setCsvIssues(parsed.issues);
       setSource("upload");
       setError("");
+      setManualCopyText("");
+    } catch {
+      setError(t.parseError);
+    }
+  }
+
+  function analyzePastedCsv() {
+    try {
+      const parsed = parseCsv(pastedCsv);
+      setRows(parsed.rows);
+      setFieldStatuses(parsed.fields);
+      setCsvIssues(parsed.issues);
+      setSource("paste");
+      setError("");
+      setManualCopyText("");
     } catch {
       setError(t.parseError);
     }
@@ -664,6 +705,8 @@ export default function DemoPage() {
     setCsvIssues(parsed.issues);
     setSource("sample");
     setError("");
+    setPastedCsv(sampleCsv);
+    setManualCopyText("");
   }
 
   function resetDemo() {
@@ -672,6 +715,8 @@ export default function DemoPage() {
     setCsvIssues([]);
     setSource("demo");
     setError("");
+    setPastedCsv("");
+    setManualCopyText("");
   }
 
   async function copyDemoLink() {
@@ -763,6 +808,35 @@ export default function DemoPage() {
         <a href="../privacy/">{lang === "zh" ? "查看数据安全说明" : "View data safety"}</a>
       </section>
       {error ? <p className="demo-error">{error}</p> : null}
+
+      <section className="demo-panel paste-panel" aria-label={t.pasteCsv}>
+        <div className="demo-panel-header">
+          <div>
+            <p className="section-label">
+              <Clipboard size={16} aria-hidden="true" />
+              {t.pasteCsv}
+            </p>
+            <h2>{t.pasteCsvTitle}</h2>
+          </div>
+        </div>
+        <p>{t.pasteCsvHelp}</p>
+        <textarea
+          aria-label={t.pasteCsvTitle}
+          placeholder={t.pastePlaceholder}
+          value={pastedCsv}
+          onChange={(event) => setPastedCsv(event.target.value)}
+        />
+        <div className="paste-actions">
+          <button className="primary-action" type="button" onClick={analyzePastedCsv}>
+            <Table2 size={18} aria-hidden="true" />
+            {t.analyzePastedCsv}
+          </button>
+          <button className="secondary-action" type="button" onClick={() => setPastedCsv("")}>
+            <RotateCcw size={17} aria-hidden="true" />
+            {t.clearPaste}
+          </button>
+        </div>
+      </section>
 
       <section className="demo-assist-grid" aria-label={lang === "zh" ? "CSV 检查" : "CSV checks"}>
         <article className="demo-panel field-check-panel">
