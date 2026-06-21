@@ -21,6 +21,19 @@ npm run build
 `public/CNAME` is copied into `out/CNAME` during export so GitHub Pages can bind
 the custom domain.
 
+In Squarespace Domains, point the apex domain to GitHub Pages:
+
+```text
+A      @      185.199.108.153
+A      @      185.199.109.153
+A      @      185.199.110.153
+A      @      185.199.111.153
+CNAME  www    X6689.github.io
+```
+
+Remove conflicting default Squarespace `A` records and the default `www`
+record before saving these.
+
 For the old GitHub repository-path URL, use this only as a fallback:
 
 ```bash
