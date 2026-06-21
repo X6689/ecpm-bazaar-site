@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ArrowLeft, Mail, ShieldCheck } from "lucide-react";
+import { CopyEmailPanel } from "./copy-email-panel";
 
 export const metadata: Metadata = {
   title: "Free Ad Revenue Diagnosis | eCPM Bazaar",
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 
 const email = "xmmyy168@gmail.com";
 const subject = "Free eCPM Bazaar diagnosis";
+const fieldList = "date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks";
 const body = [
   "Hi eCPM Bazaar,",
   "",
@@ -20,7 +22,7 @@ const body = [
   "Comparison period: latest day vs previous day / last 7 days vs previous 7 days",
   "",
   "I can share anonymized rows with these fields:",
-  "date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks",
+  fieldList,
   "",
   "I will not send login credentials, API keys, private account IDs, or non-anonymized user data."
 ].join("\n");
@@ -95,9 +97,7 @@ export default function FreeDiagnosisPage() {
           <p className="section-label">What to send</p>
           <h2>Paste this field list into your export or email</h2>
         </div>
-        <div className="field-table-wrap">
-          <pre className="email-template">{body}</pre>
-        </div>
+        <CopyEmailPanel body={body} fieldList={fieldList} mailto={mailto} />
       </section>
 
       <section className="resource-cta danger-note">

@@ -43,6 +43,8 @@ Execution focus:
 - Demo CSV upload recognizes common exported field aliases such as estimated earnings, ad impressions, ad unit, match rate, and ad source.
 - Demo shows a CSV field check and data-quality notes before the diagnosis.
 - Homepage now links directly to demo, templates, anonymized cases, and free diagnosis.
+- Templates page now documents accepted CSV aliases so users do not have to rename every export column manually.
+- Free diagnosis page now supports copying the email template and field list before opening an email draft.
 
 ## Product Directory / Launch Platform Status
 

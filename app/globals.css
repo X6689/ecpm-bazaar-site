@@ -1474,11 +1474,40 @@ p {
   margin: 0;
   padding: 18px;
   overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 78%);
   color: #26342f;
   font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
   font-size: 13px;
   line-height: 1.7;
   white-space: pre-wrap;
+}
+
+.copy-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.copy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.copy-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 15px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 78%);
+  color: #26342f;
+  cursor: pointer;
+  font-weight: 750;
 }
 
 .resource-cta {
@@ -1580,7 +1609,9 @@ p {
   }
 
   .resource-cta .primary-action,
-  .resource-cta .secondary-action {
+  .resource-cta .secondary-action,
+  .copy-actions .primary-action,
+  .copy-action-button {
     width: 100%;
   }
 }

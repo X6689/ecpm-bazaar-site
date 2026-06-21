@@ -45,6 +45,21 @@ const recommendedFields = [
   ["clicks", "Optional, useful for CTR sanity checks."]
 ];
 
+const acceptedAliases = [
+  ["date", "date, day, report date"],
+  ["appName", "app name, app, application"],
+  ["placementName", "placement, ad unit, ad unit name, ad format, format"],
+  ["country", "country, country code, geo, region"],
+  ["network", "network, ad source, demand source, mediation, platform"],
+  ["revenue", "revenue, estimated revenue, estimated earnings, earnings, income, ad revenue"],
+  ["ecpm", "ecpm, eCPM, observed eCPM, average eCPM"],
+  ["impressions", "impressions, ad impressions, shows"],
+  ["requests", "requests, ad requests, attempts"],
+  ["fills", "fills, matched requests, filled requests, responses, matches"],
+  ["fillRate", "fill rate, fillRate, match rate, matchRate, matched rate"],
+  ["clicks", "clicks, ad clicks"]
+];
+
 export default function TemplatesPage() {
   return (
     <main className="resource-page">
@@ -121,6 +136,25 @@ export default function TemplatesPage() {
                 <tr key={field}>
                   <th>{field}</th>
                   <td>{description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="field-section">
+        <div>
+          <p className="section-label">Accepted aliases</p>
+          <h2>You do not have to rename every export column</h2>
+        </div>
+        <div className="field-table-wrap">
+          <table className="field-table alias-table">
+            <tbody>
+              {acceptedAliases.map(([field, aliases]) => (
+                <tr key={field}>
+                  <th>{field}</th>
+                  <td>{aliases}</td>
                 </tr>
               ))}
             </tbody>
