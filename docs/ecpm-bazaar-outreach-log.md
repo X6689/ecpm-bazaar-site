@@ -17,7 +17,7 @@ This file is the running record for eCPM Bazaar outreach, free launch sites, for
 
 | Platform | Status | Public / Admin URL | Date / Schedule | Account / Notes | Next Action |
 | --- | --- | --- | --- | --- | --- |
-| Fazier | Published | https://fazier.com/launches/ecpm-bazaar | Submitted on 2026-06-20 | Maker profile: https://fazier.com/p/ai-xia. Product title: `eCPM Bazaar`; tagline: `Diagnose mobile game ad revenue drops`; price: Free. Fazier badge was added to site footer for free submission. | Check comments/upvotes occasionally. Do not self-upvote. |
+| Fazier | Published | https://fazier.com/launches/ecpm-bazaar | Submitted on 2026-06-20 | Maker profile: https://fazier.com/p/ai-xia. Product title: `eCPM Bazaar`; tagline: `Diagnose mobile game ad revenue drops`; price: Free. Fazier badge was added to site footer for free submission. Public page still exposes the old GitHub Pages URL after custom-domain migration. | Try manual edit/support later; the Edit route currently redirects to `/launch`. Check comments/upvotes occasionally. Do not self-upvote. |
 | Uneed | Scheduled | Admin/dashboard only for now | Scheduled for 2026-11-06 | Account shown as `xmmyy1688-cdfe`. Category: Marketing. Tags: Analytics, Advertising, Stats. Free launch queue is very long. | Leave as-is; do not pay for queue skip. Check later for review/status. |
 | TinyLaunch | Scheduled / pending review | Admin/dashboard only for now | Scheduled for 2026-07-20, pending review, usually less than 24h | Category selected: Gaming. Free launch slot used. Paid directory submission skipped. | Check review result within 24h. Save public URL once approved. |
 | BetaList | Attempted, paused | https://betalist.com/submit | 2026-06-20 | Registration/form flow reset and lost input. Not worth continuing that day. | Retry later only after logging in first. |
@@ -41,6 +41,28 @@ This file is the running record for eCPM Bazaar outreach, free launch sites, for
 | Reddit r/admob link comment | Removed by Reddit | https://www.reddit.com/r/admob/comments/1u8cq53/sudden_drop_in_admob_observed_ecpm_on_android_us/ | 2026-06-21 | Comment with GitHub Pages demo link was removed within minutes as `[ Removed by Reddit ]`. Likely automated anti-spam/self-promo. | Do not post links in r/admob unless OP explicitly asks for the link. |
 | Reddit r/SideProject | Some comments survived | Links not fully captured | 2026-06 | SideProject has been safer than r/admob/r/gamedev. A project-drop style comment survived better. | Prefer no-link comments; only add link in explicit project-share/feedback threads. |
 | Reddit r/gamedev / r/admob | High deletion risk | N/A | 2026-06 | Earlier comments/posts were deleted or filtered. | Avoid self-promo. Reply with diagnosis steps only. |
+
+## Link Replacement Audit
+
+2026-06-21 target links:
+
+- Landing page: `https://ecpmbazaar.com/`
+- Demo page: `https://ecpmbazaar.com/demo/`
+
+Checked public pages:
+
+- Fazier product page still contains old links:
+  - `https://x6689.github.io/ecpm-bazaar-site/`
+  - `https://x6689.github.io/ecpm-bazaar-site/demo/`
+- DEV.to public article/profile pages did not expose the old GitHub Pages link in the fetched public HTML.
+- Indie Hackers public profile did not expose the old GitHub Pages link in the fetched public HTML.
+
+Fazier update attempt:
+
+- `/pages` shows the eCPM Bazaar card and an `Edit` button.
+- The front-end route is `/launch-new?slug=<product id>`, with product id `9981`.
+- Directly opening `/launch-new?slug=9981`, clicking the UI button through browser automation, and running a bookmarklet click all redirected to `/launch`.
+- Current interpretation: the published launch editor does not load the existing product data through this path. Try manual UI again later, contact Fazier support, or resubmit only if editing remains impossible.
 
 ## Reddit Rules Learned
 
@@ -163,7 +185,7 @@ Workspace copies:
 
 1. Check TinyLaunch review result after 2026-06-22.
 2. Save TinyLaunch public URL when approved.
-3. Check Fazier product page for comments/upvotes.
+3. Resolve Fazier old-link issue by manual edit, support request, or resubmission if necessary.
 4. Leave Uneed scheduled; do not pay for queue skip.
 5. Continue Reddit account warm-up with non-link comments only.
 6. Try MicroLaunch next if it has a simple/free flow.
