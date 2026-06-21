@@ -96,8 +96,8 @@ export default function FreeDiagnosisPage() {
 
       <section className="field-section">
         <div>
-          <p className="section-label">What to send</p>
-          <h2>Paste this field list into your export or email</h2>
+          <p className="section-label">Request builder</p>
+          <h2>Fill this in and generate an email diagnosis request</h2>
         </div>
         <CopyEmailPanel body={body} fieldList={fieldList} mailto={mailto} />
       </section>

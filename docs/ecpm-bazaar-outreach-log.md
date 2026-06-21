@@ -53,6 +53,7 @@ Execution focus:
 - Copied diagnosis output now includes the top segment drops so users can paste a more useful summary into Reddit, email, or support conversations.
 - Demo and free-diagnosis copy buttons now use a clipboard fallback; demo also shows a manual-copy textarea when browser clipboard access is blocked.
 - Demo now supports pasted CSV or tab-separated report rows, so users can test rows copied from spreadsheets without selecting a file.
+- Free diagnosis now has a browser-only request builder for contact email, ad platform, change type, comparison period, notes, and anonymized rows; it generates an email draft to `xmmyy168@gmail.com`.
 
 ## Product Directory / Launch Platform Status
 
