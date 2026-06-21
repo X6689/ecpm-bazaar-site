@@ -87,7 +87,9 @@ const copy = {
       { title: "公开 Demo", text: "上传 CSV 或使用样例数据，直接生成一段诊断结果。", href: "demo/" },
       { title: "CSV 模板", text: "下载 AdMob、AppLovin MAX、LevelPlay / TopOn 模板。", href: "templates/" },
       { title: "脱敏案例", text: "查看 eCPM、填充率、国家结构三类常见变化案例。", href: "cases/" },
-      { title: "免费诊断", text: "用匿名数据发邮件，不需要账号密码或 API key。", href: "free-diagnosis/" }
+      { title: "免费诊断", text: "用匿名数据发邮件，不需要账号密码或 API key。", href: "free-diagnosis/" },
+      { title: "常见问题", text: "解释浏览器本地 CSV、字段要求、数据脱敏和适用团队。", href: "faq/" },
+      { title: "数据安全", text: "说明哪些字段可以分享，哪些账号和隐私信息不要发送。", href: "privacy/" }
     ],
     serviceLabel: "Who I Serve",
     serviceTitle: "先服务小团队，不做大而全的平台。",
@@ -166,7 +168,9 @@ const copy = {
       { title: "Public demo", text: "Upload a CSV or use sample data to copy a diagnosis result.", href: "demo/" },
       { title: "CSV templates", text: "Download AdMob, AppLovin MAX, and LevelPlay / TopOn templates.", href: "templates/" },
       { title: "Anonymized cases", text: "Review eCPM, fill-rate, and country-mix diagnosis examples.", href: "cases/" },
-      { title: "Free diagnosis", text: "Send anonymized rows by email. No login or API key needed.", href: "free-diagnosis/" }
+      { title: "Free diagnosis", text: "Send anonymized rows by email. No login or API key needed.", href: "free-diagnosis/" },
+      { title: "FAQ", text: "Understand browser-only CSV parsing, required fields, anonymization, and fit.", href: "faq/" },
+      { title: "Data safety", text: "See what is safe to share and what account data should stay private.", href: "privacy/" }
     ],
     serviceLabel: "Who I Serve",
     serviceTitle: "Starting with small teams, not a giant platform.",

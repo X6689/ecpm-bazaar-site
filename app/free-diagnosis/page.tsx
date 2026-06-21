@@ -55,6 +55,8 @@ export default function FreeDiagnosisPage() {
           <a href="../demo/">Demo</a>
           <a href="../templates/">Templates</a>
           <a href="../cases/">Cases</a>
+          <a href="../faq/">FAQ</a>
+          <a href="../privacy/">Privacy</a>
         </div>
       </nav>
 
@@ -109,6 +111,9 @@ export default function FreeDiagnosisPage() {
             feedback, anonymized report rows are enough.
           </p>
         </div>
+        <a className="secondary-action" href="../privacy/">
+          Data safety
+        </a>
       </section>
     </main>
   );

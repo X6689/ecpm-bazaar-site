@@ -876,6 +876,12 @@ p {
   font-weight: 700;
 }
 
+.demo-privacy a {
+  margin-left: auto;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .demo-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
@@ -1243,6 +1249,7 @@ p {
 .resource-hero,
 .template-grid,
 .case-list,
+.faq-list,
 .field-section,
 .resource-cta {
   width: min(1120px, calc(100% - 40px));
@@ -1415,6 +1422,35 @@ p {
   margin-top: 12px;
 }
 
+.faq-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.faq-item {
+  min-height: 190px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 78%);
+  box-shadow: 0 18px 50px rgb(16 37 31 / 5%);
+}
+
+.faq-item h2 {
+  margin-bottom: 10px;
+  color: var(--deep);
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+.faq-item p {
+  color: #4e5b56;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
 .case-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 0.46fr);
@@ -1559,6 +1595,7 @@ p {
 @media (max-width: 880px) {
   .template-grid,
   .field-section,
+  .faq-list,
   .case-card {
     grid-template-columns: 1fr;
   }

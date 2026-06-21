@@ -13,6 +13,8 @@ This file is the running record for eCPM Bazaar outreach, free launch sites, for
 | CSV templates | https://ecpmbazaar.com/templates/ | AdMob, AppLovin MAX, Unity LevelPlay / TopOn CSV templates. |
 | Diagnosis cases | https://ecpmbazaar.com/cases/ | Three anonymized English cases: eCPM drop, fill-rate drop, country mix. |
 | Free diagnosis | https://ecpmbazaar.com/free-diagnosis/ | Mailto-based intake for anonymized ad monetization rows; no account access. |
+| FAQ | https://ecpmbazaar.com/faq/ | Common questions about browser-only CSV diagnosis, fields, anonymization, and fit. |
+| Data safety | https://ecpmbazaar.com/privacy/ | Privacy-first guidance for what to share and what to keep private. |
 | Contact email | xmmyy168@gmail.com | Overseas-facing contact address. |
 | GitHub repo | https://github.com/X6689/ecpm-bazaar-site | Source and GitHub Pages deployment. |
 
@@ -45,6 +47,8 @@ Execution focus:
 - Homepage now links directly to demo, templates, anonymized cases, and free diagnosis.
 - Templates page now documents accepted CSV aliases so users do not have to rename every export column manually.
 - Free diagnosis page now supports copying the email template and field list before opening an email draft.
+- FAQ page added for common trust and workflow questions before users try eCPM Bazaar.
+- Data safety page added to explain browser-only demo behavior, anonymized sharing, and private fields users should not send.
 
 ## Product Directory / Launch Platform Status
 

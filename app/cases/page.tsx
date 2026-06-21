@@ -43,6 +43,8 @@ export default function CasesPage() {
           <a href="../demo/">Demo</a>
           <a href="../templates/">Templates</a>
           <a href="../free-diagnosis/">Free diagnosis</a>
+          <a href="../faq/">FAQ</a>
+          <a href="../privacy/">Privacy</a>
         </div>
       </nav>
 
@@ -90,6 +92,9 @@ export default function CasesPage() {
         </a>
         <a className="secondary-action" href="../free-diagnosis/">
           Free diagnosis
+        </a>
+        <a className="secondary-action" href="../faq/">
+          FAQ
         </a>
       </section>
     </main>

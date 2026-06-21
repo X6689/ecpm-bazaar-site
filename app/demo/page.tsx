@@ -671,6 +671,7 @@ export default function DemoPage() {
       <section className="demo-privacy">
         <ShieldCheck size={18} aria-hidden="true" />
         <span>{t.privacy}</span>
+        <a href="../privacy/">{lang === "zh" ? "查看数据安全说明" : "View data safety"}</a>
       </section>
       {error ? <p className="demo-error">{error}</p> : null}
 

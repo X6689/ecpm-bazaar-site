@@ -72,6 +72,8 @@ export default function TemplatesPage() {
           <a href="../demo/">Demo</a>
           <a href="../cases/">Cases</a>
           <a href="../free-diagnosis/">Free diagnosis</a>
+          <a href="../faq/">FAQ</a>
+          <a href="../privacy/">Privacy</a>
         </div>
       </nav>
 
@@ -173,6 +175,9 @@ export default function TemplatesPage() {
         </div>
         <a className="secondary-action" href="../demo/">
           Try the demo
+        </a>
+        <a className="secondary-action" href="../privacy/">
+          Data safety
         </a>
       </section>
     </main>
