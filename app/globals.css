@@ -908,6 +908,7 @@ p {
 .metric-panel,
 .data-panel,
 .breakdown-panel,
+.report-panel,
 .paste-panel,
 .field-check-panel,
 .quality-panel {
@@ -1098,6 +1099,107 @@ p {
   font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
   font-size: 12px;
   line-height: 1.55;
+}
+
+.report-panel {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.report-panel .demo-panel-header {
+  margin-bottom: 0;
+}
+
+.report-help {
+  max-width: 780px;
+  color: #4e5b56;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.report-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.report-rank-card {
+  display: grid;
+  gap: 8px;
+  min-height: 112px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfdfb;
+}
+
+.report-rank-card span {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 8px;
+  background: #e5f6f1;
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.report-rank-card strong {
+  color: var(--deep);
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.report-rank-card em {
+  color: var(--muted);
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.report-rank-card em.negative {
+  color: #b45309;
+}
+
+.report-rank-card em.positive {
+  color: #15803d;
+}
+
+.report-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.report-detail-grid > div {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 78%);
+}
+
+.report-detail-grid h3,
+.report-preview-title {
+  margin-bottom: 10px;
+  color: var(--deep);
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.report-detail-grid ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+  color: #4e5b56;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.report-preview {
+  max-height: 420px;
 }
 
 .breakdown-panel {
@@ -1396,7 +1498,9 @@ p {
 
   .demo-actions,
   .metric-panel,
-  .field-chip-grid {
+  .field-chip-grid,
+  .report-summary-grid,
+  .report-detail-grid {
     grid-template-columns: 1fr;
   }
 

@@ -54,6 +54,7 @@ Execution focus:
 - Demo and free-diagnosis copy buttons now use a clipboard fallback; demo also shows a manual-copy textarea when browser clipboard access is blocked.
 - Demo now supports pasted CSV or tab-separated report rows, so users can test rows copied from spreadsheets without selecting a file.
 - Free diagnosis now has a browser-only request builder for contact email, ad platform, change type, comparison period, notes, and anonymized rows; it generates an email draft to `xmmyy168@gmail.com`.
+- Demo now includes a shareable diagnosis report with driver ranking, suggested checks, caveats, and a copy-ready report preview for Reddit/email/team discussion.
 
 ## Product Directory / Launch Platform Status
 

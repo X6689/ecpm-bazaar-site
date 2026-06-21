@@ -208,6 +208,15 @@ const copy = {
     fillChange: "Fill",
     reason: "Likely reason",
     noBreakdown: "No comparable segment drop found for the latest two dates.",
+    shareReport: "Shareable report",
+    shareReportTitle: "Copy a diagnosis report",
+    shareReportHelp:
+      "Use this version in Reddit replies, support emails, or internal notes. It includes driver ranking, suggested checks, and caveats.",
+    reportPreview: "Report preview",
+    driverRanking: "Driver ranking",
+    checklist: "Suggested checks",
+    caveats: "Caveats",
+    copyReport: "Copy report",
     manualCopyTitle: "Copy manually",
     manualCopyHelp: "Automatic clipboard access was blocked. Select this text and copy it manually.",
     nextCheck: "What to check first",
@@ -291,6 +300,15 @@ const copy = {
     fillChange: "填充",
     reason: "可能原因",
     noBreakdown: "最近两个日期没有找到可比较的下滑分组。",
+    shareReport: "可分享报告",
+    shareReportTitle: "复制一段诊断报告",
+    shareReportHelp:
+      "这版适合发到 Reddit、邮件或团队沟通里，包含原因排序、建议检查项和注意事项。",
+    reportPreview: "报告预览",
+    driverRanking: "原因排序",
+    checklist: "建议检查项",
+    caveats: "注意事项",
+    copyReport: "复制报告",
     manualCopyTitle: "手动复制",
     manualCopyHelp: "浏览器阻止了自动复制。选中下面这段文本手动复制即可。",
     nextCheck: "优先排查",
@@ -628,6 +646,79 @@ export default function DemoPage() {
   const hasRequiredFields = fieldStatuses
     .filter((field) => field.required)
     .every((field) => Boolean(field.matchedHeader));
+  const rankedDrivers = useMemo(
+    () =>
+      (["ecpm", "impressions", "fillRate", "revenue"] as Driver[])
+        .map((driver) => ({ driver, change: report.changes[driver] }))
+        .sort((a, b) => a.change - b.change),
+    [report.changes]
+  );
+  const suggestedChecks = useMemo(() => {
+    const checks: Record<Driver, string[]> =
+      lang === "zh"
+        ? {
+            ecpm: [
+              "按国家、广告位、广告源拆分 eCPM，看是否集中在某个高价值流量段。",
+              "检查 mediation waterfall、bidding source、底价和最近配置改动。",
+              "对照平台状态、节假日/季节性和主要广告源预算变化。"
+            ],
+            impressions: [
+              "先确认 DAU、会话、广告请求量和展示机会是否同步变化。",
+              "检查最近版本、广告触发逻辑、广告位展示频率和埋点是否改动。",
+              "按国家和广告位看展示量下降是否只发生在某个流量段。"
+            ],
+            fillRate: [
+              "按国家、广告位、广告源检查 requests、fills、match/fill rate。",
+              "查看底价、广告源可用性、平台状态和是否有请求错误。",
+              "如果 eCPM 稳定但 fill 下降，优先排查填充和瀑布流，而不是先改价格。"
+            ],
+            revenue: [
+              "先看 top segment drops，不要先改全局配置。",
+              "按国家、广告位、广告源逐层拆分，确认主要收入损失来自哪里。",
+              "同时检查 eCPM、展示量、填充率，避免把混合问题误判成单一指标。"
+            ]
+          }
+        : {
+            ecpm: [
+              "Split eCPM by country, placement, and ad source to see whether the drop is concentrated.",
+              "Check mediation waterfall, bidding sources, floor rules, and recent pricing changes.",
+              "Compare against platform status, seasonality, and major demand-source budget shifts."
+            ],
+            impressions: [
+              "Confirm whether DAU, sessions, ad requests, and ad opportunities moved in the same direction.",
+              "Check recent releases, ad trigger logic, placement frequency, and reporting instrumentation.",
+              "Break impressions down by country and placement before changing monetization settings."
+            ],
+            fillRate: [
+              "Review requests, fills, and match/fill rate by country, placement, and ad source.",
+              "Check floor settings, source availability, platform status, and request errors.",
+              "If eCPM is stable but fill dropped, investigate fill and waterfall availability before changing pricing."
+            ],
+            revenue: [
+              "Start from the top segment drops instead of changing global settings first.",
+              "Break the loss down by country, placement, and ad source to find the biggest contributor.",
+              "Check eCPM, impressions, and fill together so a mixed issue is not mistaken for one metric."
+            ]
+          };
+
+    return checks[report.driver];
+  }, [lang, report.driver]);
+  const caveats = useMemo(() => {
+    const base =
+      lang === "zh"
+        ? [
+            "这是基于 CSV 的方向性诊断，不是广告平台归因结论。",
+            "如果样本量很小，eCPM 和填充率波动可能会被放大。",
+            "不要在没有确认主要分组前修改全局底价或 mediation 配置。"
+          ]
+        : [
+            "This is a directional CSV diagnosis, not a final attribution from the ad platform.",
+            "If volume is low, eCPM and fill-rate movements can be noisy.",
+            "Avoid changing global floors or mediation settings before confirming the main segment."
+          ];
+    const issueNotes = dataIssues.map((issue) => t[issue]);
+    return [...issueNotes, ...base];
+  }, [dataIssues, lang, t]);
   const diagnosisText = useMemo(() => {
     const largestDrop = report.largestDrop
       ? `${report.largestDrop.row.appName} / ${report.largestDrop.row.placementName} / ${report.largestDrop.row.country} / ${report.largestDrop.row.network}: ${money(report.largestDrop.previousRow?.revenue ?? 0)} -> ${money(report.largestDrop.row.revenue)}`
@@ -635,10 +726,15 @@ export default function DemoPage() {
     const topBreakdowns = report.breakdowns.slice(0, 3).map((item) => {
       return `- ${item.label}: ${money(item.previous.revenue)} -> ${money(item.current.revenue)} (${pct(item.changes.revenue)}), ${t.driverLabels[item.driver]}`;
     });
+    const driverRankingLines = rankedDrivers.map((item, index) => {
+      return `${index + 1}. ${t.driverLabels[item.driver]}: ${pct(item.change)}`;
+    });
+    const suggestedCheckLines = suggestedChecks.map((item) => `- ${item}`);
+    const caveatLines = caveats.map((item) => `- ${item}`);
 
     if (lang === "zh") {
       return [
-        "eCPM Bazaar 诊断结果",
+        "eCPM Bazaar 诊断报告",
         `对比周期：${report.previousDate ?? "上一天"} -> ${report.currentDate ?? "最近一天"}`,
         `收入：${money(report.previous.revenue)} -> ${money(report.current.revenue)} (${pct(report.changes.revenue)})`,
         `加权 eCPM：${money(report.previous.ecpm)} -> ${money(report.current.ecpm)} (${pct(report.changes.ecpm)})`,
@@ -646,15 +742,24 @@ export default function DemoPage() {
         `填充率：${report.previous.fillRate.toFixed(1)}% -> ${report.current.fillRate.toFixed(1)}% (${pct(report.changes.fillRate)})`,
         `最可能原因：${t.driverLabels[report.driver]}`,
         `最大下滑：${largestDrop}`,
+        "",
+        "原因排序：",
+        ...driverRankingLines,
+        "",
         topBreakdowns.length ? "主要下滑分组：" : "",
         ...topBreakdowns,
-        `优先排查：${t.advice[report.driver]}`,
+        "",
+        "建议检查项：",
+        ...suggestedCheckLines,
+        "",
+        "注意事项：",
+        ...caveatLines,
         "Demo: https://ecpmbazaar.com/demo/"
       ].filter(Boolean).join("\n");
     }
 
     return [
-      "eCPM Bazaar diagnosis",
+      "eCPM Bazaar diagnosis report",
       `Period: ${report.previousDate ?? "previous day"} -> ${report.currentDate ?? "latest day"}`,
       `Revenue: ${money(report.previous.revenue)} -> ${money(report.current.revenue)} (${pct(report.changes.revenue)})`,
       `Weighted eCPM: ${money(report.previous.ecpm)} -> ${money(report.current.ecpm)} (${pct(report.changes.ecpm)})`,
@@ -662,12 +767,21 @@ export default function DemoPage() {
       `Fill rate: ${report.previous.fillRate.toFixed(1)}% -> ${report.current.fillRate.toFixed(1)}% (${pct(report.changes.fillRate)})`,
       `Likely driver: ${t.driverLabels[report.driver]}`,
       `Largest row-level drop: ${largestDrop}`,
+      "",
+      "Driver ranking:",
+      ...driverRankingLines,
+      "",
       topBreakdowns.length ? "Top segment drops:" : "",
       ...topBreakdowns,
-      `Check first: ${t.advice[report.driver]}`,
+      "",
+      "Suggested checks:",
+      ...suggestedCheckLines,
+      "",
+      "Caveats:",
+      ...caveatLines,
       "Demo: https://ecpmbazaar.com/demo/"
     ].filter(Boolean).join("\n");
-  }, [lang, report, t.advice, t.driverLabels]);
+  }, [caveats, lang, rankedDrivers, report, suggestedChecks, t.driverLabels]);
 
   async function onUpload(file?: File) {
     if (!file) return;
@@ -940,6 +1054,51 @@ export default function DemoPage() {
             </div>
           ))}
         </article>
+      </section>
+
+      <section className="demo-panel report-panel" aria-label={t.shareReport}>
+        <div className="demo-panel-header">
+          <div>
+            <p className="section-label">{t.shareReport}</p>
+            <h2>{t.shareReportTitle}</h2>
+          </div>
+          <button className="copy-result-button" type="button" onClick={copyDiagnosis}>
+            <Copy size={16} aria-hidden="true" />
+            {copiedResult ? t.copied : t.copyReport}
+          </button>
+        </div>
+        <p className="report-help">{t.shareReportHelp}</p>
+        <div className="report-summary-grid" aria-label={t.driverRanking}>
+          {rankedDrivers.map((item, index) => (
+            <div className="report-rank-card" key={item.driver}>
+              <span>{index + 1}</span>
+              <strong>{t.driverLabels[item.driver]}</strong>
+              <em className={item.change < 0 ? "negative" : "positive"}>{pct(item.change)}</em>
+            </div>
+          ))}
+        </div>
+        <div className="report-detail-grid">
+          <div>
+            <h3>{t.checklist}</h3>
+            <ul>
+              {suggestedChecks.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3>{t.caveats}</h3>
+            <ul>
+              {caveats.slice(0, 4).map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div>
+          <h3 className="report-preview-title">{t.reportPreview}</h3>
+          <pre className="email-template report-preview">{diagnosisText}</pre>
+        </div>
       </section>
 
       <section className="demo-panel breakdown-panel" aria-label={t.driverBreakdown}>
