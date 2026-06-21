@@ -25,19 +25,21 @@ const copy = {
     navProduct: "产品",
     navFunction: "功能",
     navDemo: "演示",
+    navTemplates: "模板",
+    navCases: "案例",
     navContact: "联系",
     contact: "联系我",
     languageLabel: "语言",
-    eyebrow: "个人网站 / 第一个产品",
-    title: "我在做一个帮开发者看懂广告收入波动的工具。",
+    eyebrow: "移动广告收入诊断助手",
+    title: "帮小型游戏/App 团队快速诊断广告收入为什么变了。",
     lede:
-      "eCPM Bazaar 是一个广告数据集市，服务小游戏/App 小团队。它的核心能力不是做一张更漂亮的报表，而是帮助开发者定位收入异常来自哪里。",
+      "eCPM Bazaar 服务没有专职数据分析师的小团队。上传 CSV 或使用样例数据后，它会把收入变化拆成 eCPM、展示量、填充率、国家地区、广告位和广告源等可排查原因。",
     primary: "试用公开演示",
-    secondary: "查看产品定位",
+    secondary: "下载 CSV 模板",
     productLabel: "Product Direction",
     productTitle: "eCPM Bazaar",
     productText:
-      "一个帮开发者看懂广告收入波动的广告数据集市。先聚合 eCPM、填充率、广告位、国家地区等关键数据，再把收入变化拆成可排查的原因。",
+      "一个面向小型移动游戏和 App 团队的广告收入波动诊断助手。它不承诺神奇提高 eCPM，而是帮助开发者先判断问题更可能来自流量、单价、填充、国家结构、广告位还是广告源。",
     functionLabel: "Core Function",
     functionTitle: "广告收入异常诊断工具",
     functionText:
@@ -94,19 +96,21 @@ const copy = {
     navProduct: "Product",
     navFunction: "Function",
     navDemo: "Demo",
+    navTemplates: "Templates",
+    navCases: "Cases",
     navContact: "Contact",
     contact: "Contact",
     languageLabel: "Language",
-    eyebrow: "Personal site / First product",
-    title: "I am building a tool that helps developers understand ad revenue changes.",
+    eyebrow: "Mobile ad revenue diagnosis assistant",
+    title: "Diagnose why mobile game and app ad revenue changed.",
     lede:
-      "eCPM Bazaar is an ad data bazaar for small mini game and app teams. Its core value is not another prettier dashboard, but helping developers locate where revenue anomalies come from.",
+      "eCPM Bazaar helps small mobile game and app teams diagnose why ad revenue changed. Upload a CSV or use sample data to split the movement by eCPM, impressions, fill rate, country, placement, and ad source.",
     primary: "Try public demo",
-    secondary: "View positioning",
+    secondary: "Download CSV templates",
     productLabel: "Product Direction",
     productTitle: "eCPM Bazaar",
     productText:
-      "An ad data bazaar that helps developers understand ad revenue changes. It brings together eCPM, fill rate, placements, countries, and key monetization signals, then turns revenue movement into traceable causes.",
+      "A diagnosis assistant for small mobile game and app teams. It does not promise to magically increase eCPM; it helps developers understand whether the movement came from traffic, pricing, fill, country mix, placement, or ad source performance.",
     functionLabel: "Core Function",
     functionTitle: "Ad revenue anomaly diagnosis",
     functionText:
@@ -178,6 +182,8 @@ export default function Home() {
           <a href="#product">{t.navProduct}</a>
           <a href="#function">{t.navFunction}</a>
           <a href="demo/">{t.navDemo}</a>
+          <a href="templates/">{t.navTemplates}</a>
+          <a href="cases/">{t.navCases}</a>
           <a href="#contact">{t.navContact}</a>
           <div className="language-switch" aria-label={t.languageLabel}>
             <button
@@ -217,7 +223,7 @@ export default function Home() {
               {t.primary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
-            <a className="secondary-action" href="#product">
+            <a className="secondary-action" href="templates/">
               {t.secondary}
             </a>
           </div>

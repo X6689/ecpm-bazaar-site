@@ -1,0 +1,5 @@
+date,appName,placementName,country,network,revenue,ecpm,impressions,requests,fills,clicks
+2026-06-14,Your Game,rv_home,US,AppLovin MAX,156.80,22.10,7095,9500,7600,284
+2026-06-15,Your Game,rv_home,US,AppLovin MAX,119.30,16.80,7101,9700,7140,240
+2026-06-14,Your Game,int_level_end,DE,AppLovin MAX,51.40,8.20,6268,8400,6810,120
+2026-06-15,Your Game,int_level_end,DE,AppLovin MAX,49.10,7.90,6215,8500,6730,116

@@ -20,8 +20,6 @@ import type { MetricRow } from "@/lib/types";
 type Lang = "en" | "zh";
 type Driver = "revenue" | "impressions" | "ecpm" | "fillRate";
 
-const contactEmail = "xmmyy168@gmail.com";
-
 const sampleCsv = `date,appName,placementName,country,network,revenue,ecpm,impressions,requests,fills,clicks
 2026-06-14,Idle Ocean,Rewarded Home,US,AdMob,128.42,18.70,6868,9200,7100,318
 2026-06-15,Idle Ocean,Rewarded Home,US,AdMob,84.10,12.40,6782,9300,6280,261
@@ -40,12 +38,13 @@ const copy = {
     useSample: "Load sample CSV",
     downloadSample: "Download sample CSV",
     copyLink: "Copy demo link",
+    copyResult: "Copy diagnosis",
     copied: "Copied",
     reset: "Reset demo",
     upload: "Upload CSV",
     uploadHelp: "CSV columns: date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks.",
     privacy: "CSV files are parsed in your browser for this public demo. Nothing is uploaded or stored.",
-    contact: "Join tester list",
+    contact: "Free diagnosis",
     sourceSample: "Sample CSV loaded",
     sourceDemo: "Built-in demo data",
     sourceUpload: "Uploaded CSV",
@@ -86,12 +85,13 @@ const copy = {
     useSample: "载入样例 CSV",
     downloadSample: "下载样例 CSV",
     copyLink: "复制演示链接",
+    copyResult: "复制诊断结果",
     copied: "已复制",
     reset: "重置演示",
     upload: "上传 CSV",
     uploadHelp: "CSV 字段：date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks。",
     privacy: "这个公开演示只在浏览器本地解析 CSV，不上传、不保存你的文件。",
-    contact: "加入测试名单",
+    contact: "免费诊断",
     sourceSample: "已载入样例 CSV",
     sourceDemo: "内置演示数据",
     sourceUpload: "已上传 CSV",
@@ -276,9 +276,43 @@ export default function DemoPage() {
   const [source, setSource] = useState<"demo" | "sample" | "upload">("demo");
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
+  const [copiedResult, setCopiedResult] = useState(false);
   const t = copy[lang];
   const report = useMemo(() => diagnose(rows), [rows]);
   const sourceLabel = source === "upload" ? t.sourceUpload : source === "sample" ? t.sourceSample : t.sourceDemo;
+  const diagnosisText = useMemo(() => {
+    const largestDrop = report.largestDrop
+      ? `${report.largestDrop.row.appName} / ${report.largestDrop.row.placementName} / ${report.largestDrop.row.country} / ${report.largestDrop.row.network}: ${money(report.largestDrop.previousRow?.revenue ?? 0)} -> ${money(report.largestDrop.row.revenue)}`
+      : "No row-level drop found";
+
+    if (lang === "zh") {
+      return [
+        "eCPM Bazaar 诊断结果",
+        `对比周期：${report.previousDate ?? "上一天"} -> ${report.currentDate ?? "最近一天"}`,
+        `收入：${money(report.previous.revenue)} -> ${money(report.current.revenue)} (${pct(report.changes.revenue)})`,
+        `加权 eCPM：${money(report.previous.ecpm)} -> ${money(report.current.ecpm)} (${pct(report.changes.ecpm)})`,
+        `展示量：${Math.round(report.previous.impressions).toLocaleString("en-US")} -> ${Math.round(report.current.impressions).toLocaleString("en-US")} (${pct(report.changes.impressions)})`,
+        `填充率：${report.previous.fillRate.toFixed(1)}% -> ${report.current.fillRate.toFixed(1)}% (${pct(report.changes.fillRate)})`,
+        `最可能原因：${t.driverLabels[report.driver]}`,
+        `最大下滑：${largestDrop}`,
+        `优先排查：${t.advice[report.driver]}`,
+        "Demo: https://ecpmbazaar.com/demo/"
+      ].join("\n");
+    }
+
+    return [
+      "eCPM Bazaar diagnosis",
+      `Period: ${report.previousDate ?? "previous day"} -> ${report.currentDate ?? "latest day"}`,
+      `Revenue: ${money(report.previous.revenue)} -> ${money(report.current.revenue)} (${pct(report.changes.revenue)})`,
+      `Weighted eCPM: ${money(report.previous.ecpm)} -> ${money(report.current.ecpm)} (${pct(report.changes.ecpm)})`,
+      `Impressions: ${Math.round(report.previous.impressions).toLocaleString("en-US")} -> ${Math.round(report.current.impressions).toLocaleString("en-US")} (${pct(report.changes.impressions)})`,
+      `Fill rate: ${report.previous.fillRate.toFixed(1)}% -> ${report.current.fillRate.toFixed(1)}% (${pct(report.changes.fillRate)})`,
+      `Likely driver: ${t.driverLabels[report.driver]}`,
+      `Largest row-level drop: ${largestDrop}`,
+      `Check first: ${t.advice[report.driver]}`,
+      "Demo: https://ecpmbazaar.com/demo/"
+    ].join("\n");
+  }, [lang, report, t.advice, t.driverLabels]);
 
   async function onUpload(file?: File) {
     if (!file) return;
@@ -305,6 +339,16 @@ export default function DemoPage() {
       window.setTimeout(() => setCopied(false), 1600);
     } catch {
       setCopied(false);
+    }
+  }
+
+  async function copyDiagnosis() {
+    try {
+      await navigator.clipboard.writeText(diagnosisText);
+      setCopiedResult(true);
+      window.setTimeout(() => setCopiedResult(false), 1600);
+    } catch {
+      setCopiedResult(false);
     }
   }
 
@@ -381,10 +425,16 @@ export default function DemoPage() {
               <p className="section-label">{t.diagnosis}</p>
               <h2>{report.hasDrop ? t.headlineDrop : t.headlineStable}</h2>
             </div>
-            <span className={report.hasDrop ? "diagnosis-badge warning" : "diagnosis-badge good"}>
-              {report.hasDrop ? <AlertTriangle size={16} /> : <CheckCircle2 size={16} />}
-              {pct(report.changes.revenue)}
-            </span>
+            <div className="diagnosis-tools">
+              <span className={report.hasDrop ? "diagnosis-badge warning" : "diagnosis-badge good"}>
+                {report.hasDrop ? <AlertTriangle size={16} /> : <CheckCircle2 size={16} />}
+                {pct(report.changes.revenue)}
+              </span>
+              <button className="copy-result-button" type="button" onClick={copyDiagnosis}>
+                <Copy size={16} aria-hidden="true" />
+                {copiedResult ? t.copied : t.copyResult}
+              </button>
+            </div>
           </div>
 
           <p className="diagnosis-summary">
@@ -419,7 +469,7 @@ export default function DemoPage() {
       <section className="demo-panel data-panel">
         <div className="demo-panel-header">
           <h2>{t.dataPreview}</h2>
-          <a href={`mailto:${contactEmail}?subject=eCPM Bazaar tester`}>
+          <a href="../free-diagnosis/">
             <Mail size={17} aria-hidden="true" />
             {t.contact}
           </a>

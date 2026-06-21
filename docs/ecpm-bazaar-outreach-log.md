@@ -10,8 +10,32 @@ This file is the running record for eCPM Bazaar outreach, free launch sites, for
 | --- | --- | --- |
 | Landing page | https://ecpmbazaar.com/ | Public website, English-first with Chinese toggle. |
 | Public demo | https://ecpmbazaar.com/demo/ | Browser-only CSV demo, no upload/storage. |
+| CSV templates | https://ecpmbazaar.com/templates/ | AdMob, AppLovin MAX, Unity LevelPlay / TopOn CSV templates. |
+| Diagnosis cases | https://ecpmbazaar.com/cases/ | Three anonymized English cases: eCPM drop, fill-rate drop, country mix. |
+| Free diagnosis | https://ecpmbazaar.com/free-diagnosis/ | Mailto-based intake for anonymized ad monetization rows; no account access. |
 | Contact email | xmmyy168@gmail.com | Overseas-facing contact address. |
 | GitHub repo | https://github.com/X6689/ecpm-bazaar-site | Source and GitHub Pages deployment. |
+
+## Product Positioning
+
+Current positioning:
+
+```text
+eCPM Bazaar helps small mobile game and app teams diagnose why ad revenue changed.
+```
+
+Chinese working line:
+
+```text
+帮小型游戏/App 团队快速诊断广告收入为什么变了。
+```
+
+Execution focus:
+
+- Keep the product centered on diagnosis, not a generic dashboard.
+- Use browser-only CSV and anonymized data to lower trust friction.
+- Do not claim to magically increase eCPM; explain the likely driver first.
+- Prioritize real user data, copied diagnosis output, CSV templates, and anonymized cases before login/API/payment.
 
 ## Product Directory / Launch Platform Status
 
