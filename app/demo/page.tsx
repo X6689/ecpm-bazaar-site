@@ -23,9 +23,14 @@ import { SiteFooter } from "../site-footer";
 
 type Driver = "revenue" | "impressions" | "ecpm" | "fillRate" | "countryMix";
 type DiagnosisSeverity = "high" | "medium" | "low";
+type ComparisonMode = "latest-day" | "last-7-days";
 type BreakdownRow = {
   key: string;
   label: string;
+  appName: string;
+  placementName: string;
+  country: string;
+  network: string;
   current: ReturnType<typeof totals>;
   previous: ReturnType<typeof totals>;
   changes: Record<Driver, number>;
@@ -53,7 +58,14 @@ type FieldStatus = {
   matchedHeader?: string;
 };
 
-type IssueKey = "fallbackIssue" | "twoDatesIssue" | "fillIssue" | "ecpmIssue" | "rowMatchIssue" | "lowVolumeIssue";
+type IssueKey =
+  | "fallbackIssue"
+  | "twoDatesIssue"
+  | "sevenDayIssue"
+  | "fillIssue"
+  | "ecpmIssue"
+  | "rowMatchIssue"
+  | "lowVolumeIssue";
 
 type ParseCsvResult = {
   rows: MetricRow[];
@@ -156,13 +168,20 @@ const copy = {
     badge: "Public demo",
     title: "Diagnose a mobile ad revenue drop in one minute.",
     lede:
-      "Use the sample data or upload a CSV. eCPM Bazaar compares the latest day with the previous day and explains whether revenue moved because of eCPM, impressions, fill rate, country, placement, or ad source changes.",
+      "Use the sample data or upload a CSV. eCPM Bazaar compares the selected period with the previous period and explains whether revenue moved because of eCPM, impressions, fill rate, country, placement, or ad source changes.",
     useSample: "Load sample CSV",
     downloadSample: "Download current CSV",
     scenarioLabel: "Diagnosis cases",
     scenarioTitle: "Try three common ad revenue drop scenarios",
     scenarioHelp:
       "Switch between anonymized cases to see how the diagnosis changes when the main driver is pricing, fill, or traffic mix.",
+    comparisonLabel: "Comparison period",
+    comparisonTitle: "Choose how to compare the report",
+    latestDay: "Latest day",
+    latestDayHelp: "Compare the latest date with the previous date.",
+    lastSevenDays: "Last 7 days",
+    lastSevenDaysHelp: "Compare the latest 7 dates with the previous 7 dates.",
+    activeWindow: "Active window",
     copyLink: "Copy demo link",
     copyResult: "Copy diagnosis",
     copied: "Copied",
@@ -206,7 +225,7 @@ const copy = {
     impressionChange: "Impressions",
     fillChange: "Fill",
     reason: "Likely reason",
-    noBreakdown: "No comparable segment drop found for the latest two dates.",
+    noBreakdown: "No comparable segment drop found for the selected comparison window.",
     shareReport: "Shareable report",
     shareReportTitle: "Copy a diagnosis report",
     shareReportHelp:
@@ -250,9 +269,10 @@ const copy = {
     parseError: "Could not read this CSV. Check the column names and try again.",
     fallbackIssue: "Some optional fields are missing, so the diagnosis will be less precise.",
     twoDatesIssue: "Add at least two dates to compare the latest day with the previous day.",
+    sevenDayIssue: "Add at least 14 dates for a 7-day comparison. The current diagnosis falls back to latest day vs previous day.",
     fillIssue: "Requests and fills are missing or zero, so fill-rate diagnosis is limited.",
     ecpmIssue: "eCPM was missing for some rows and was calculated from revenue and impressions.",
-    rowMatchIssue: "No matching app / placement / country / source rows were found across the two latest dates.",
+    rowMatchIssue: "No matching app / placement / country / source rows were found across the selected comparison window.",
     lowVolumeIssue: "Some rows have low impressions. Treat row-level eCPM changes carefully.",
     driverLabels: {
       revenue: "Revenue",
@@ -269,19 +289,26 @@ const copy = {
       revenue: "The drop is broad. Start with the largest country, placement, and ad source contributors before changing settings."
     },
     summaryPrefix: "The largest drop is concentrated in",
-    summarySuffix: "compared with the previous day."
+    summarySuffix: "compared with the previous period."
   },
   zh: {
     back: "返回官网",
     badge: "公开演示",
     title: "一分钟诊断移动广告收入为什么下降。",
     lede:
-      "使用样例数据或上传 CSV。eCPM Bazaar 会比较最近一天和前一天，判断收入变化更可能来自 eCPM、展示量、填充率、国家地区、广告位还是广告来源。",
+      "使用样例数据或上传 CSV。eCPM Bazaar 会比较所选周期和上一周期，判断收入变化更可能来自 eCPM、展示量、填充率、国家地区、广告位还是广告来源。",
     useSample: "载入样例 CSV",
     downloadSample: "下载当前 CSV",
     scenarioLabel: "诊断案例",
     scenarioTitle: "试试三类常见广告收入下降场景",
     scenarioHelp: "切换脱敏案例，看看主要原因是单价、填充还是流量结构时，诊断结论会如何变化。",
+    comparisonLabel: "对比周期",
+    comparisonTitle: "选择报表对比方式",
+    latestDay: "最近一天",
+    latestDayHelp: "比较最近日期和前一个日期。",
+    lastSevenDays: "最近 7 天",
+    lastSevenDaysHelp: "比较最近 7 个日期和前 7 个日期。",
+    activeWindow: "当前对比",
     copyLink: "复制演示链接",
     copyResult: "复制诊断结果",
     copied: "已复制",
@@ -325,7 +352,7 @@ const copy = {
     impressionChange: "展示量",
     fillChange: "填充",
     reason: "可能原因",
-    noBreakdown: "最近两个日期没有找到可比较的下滑分组。",
+    noBreakdown: "当前对比周期内没有找到可比较的下滑分组。",
     shareReport: "可分享报告",
     shareReportTitle: "复制一段诊断报告",
     shareReportHelp:
@@ -369,9 +396,10 @@ const copy = {
     parseError: "无法读取这个 CSV，请检查字段名后再试。",
     fallbackIssue: "部分可选字段缺失，诊断精度会降低。",
     twoDatesIssue: "至少需要两个日期，才能比较最近一天和前一天。",
+    sevenDayIssue: "7 天对比至少需要 14 个日期。当前诊断会退回到最近一天 vs 前一天。",
     fillIssue: "requests 和 fills 缺失或为 0，填充率诊断会受限。",
     ecpmIssue: "部分行缺少 eCPM，已用收入和展示量自动计算。",
-    rowMatchIssue: "最近两个日期之间没有找到相同 App / 广告位 / 国家 / 广告源的行。",
+    rowMatchIssue: "当前对比周期之间没有找到相同 App / 广告位 / 国家 / 广告源的行。",
     lowVolumeIssue: "部分行展示量较低，行级 eCPM 变化需要谨慎判断。",
     driverLabels: {
       revenue: "收入",
@@ -388,7 +416,7 @@ const copy = {
       revenue: "下滑比较分散。先从贡献最大的国家、广告位和广告来源开始拆解，不急着改配置。"
     },
     summaryPrefix: "最大下滑集中在",
-    summarySuffix: "相较前一天。"
+    summarySuffix: "相较上一周期。"
   }
 };
 
@@ -719,9 +747,43 @@ function segmentKey(row: MetricRow) {
   return `${row.appName}|${row.placementName}|${row.country}|${row.network}`;
 }
 
-function segmentLabelFromKey(key: string) {
+function segmentPartsFromKey(key: string) {
   const [appName, placementName, country, network] = key.split("|");
+  return { appName, placementName, country, network };
+}
+
+function segmentLabelFromKey(key: string) {
+  const { appName, placementName, country, network } = segmentPartsFromKey(key);
   return `${appName} / ${placementName} / ${country} / ${network}`;
+}
+
+function formatDateWindow(dates: string[]) {
+  if (dates.length === 0) {
+    return "";
+  }
+
+  if (dates.length === 1) {
+    return dates[0];
+  }
+
+  return `${dates[0]} - ${dates.at(-1)}`;
+}
+
+function comparisonWindow(rows: MetricRow[], mode: ComparisonMode) {
+  const dates = [...new Set(rows.map((row) => row.date))].sort();
+  const canUseSevenDayWindow = mode === "last-7-days" && dates.length >= 14;
+  const currentDates = canUseSevenDayWindow ? dates.slice(-7) : dates.slice(-1);
+  const previousDates = canUseSevenDayWindow ? dates.slice(-14, -7) : dates.slice(-2, -1);
+  const currentDateSet = new Set(currentDates);
+  const previousDateSet = new Set(previousDates);
+
+  return {
+    currentRows: rows.filter((row) => currentDateSet.has(row.date)),
+    previousRows: rows.filter((row) => previousDateSet.has(row.date)),
+    currentDate: formatDateWindow(currentDates),
+    previousDate: formatDateWindow(previousDates),
+    insufficientSevenDayWindow: mode === "last-7-days" && dates.length < 14
+  };
 }
 
 function buildBreakdowns(currentRows: MetricRow[], previousRows: MetricRow[]): BreakdownRow[] {
@@ -729,6 +791,7 @@ function buildBreakdowns(currentRows: MetricRow[], previousRows: MetricRow[]): B
 
   return [...keys]
     .map((key) => {
+      const parts = segmentPartsFromKey(key);
       const current = totals(currentRows.filter((row) => segmentKey(row) === key));
       const previous = totals(previousRows.filter((row) => segmentKey(row) === key));
       const changes = {
@@ -742,6 +805,7 @@ function buildBreakdowns(currentRows: MetricRow[], previousRows: MetricRow[]): B
       return {
         key,
         label: segmentLabelFromKey(key),
+        ...parts,
         current,
         previous,
         changes,
@@ -753,12 +817,8 @@ function buildBreakdowns(currentRows: MetricRow[], previousRows: MetricRow[]): B
     .sort((a, b) => a.revenueDelta - b.revenueDelta);
 }
 
-function diagnose(rows: MetricRow[]) {
-  const dates = [...new Set(rows.map((row) => row.date))].sort();
-  const currentDate = dates.at(-1);
-  const previousDate = dates.at(-2);
-  const currentRows = rows.filter((row) => row.date === currentDate);
-  const previousRows = rows.filter((row) => row.date === previousDate);
+function diagnose(rows: MetricRow[], comparisonMode: ComparisonMode) {
+  const { currentRows, previousRows, currentDate, previousDate, insufficientSevenDayWindow } = comparisonWindow(rows, comparisonMode);
   const current = totals(currentRows);
   const previous = totals(previousRows);
   const changes = {
@@ -771,16 +831,7 @@ function diagnose(rows: MetricRow[]) {
 
   const driver = chooseDriver(changes);
   const breakdowns = buildBreakdowns(currentRows, previousRows);
-  const previousByKey = new Map(
-    previousRows.map((row) => [segmentKey(row), row])
-  );
-  const largestDrop = currentRows
-    .map((row) => {
-      const previousRow = previousByKey.get(segmentKey(row));
-      return { row, previousRow, delta: row.revenue - (previousRow?.revenue ?? 0) };
-    })
-    .filter((item) => item.previousRow)
-    .sort((a, b) => a.delta - b.delta)[0];
+  const largestDrop = breakdowns[0];
 
   return {
     current,
@@ -791,6 +842,7 @@ function diagnose(rows: MetricRow[]) {
     driver,
     breakdowns,
     largestDrop,
+    insufficientSevenDayWindow,
     hasDrop: changes.revenue <= -5
   };
 }
@@ -802,6 +854,7 @@ export default function DemoPage() {
   const [csvIssues, setCsvIssues] = useState<IssueKey[]>([]);
   const [source, setSource] = useState<"demo" | "sample" | "scenario" | "upload" | "paste">("demo");
   const [activeScenarioId, setActiveScenarioId] = useState<DemoScenarioId>(demoScenarios[0].id);
+  const [comparisonMode, setComparisonMode] = useState<ComparisonMode>("latest-day");
   const [error, setError] = useState("");
   const [pastedCsv, setPastedCsv] = useState("");
   const [copied, setCopied] = useState(false);
@@ -810,7 +863,7 @@ export default function DemoPage() {
   const [downloadedCard, setDownloadedCard] = useState(false);
   const [manualCopyText, setManualCopyText] = useState("");
   const t = copy[lang];
-  const report = useMemo(() => diagnose(rows), [rows]);
+  const report = useMemo(() => diagnose(rows, comparisonMode), [comparisonMode, rows]);
   const activeScenario = demoScenarios.find((scenario) => scenario.id === activeScenarioId) ?? demoScenarios[0];
   const currentCsv = useMemo(() => metricRowsToCsv(rows), [rows]);
   const sourceLabel =
@@ -828,8 +881,11 @@ export default function DemoPage() {
     if (rows.length > 0 && report.previousDate && report.currentDate && !report.largestDrop) {
       issues.add("rowMatchIssue");
     }
+    if (report.insufficientSevenDayWindow) {
+      issues.add("sevenDayIssue");
+    }
     return [...issues];
-  }, [csvIssues, report.currentDate, report.largestDrop, report.previousDate, rows.length]);
+  }, [csvIssues, report.currentDate, report.insufficientSevenDayWindow, report.largestDrop, report.previousDate, rows.length]);
   const hasRequiredFields = fieldStatuses
     .filter((field) => field.required)
     .every((field) => Boolean(field.matchedHeader));
@@ -917,8 +973,7 @@ export default function DemoPage() {
     return [...issueNotes, ...base];
   }, [dataIssues, lang, t]);
   const diagnosisCard = useMemo(() => {
-    const dropRow = report.largestDrop?.row;
-    const previousDropRow = report.largestDrop?.previousRow;
+    const dropSegment = report.largestDrop;
     const severity = chooseSeverity(report.changes.revenue);
     const period = `${report.previousDate ?? "previous"} -> ${report.currentDate ?? "latest"}`;
     const problem =
@@ -926,8 +981,8 @@ export default function DemoPage() {
         ? `收入 ${money(report.previous.revenue)} -> ${money(report.current.revenue)} (${pct(report.changes.revenue)})`
         : `Revenue ${money(report.previous.revenue)} -> ${money(report.current.revenue)} (${pct(report.changes.revenue)})`;
     const sourceChange =
-      dropRow && previousDropRow
-        ? `${money(previousDropRow.revenue)} -> ${money(dropRow.revenue)}`
+      dropSegment
+        ? `${money(dropSegment.previous.revenue)} -> ${money(dropSegment.current.revenue)}`
         : lang === "zh"
           ? "混合分组"
           : "Mixed segments";
@@ -938,9 +993,9 @@ export default function DemoPage() {
       sourceChange,
       severity,
       mainCause: t.driverLabels[report.driver],
-      country: report.driver === "countryMix" ? (lang === "zh" ? "国家结构变化" : "Country mix shift") : dropRow?.country ?? (lang === "zh" ? "混合" : "Mixed"),
-      placement: report.driver === "countryMix" ? (lang === "zh" ? "全部广告位" : "All placements") : dropRow?.placementName ?? (lang === "zh" ? "混合广告位" : "Mixed placements"),
-      adSource: report.driver === "countryMix" ? (lang === "zh" ? "全部广告源" : "All sources") : dropRow?.network ?? (lang === "zh" ? "混合广告源" : "Mixed sources"),
+      country: report.driver === "countryMix" ? (lang === "zh" ? "国家结构变化" : "Country mix shift") : dropSegment?.country ?? (lang === "zh" ? "混合" : "Mixed"),
+      placement: report.driver === "countryMix" ? (lang === "zh" ? "全部广告位" : "All placements") : dropSegment?.placementName ?? (lang === "zh" ? "混合广告位" : "Mixed placements"),
+      adSource: report.driver === "countryMix" ? (lang === "zh" ? "全部广告源" : "All sources") : dropSegment?.network ?? (lang === "zh" ? "混合广告源" : "Mixed sources"),
       suggestedAction: suggestedChecks[0] ?? t.advice[report.driver],
       headline: report.hasDrop
         ? lang === "zh"
@@ -969,8 +1024,8 @@ export default function DemoPage() {
   );
   const diagnosisText = useMemo(() => {
     const largestDrop = report.largestDrop
-      ? `${report.largestDrop.row.appName} / ${report.largestDrop.row.placementName} / ${report.largestDrop.row.country} / ${report.largestDrop.row.network}: ${money(report.largestDrop.previousRow?.revenue ?? 0)} -> ${money(report.largestDrop.row.revenue)}`
-      : "No row-level drop found";
+      ? `${report.largestDrop.label}: ${money(report.largestDrop.previous.revenue)} -> ${money(report.largestDrop.current.revenue)}`
+      : "No comparable segment drop found";
     const topBreakdowns = report.breakdowns.slice(0, 3).map((item) => {
       return `- ${item.label}: ${money(item.previous.revenue)} -> ${money(item.current.revenue)} (${pct(item.changes.revenue)}), ${t.driverLabels[item.driver]}`;
     });
@@ -1014,7 +1069,7 @@ export default function DemoPage() {
       `Impressions: ${Math.round(report.previous.impressions).toLocaleString("en-US")} -> ${Math.round(report.current.impressions).toLocaleString("en-US")} (${pct(report.changes.impressions)})`,
       `Fill rate: ${report.previous.fillRate.toFixed(1)}% -> ${report.current.fillRate.toFixed(1)}% (${pct(report.changes.fillRate)})`,
       `Likely driver: ${t.driverLabels[report.driver]}`,
-      `Largest row-level drop: ${largestDrop}`,
+      `Largest segment drop: ${largestDrop}`,
       "",
       "Driver ranking:",
       ...driverRankingLines,
@@ -1324,6 +1379,38 @@ export default function DemoPage() {
         </div>
       </section>
 
+      <section className="demo-panel comparison-panel" aria-label={t.comparisonLabel}>
+        <div className="demo-panel-header">
+          <div>
+            <p className="section-label">{t.comparisonLabel}</p>
+            <h2>{t.comparisonTitle}</h2>
+          </div>
+        </div>
+        <div className="comparison-toggle">
+          <button
+            aria-pressed={comparisonMode === "latest-day"}
+            className={comparisonMode === "latest-day" ? "comparison-option active" : "comparison-option"}
+            type="button"
+            onClick={() => setComparisonMode("latest-day")}
+          >
+            <strong>{t.latestDay}</strong>
+            <span>{t.latestDayHelp}</span>
+          </button>
+          <button
+            aria-pressed={comparisonMode === "last-7-days"}
+            className={comparisonMode === "last-7-days" ? "comparison-option active" : "comparison-option"}
+            type="button"
+            onClick={() => setComparisonMode("last-7-days")}
+          >
+            <strong>{t.lastSevenDays}</strong>
+            <span>{t.lastSevenDaysHelp}</span>
+          </button>
+        </div>
+        <p className="comparison-window">
+          {t.activeWindow}: {report.previousDate || "previous"} {" -> "} {report.currentDate || "latest"}
+        </p>
+      </section>
+
       <section className="demo-status">
         <span>{sourceLabel}</span>
         <span>{rows.length} {t.rows}</span>
@@ -1434,7 +1521,7 @@ export default function DemoPage() {
 
           <p className="diagnosis-summary">
             {report.largestDrop
-              ? `${t.summaryPrefix} ${report.largestDrop.row.appName} / ${report.largestDrop.row.placementName} / ${report.largestDrop.row.country} / ${report.largestDrop.row.network}: ${money(report.largestDrop.previousRow?.revenue ?? 0)} -> ${money(report.largestDrop.row.revenue)} ${t.summarySuffix}`
+              ? `${t.summaryPrefix} ${report.largestDrop.label}: ${money(report.largestDrop.previous.revenue)} -> ${money(report.largestDrop.current.revenue)} ${t.summarySuffix}`
               : t.noRows}
           </p>
 
