@@ -16,7 +16,7 @@ import {
   Table2
 } from "lucide-react";
 import { writeClipboardText } from "@/lib/clipboard";
-import { demoRows, demoScenarios, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
+import { demoRows, demoScenarios, fourteenDaySampleRows, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
 import type { MetricRow } from "@/lib/types";
 import { SiteFooter } from "../site-footer";
@@ -24,6 +24,7 @@ import { SiteFooter } from "../site-footer";
 type Driver = "revenue" | "impressions" | "ecpm" | "fillRate" | "countryMix";
 type DiagnosisSeverity = "high" | "medium" | "low";
 type ComparisonMode = "latest-day" | "last-7-days";
+type DemoSampleId = "14-day";
 type BreakdownRow = {
   key: string;
   label: string;
@@ -178,6 +179,10 @@ function normalizeComparisonMode(value: string | null): ComparisonMode | null {
   return null;
 }
 
+function normalizeSampleId(value: string | null): DemoSampleId | null {
+  return value === "14-day" ? value : null;
+}
+
 const copy = {
   en: {
     back: "Back to site",
@@ -186,6 +191,7 @@ const copy = {
     lede:
       "Use the sample data or upload a CSV. eCPM Bazaar compares the selected period with the previous period and explains whether revenue moved because of eCPM, impressions, fill rate, country, placement, or ad source changes.",
     useSample: "Load sample CSV",
+    useFourteenDaySample: "Load 14-day sample",
     downloadSample: "Download current CSV",
     scenarioLabel: "Diagnosis cases",
     scenarioTitle: "Try three common ad revenue drop scenarios",
@@ -223,6 +229,7 @@ const copy = {
     templates: "CSV templates",
     contact: "Free diagnosis",
     sourceSample: "Sample CSV loaded",
+    sourceFourteenDaySample: "14-day sample loaded",
     sourceScenario: "Diagnosis case loaded",
     sourceDemo: "Built-in demo data",
     sourceUpload: "Uploaded CSV",
@@ -314,6 +321,7 @@ const copy = {
     lede:
       "使用样例数据或上传 CSV。eCPM Bazaar 会比较所选周期和上一周期，判断收入变化更可能来自 eCPM、展示量、填充率、国家地区、广告位还是广告来源。",
     useSample: "载入样例 CSV",
+    useFourteenDaySample: "载入 14 天样例",
     downloadSample: "下载当前 CSV",
     scenarioLabel: "诊断案例",
     scenarioTitle: "试试三类常见广告收入下降场景",
@@ -350,6 +358,7 @@ const copy = {
     templates: "CSV 模板",
     contact: "免费诊断",
     sourceSample: "已载入样例 CSV",
+    sourceFourteenDaySample: "已载入 14 天样例",
     sourceScenario: "已载入诊断案例",
     sourceDemo: "内置演示数据",
     sourceUpload: "已上传 CSV",
@@ -868,7 +877,7 @@ export default function DemoPage() {
   const [rows, setRows] = useState<MetricRow[]>(demoRows);
   const [fieldStatuses, setFieldStatuses] = useState<FieldStatus[]>(createFieldStatuses());
   const [csvIssues, setCsvIssues] = useState<IssueKey[]>([]);
-  const [source, setSource] = useState<"demo" | "sample" | "scenario" | "upload" | "paste">("demo");
+  const [source, setSource] = useState<"demo" | "sample" | "sample14" | "scenario" | "upload" | "paste">("demo");
   const [activeScenarioId, setActiveScenarioId] = useState<DemoScenarioId>(demoScenarios[0].id);
   const [comparisonMode, setComparisonMode] = useState<ComparisonMode>("latest-day");
   const [error, setError] = useState("");
@@ -887,11 +896,13 @@ export default function DemoPage() {
       ? t.sourceUpload
       : source === "paste"
         ? t.sourcePaste
-        : source === "sample"
-          ? t.sourceSample
-          : source === "scenario"
-            ? `${t.sourceScenario}: ${activeScenario.title[lang]}`
-            : t.sourceDemo;
+        : source === "sample14"
+          ? t.sourceFourteenDaySample
+          : source === "sample"
+            ? t.sourceSample
+            : source === "scenario"
+              ? `${t.sourceScenario}: ${activeScenario.title[lang]}`
+              : t.sourceDemo;
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -900,10 +911,22 @@ export default function DemoPage() {
 
     const params = new URLSearchParams(window.location.search);
     const linkedComparisonMode = normalizeComparisonMode(params.get("compare"));
+    const linkedSampleId = normalizeSampleId(params.get("sample"));
     const linkedScenarioId = normalizeScenarioId(params.get("case"));
 
-    if (linkedComparisonMode) {
-      setComparisonMode(linkedComparisonMode);
+    if (linkedComparisonMode || linkedSampleId === "14-day") {
+      setComparisonMode(linkedComparisonMode ?? "last-7-days");
+    }
+
+    if (linkedSampleId === "14-day") {
+      const csv = metricRowsToCsv(fourteenDaySampleRows);
+      const parsed = parseCsv(csv);
+      setRows(parsed.rows);
+      setFieldStatuses(parsed.fields);
+      setCsvIssues(parsed.issues);
+      setSource("sample14");
+      setPastedCsv(csv);
+      return;
     }
 
     if (linkedScenarioId) {
@@ -918,32 +941,38 @@ export default function DemoPage() {
     }
   }, []);
 
-  function buildDemoUrl(scenarioId: DemoScenarioId | null, mode: ComparisonMode) {
+  function buildDemoUrl(scenarioId: DemoScenarioId | null, mode: ComparisonMode, sampleId: DemoSampleId | null = null) {
     if (typeof window === "undefined") {
       return "";
     }
 
     const url = new URL("/demo/", window.location.origin);
-    if (scenarioId) {
+    if (sampleId) {
+      url.searchParams.set("sample", sampleId);
+    } else if (scenarioId) {
       url.searchParams.set("case", scenarioId);
     }
-    if (mode !== "latest-day") {
+    if (mode !== "latest-day" || sampleId) {
       url.searchParams.set("compare", mode);
     }
     return url.toString();
   }
 
-  function replaceDemoUrl(scenarioId: DemoScenarioId | null, mode: ComparisonMode) {
+  function replaceDemoUrl(scenarioId: DemoScenarioId | null, mode: ComparisonMode, sampleId: DemoSampleId | null = null) {
     if (typeof window === "undefined") {
       return;
     }
 
-    const url = buildDemoUrl(scenarioId, mode);
+    const url = buildDemoUrl(scenarioId, mode, sampleId);
     window.history.replaceState(null, "", url);
   }
 
   function shouldShareScenario(nextSource = source) {
     return nextSource === "demo" || nextSource === "sample" || nextSource === "scenario";
+  }
+
+  function shouldShareFourteenDaySample(nextSource = source) {
+    return nextSource === "sample14";
   }
 
   const dataIssues = useMemo(() => {
@@ -1201,6 +1230,21 @@ export default function DemoPage() {
     replaceDemoUrl(demoScenarios[0].id, comparisonMode);
   }
 
+  function loadFourteenDaySample() {
+    const csv = metricRowsToCsv(fourteenDaySampleRows);
+    const parsed = parseCsv(csv);
+    const mode: ComparisonMode = "last-7-days";
+    setRows(parsed.rows);
+    setFieldStatuses(parsed.fields);
+    setCsvIssues(parsed.issues);
+    setSource("sample14");
+    setError("");
+    setPastedCsv(csv);
+    setComparisonMode(mode);
+    setManualCopyText("");
+    replaceDemoUrl(null, mode, "14-day");
+  }
+
   function loadScenario(scenarioId: DemoScenarioId) {
     const scenario = demoScenarios.find((item) => item.id === scenarioId) ?? demoScenarios[0];
     const csv = metricRowsToCsv(scenario.rows);
@@ -1231,11 +1275,11 @@ export default function DemoPage() {
 
   function selectComparisonMode(mode: ComparisonMode) {
     setComparisonMode(mode);
-    replaceDemoUrl(shouldShareScenario() ? activeScenarioId : null, mode);
+    replaceDemoUrl(shouldShareScenario() ? activeScenarioId : null, mode, shouldShareFourteenDaySample() ? "14-day" : null);
   }
 
   async function copyDemoLink() {
-    const url = buildDemoUrl(shouldShareScenario() ? activeScenarioId : null, comparisonMode);
+    const url = buildDemoUrl(shouldShareScenario() ? activeScenarioId : null, comparisonMode, shouldShareFourteenDaySample() ? "14-day" : null);
     if (await writeClipboardText(url)) {
       setCopied(true);
       setManualCopyText("");
@@ -1412,6 +1456,10 @@ export default function DemoPage() {
           <button className="primary-action" type="button" onClick={loadSample}>
             <Table2 size={18} aria-hidden="true" />
             {t.useSample}
+          </button>
+          <button className="secondary-action" type="button" onClick={loadFourteenDaySample}>
+            <Table2 size={18} aria-hidden="true" />
+            {t.useFourteenDaySample}
           </button>
           <a
             className="secondary-action"

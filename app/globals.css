@@ -2247,6 +2247,17 @@ p {
   margin-top: auto;
 }
 
+.resource-card-actions {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  margin-top: auto;
+}
+
+.resource-card-actions .primary-action {
+  margin-top: 0;
+}
+
 .field-section {
   display: grid;
   grid-template-columns: minmax(240px, 0.62fr) minmax(0, 1fr);

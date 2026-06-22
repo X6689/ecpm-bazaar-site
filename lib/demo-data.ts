@@ -109,6 +109,37 @@ export const demoScenarios: DemoScenario[] = [
 
 export const demoRows: MetricRow[] = demoScenarios[0].rows;
 
+export const fourteenDaySampleRows: MetricRow[] = [
+  row("2026-06-08", "Sample Game", "Rewarded Home", "US", "AdMob", 120.0, 20.0, 6000, 7800, 6900, 280),
+  row("2026-06-09", "Sample Game", "Rewarded Home", "US", "AdMob", 122.0, 20.0, 6100, 7900, 7000, 286),
+  row("2026-06-10", "Sample Game", "Rewarded Home", "US", "AdMob", 118.0, 20.0, 5900, 7700, 6800, 272),
+  row("2026-06-11", "Sample Game", "Rewarded Home", "US", "AdMob", 124.0, 20.0, 6200, 8050, 7100, 291),
+  row("2026-06-12", "Sample Game", "Rewarded Home", "US", "AdMob", 126.0, 20.0, 6300, 8150, 7200, 296),
+  row("2026-06-13", "Sample Game", "Rewarded Home", "US", "AdMob", 121.0, 20.0, 6050, 7850, 6950, 284),
+  row("2026-06-14", "Sample Game", "Rewarded Home", "US", "AdMob", 123.0, 20.0, 6150, 8000, 7050, 288),
+  row("2026-06-15", "Sample Game", "Rewarded Home", "US", "AdMob", 88.5, 15.0, 5900, 7900, 6900, 230),
+  row("2026-06-16", "Sample Game", "Rewarded Home", "US", "AdMob", 90.0, 15.0, 6000, 8000, 7000, 236),
+  row("2026-06-17", "Sample Game", "Rewarded Home", "US", "AdMob", 87.0, 15.0, 5800, 7750, 6800, 225),
+  row("2026-06-18", "Sample Game", "Rewarded Home", "US", "AdMob", 91.5, 15.0, 6100, 8100, 7100, 240),
+  row("2026-06-19", "Sample Game", "Rewarded Home", "US", "AdMob", 93.0, 15.0, 6200, 8200, 7200, 244),
+  row("2026-06-20", "Sample Game", "Rewarded Home", "US", "AdMob", 89.25, 15.0, 5950, 7950, 6950, 232),
+  row("2026-06-21", "Sample Game", "Rewarded Home", "US", "AdMob", 90.75, 15.0, 6050, 8050, 7050, 238),
+  row("2026-06-08", "Sample Game", "Interstitial", "BR", "AppLovin", 42.0, 6.0, 7000, 9000, 7900, 130),
+  row("2026-06-09", "Sample Game", "Interstitial", "BR", "AppLovin", 42.6, 6.0, 7100, 9100, 8000, 132),
+  row("2026-06-10", "Sample Game", "Interstitial", "BR", "AppLovin", 41.4, 6.0, 6900, 8900, 7800, 128),
+  row("2026-06-11", "Sample Game", "Interstitial", "BR", "AppLovin", 43.2, 6.0, 7200, 9200, 8100, 134),
+  row("2026-06-12", "Sample Game", "Interstitial", "BR", "AppLovin", 43.8, 6.0, 7300, 9300, 8200, 136),
+  row("2026-06-13", "Sample Game", "Interstitial", "BR", "AppLovin", 42.3, 6.0, 7050, 9050, 7950, 131),
+  row("2026-06-14", "Sample Game", "Interstitial", "BR", "AppLovin", 42.9, 6.0, 7150, 9150, 8050, 133),
+  row("2026-06-15", "Sample Game", "Interstitial", "BR", "AppLovin", 42.0, 6.0, 7000, 9000, 7900, 130),
+  row("2026-06-16", "Sample Game", "Interstitial", "BR", "AppLovin", 42.6, 6.0, 7100, 9100, 8000, 132),
+  row("2026-06-17", "Sample Game", "Interstitial", "BR", "AppLovin", 41.4, 6.0, 6900, 8900, 7800, 128),
+  row("2026-06-18", "Sample Game", "Interstitial", "BR", "AppLovin", 43.2, 6.0, 7200, 9200, 8100, 134),
+  row("2026-06-19", "Sample Game", "Interstitial", "BR", "AppLovin", 43.8, 6.0, 7300, 9300, 8200, 136),
+  row("2026-06-20", "Sample Game", "Interstitial", "BR", "AppLovin", 42.3, 6.0, 7050, 9050, 7950, 131),
+  row("2026-06-21", "Sample Game", "Interstitial", "BR", "AppLovin", 42.9, 6.0, 7150, 9150, 8050, 133)
+];
+
 export function metricRowsToCsv(rows: MetricRow[]) {
   const header = "date,appName,placementName,country,network,revenue,ecpm,impressions,requests,fills,clicks";
   const lines = rows.map((item) =>

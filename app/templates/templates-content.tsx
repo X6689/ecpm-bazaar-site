@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Download, FileSpreadsheet, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Download, FileSpreadsheet, Play, ShieldCheck } from "lucide-react";
 import { useLanguagePreference } from "@/lib/language";
 import { SiteFooter } from "../site-footer";
 
@@ -43,6 +43,7 @@ const templates = [
   },
   {
     href: "14-day-ecpm-bazaar-sample.csv",
+    demoHref: "../demo/?sample=14-day&compare=last-7-days",
     fields: "14 dates, 2 segments, eCPM-drop example",
     en: {
       title: "14-day sample",
@@ -137,6 +138,7 @@ const copy = {
     privacyText:
       "The public demo parses CSV files in your browser. Nothing is uploaded or stored. For manual review, remove app IDs, exact app names, and any private account identifiers before sending data.",
     tryDemo: "Try the demo",
+    tryThisSample: "Try 14-day demo",
     dataSafety: "Data safety"
   },
   zh: {
@@ -164,6 +166,7 @@ const copy = {
     privacyText:
       "公开 Demo 只在浏览器本地解析 CSV，不上传、不保存。申请人工诊断前，请移除 App ID、精确 App 名称和任何私密账号标识。",
     tryDemo: "试用演示",
+    tryThisSample: "试用 14 天演示",
     dataSafety: "数据安全"
   }
 };
@@ -214,10 +217,18 @@ export function TemplatesContent() {
             <h2>{template[lang].title}</h2>
             <p>{template[lang].note}</p>
             <code>{template.fields}</code>
-            <a className="primary-action" download href={template.href}>
-              <Download size={18} aria-hidden="true" />
-              {t.download}
-            </a>
+            <div className="resource-card-actions">
+              <a className="primary-action" download href={template.href}>
+                <Download size={18} aria-hidden="true" />
+                {t.download}
+              </a>
+              {template.demoHref ? (
+                <a className="secondary-action" href={template.demoHref}>
+                  <Play size={18} aria-hidden="true" />
+                  {t.tryThisSample}
+                </a>
+              ) : null}
+            </div>
           </article>
         ))}
       </section>
