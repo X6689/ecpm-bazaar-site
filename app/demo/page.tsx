@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -161,6 +161,22 @@ const displayFields: CsvField[] = [
   "clicks",
   "fillRate"
 ];
+
+function normalizeScenarioId(value: string | null): DemoScenarioId | null {
+  if (demoScenarios.some((scenario) => scenario.id === value)) {
+    return value as DemoScenarioId;
+  }
+
+  return null;
+}
+
+function normalizeComparisonMode(value: string | null): ComparisonMode | null {
+  if (value === "latest-day" || value === "last-7-days") {
+    return value;
+  }
+
+  return null;
+}
 
 const copy = {
   en: {
@@ -876,6 +892,60 @@ export default function DemoPage() {
           : source === "scenario"
             ? `${t.sourceScenario}: ${activeScenario.title[lang]}`
             : t.sourceDemo;
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const linkedComparisonMode = normalizeComparisonMode(params.get("compare"));
+    const linkedScenarioId = normalizeScenarioId(params.get("case"));
+
+    if (linkedComparisonMode) {
+      setComparisonMode(linkedComparisonMode);
+    }
+
+    if (linkedScenarioId) {
+      const scenario = demoScenarios.find((item) => item.id === linkedScenarioId) ?? demoScenarios[0];
+      const parsed = parseCsv(metricRowsToCsv(scenario.rows));
+      setRows(parsed.rows);
+      setFieldStatuses(parsed.fields);
+      setCsvIssues(parsed.issues);
+      setSource("scenario");
+      setActiveScenarioId(scenario.id);
+      setPastedCsv(metricRowsToCsv(scenario.rows));
+    }
+  }, []);
+
+  function buildDemoUrl(scenarioId: DemoScenarioId | null, mode: ComparisonMode) {
+    if (typeof window === "undefined") {
+      return "";
+    }
+
+    const url = new URL("/demo/", window.location.origin);
+    if (scenarioId) {
+      url.searchParams.set("case", scenarioId);
+    }
+    if (mode !== "latest-day") {
+      url.searchParams.set("compare", mode);
+    }
+    return url.toString();
+  }
+
+  function replaceDemoUrl(scenarioId: DemoScenarioId | null, mode: ComparisonMode) {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const url = buildDemoUrl(scenarioId, mode);
+    window.history.replaceState(null, "", url);
+  }
+
+  function shouldShareScenario(nextSource = source) {
+    return nextSource === "demo" || nextSource === "sample" || nextSource === "scenario";
+  }
+
   const dataIssues = useMemo(() => {
     const issues = new Set(csvIssues);
     if (rows.length > 0 && report.previousDate && report.currentDate && !report.largestDrop) {
@@ -1096,6 +1166,7 @@ export default function DemoPage() {
       setSource("upload");
       setError("");
       setManualCopyText("");
+      replaceDemoUrl(null, comparisonMode);
     } catch {
       setError(t.parseError);
     }
@@ -1110,6 +1181,7 @@ export default function DemoPage() {
       setSource("paste");
       setError("");
       setManualCopyText("");
+      replaceDemoUrl(null, comparisonMode);
     } catch {
       setError(t.parseError);
     }
@@ -1126,6 +1198,7 @@ export default function DemoPage() {
     setActiveScenarioId(demoScenarios[0].id);
     setPastedCsv(csv);
     setManualCopyText("");
+    replaceDemoUrl(demoScenarios[0].id, comparisonMode);
   }
 
   function loadScenario(scenarioId: DemoScenarioId) {
@@ -1140,6 +1213,7 @@ export default function DemoPage() {
     setError("");
     setPastedCsv(csv);
     setManualCopyText("");
+    replaceDemoUrl(scenario.id, comparisonMode);
   }
 
   function resetDemo() {
@@ -1148,13 +1222,20 @@ export default function DemoPage() {
     setCsvIssues([]);
     setSource("demo");
     setActiveScenarioId(demoScenarios[0].id);
+    setComparisonMode("latest-day");
     setError("");
     setPastedCsv("");
     setManualCopyText("");
+    replaceDemoUrl(null, "latest-day");
+  }
+
+  function selectComparisonMode(mode: ComparisonMode) {
+    setComparisonMode(mode);
+    replaceDemoUrl(shouldShareScenario() ? activeScenarioId : null, mode);
   }
 
   async function copyDemoLink() {
-    const url = typeof window === "undefined" ? "" : window.location.href;
+    const url = buildDemoUrl(shouldShareScenario() ? activeScenarioId : null, comparisonMode);
     if (await writeClipboardText(url)) {
       setCopied(true);
       setManualCopyText("");
@@ -1391,7 +1472,7 @@ export default function DemoPage() {
             aria-pressed={comparisonMode === "latest-day"}
             className={comparisonMode === "latest-day" ? "comparison-option active" : "comparison-option"}
             type="button"
-            onClick={() => setComparisonMode("latest-day")}
+            onClick={() => selectComparisonMode("latest-day")}
           >
             <strong>{t.latestDay}</strong>
             <span>{t.latestDayHelp}</span>
@@ -1400,7 +1481,7 @@ export default function DemoPage() {
             aria-pressed={comparisonMode === "last-7-days"}
             className={comparisonMode === "last-7-days" ? "comparison-option active" : "comparison-option"}
             type="button"
-            onClick={() => setComparisonMode("last-7-days")}
+            onClick={() => selectComparisonMode("last-7-days")}
           >
             <strong>{t.lastSevenDays}</strong>
             <span>{t.lastSevenDaysHelp}</span>

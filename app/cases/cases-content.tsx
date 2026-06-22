@@ -1,11 +1,47 @@
 "use client";
 
-import { ArrowLeft, BarChart3, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, BarChart3, CheckCircle2, Play } from "lucide-react";
+import type { DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
 import { SiteFooter } from "../site-footer";
 
-const cases = [
+type DiagnosisCase = {
+  scenarioId: DemoScenarioId;
+  en: {
+    title: string;
+    signal: string;
+    diagnosis: string;
+    checks: string[];
+    card: {
+      problem: string;
+      cause: string;
+      severity: string;
+      country: string;
+      placement: string;
+      source: string;
+      action: string;
+    };
+  };
+  zh: {
+    title: string;
+    signal: string;
+    diagnosis: string;
+    checks: string[];
+    card: {
+      problem: string;
+      cause: string;
+      severity: string;
+      country: string;
+      placement: string;
+      source: string;
+      action: string;
+    };
+  };
+};
+
+const cases: DiagnosisCase[] = [
   {
+    scenarioId: "ecpm-drop",
     en: {
       title: "Case 1: eCPM dropped, traffic stayed stable",
       signal: "Revenue fell 24%. Impressions were almost flat, but weighted eCPM dropped from $18.40 to $13.90.",
@@ -40,6 +76,7 @@ const cases = [
     }
   },
   {
+    scenarioId: "fill-rate-drop",
     en: {
       title: "Case 2: fill rate dropped before revenue dropped",
       signal: "Revenue fell 31%. eCPM stayed close to normal, but fill rate moved from 78% to 54%.",
@@ -74,6 +111,7 @@ const cases = [
     }
   },
   {
+    scenarioId: "country-mix",
     en: {
       title: "Case 3: country mix made eCPM look worse",
       signal: "Total eCPM dropped 18%, but US eCPM was stable. More impressions came from lower-eCPM countries.",
@@ -131,6 +169,7 @@ const copy = {
     ctaTitle: "Want to test your own data?",
     ctaText: "Use the browser-only demo or send anonymized fields for a free manual diagnosis.",
     tryDemo: "Try demo",
+    tryThisCase: "Try this case in demo",
     freeDiagnosis: "Free diagnosis",
     faq: "FAQ"
   },
@@ -155,6 +194,7 @@ const copy = {
     ctaTitle: "想测试自己的数据？",
     ctaText: "可以使用浏览器本地 Demo，也可以发送脱敏字段申请一次免费人工诊断。",
     tryDemo: "试用演示",
+    tryThisCase: "在 Demo 中打开这个案例",
     freeDiagnosis: "免费诊断",
     faq: "常见问题"
   }
@@ -244,6 +284,10 @@ export function CasesContent() {
                     </span>
                   ))}
                 </div>
+                <a className="case-demo-link" href={`../demo/?case=${item.scenarioId}`}>
+                  <Play size={17} aria-hidden="true" />
+                  {t.tryThisCase}
+                </a>
               </div>
             </article>
           );

@@ -2472,6 +2472,20 @@ p {
   margin-top: 1px;
 }
 
+.case-demo-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 15px;
+  border-radius: 8px;
+  background: var(--deep);
+  color: #effff7;
+  font-size: 14px;
+  font-weight: 800;
+}
+
 .diagnosis-output-section {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.56fr);
@@ -2812,6 +2826,7 @@ p {
 
   .resource-cta .primary-action,
   .resource-cta .secondary-action,
+  .case-demo-link,
   .not-found-actions .primary-action,
   .not-found-actions .secondary-action,
   .not-found-actions .ghost-action,
