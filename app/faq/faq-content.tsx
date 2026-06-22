@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { ArrowLeft, CircleHelp, Mail } from "lucide-react";
-
-type Lang = "en" | "zh";
+import { useLanguagePreference } from "@/lib/language";
 
 const faqs = [
   {
@@ -127,7 +125,7 @@ const copy = {
 };
 
 export function FaqContent() {
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLang] = useLanguagePreference("en");
   const t = copy[lang];
 
   return (

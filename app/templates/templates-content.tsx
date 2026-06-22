@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { ArrowLeft, Download, FileSpreadsheet, ShieldCheck } from "lucide-react";
-
-type Lang = "en" | "zh";
+import { useLanguagePreference } from "@/lib/language";
 
 const templates = [
   {
@@ -130,7 +128,7 @@ const copy = {
 };
 
 export function TemplatesContent() {
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLang] = useLanguagePreference("en");
   const t = copy[lang];
 
   return (

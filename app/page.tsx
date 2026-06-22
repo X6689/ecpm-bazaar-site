@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   ArrowUpRight,
   CheckCircle2,
@@ -15,8 +14,7 @@ import {
   TriangleAlert,
   Users
 } from "lucide-react";
-
-type Lang = "zh" | "en";
+import { useLanguagePreference } from "@/lib/language";
 
 const contactEmail = "xmmyy168@gmail.com";
 
@@ -260,7 +258,7 @@ const copy = {
 };
 
 export default function Home() {
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLang] = useLanguagePreference("en");
   const t = copy[lang];
   const mailto = `mailto:${contactEmail}`;
 

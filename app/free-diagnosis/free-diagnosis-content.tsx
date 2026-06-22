@@ -1,10 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ArrowLeft, CheckCircle2, Mail, ShieldCheck } from "lucide-react";
+import { useLanguagePreference } from "@/lib/language";
 import { CopyEmailPanel } from "./copy-email-panel";
-
-type Lang = "en" | "zh";
 
 const email = "xmmyy168@gmail.com";
 const subject = "Free eCPM Bazaar diagnosis";
@@ -175,7 +174,7 @@ const copy = {
 };
 
 export function FreeDiagnosisContent() {
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLang] = useLanguagePreference("en");
   const t = copy[lang];
   const mailto = useMemo(
     () => `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(t.requestBody)}`,

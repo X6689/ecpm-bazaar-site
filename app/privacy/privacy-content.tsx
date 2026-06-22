@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { ArrowLeft, Mail, ShieldCheck } from "lucide-react";
-
-type Lang = "en" | "zh";
+import { useLanguagePreference } from "@/lib/language";
 
 const principles = [
   {
@@ -111,7 +109,7 @@ const copy = {
 };
 
 export function PrivacyContent() {
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLang] = useLanguagePreference("en");
   const t = copy[lang];
 
   return (

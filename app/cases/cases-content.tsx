@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { ArrowLeft, BarChart3, CheckCircle2 } from "lucide-react";
-
-type Lang = "en" | "zh";
+import { useLanguagePreference } from "@/lib/language";
 
 const cases = [
   {
@@ -162,7 +160,7 @@ const copy = {
 };
 
 export function CasesContent() {
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLang] = useLanguagePreference("en");
   const t = copy[lang];
 
   return (

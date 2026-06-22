@@ -17,9 +17,9 @@ import {
 } from "lucide-react";
 import { writeClipboardText } from "@/lib/clipboard";
 import { demoRows } from "@/lib/demo-data";
+import { useLanguagePreference } from "@/lib/language";
 import type { MetricRow } from "@/lib/types";
 
-type Lang = "en" | "zh";
 type Driver = "revenue" | "impressions" | "ecpm" | "fillRate";
 type DiagnosisSeverity = "high" | "medium" | "low";
 type BreakdownRow = {
@@ -731,7 +731,7 @@ function diagnose(rows: MetricRow[]) {
 }
 
 export default function DemoPage() {
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLang] = useLanguagePreference("en");
   const [rows, setRows] = useState<MetricRow[]>(demoRows);
   const [fieldStatuses, setFieldStatuses] = useState<FieldStatus[]>(createFieldStatuses());
   const [csvIssues, setCsvIssues] = useState<IssueKey[]>([]);
