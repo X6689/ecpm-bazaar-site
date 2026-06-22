@@ -228,6 +228,7 @@ const copy = {
     needsWork: "Needs field mapping",
     templates: "CSV templates",
     contact: "Free diagnosis",
+    requestReview: "Request review",
     sourceSample: "Sample CSV loaded",
     sourceFourteenDaySample: "14-day sample loaded",
     sourceScenario: "Diagnosis case loaded",
@@ -357,6 +358,7 @@ const copy = {
     needsWork: "需要调整字段",
     templates: "CSV 模板",
     contact: "免费诊断",
+    requestReview: "申请复查",
     sourceSample: "已载入样例 CSV",
     sourceFourteenDaySample: "已载入 14 天样例",
     sourceScenario: "已载入诊断案例",
@@ -974,6 +976,12 @@ export default function DemoPage() {
   function shouldShareFourteenDaySample(nextSource = source) {
     return nextSource === "sample14";
   }
+
+  const freeDiagnosisHref = shouldShareFourteenDaySample()
+    ? "../free-diagnosis/?sample=14-day"
+    : shouldShareScenario()
+      ? `../free-diagnosis/?case=${activeScenarioId}`
+      : "../free-diagnosis/";
 
   const dataIssues = useMemo(() => {
     const issues = new Set(csvIssues);
@@ -1861,9 +1869,9 @@ export default function DemoPage() {
       <section className="demo-panel data-panel">
         <div className="demo-panel-header">
           <h2>{t.dataPreview}</h2>
-          <a href="../free-diagnosis/">
+          <a href={freeDiagnosisHref}>
             <Mail size={17} aria-hidden="true" />
-            {t.contact}
+            {t.requestReview}
           </a>
         </div>
         <div className="demo-table-wrap">

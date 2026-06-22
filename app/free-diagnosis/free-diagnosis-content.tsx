@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, CheckCircle2, Mail, Play, ShieldCheck } from "lucide-react";
-import { demoScenarios, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
+import { demoScenarios, fourteenDaySampleRows, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
 import { CopyEmailPanel, type DiagnosisRequestPreset } from "./copy-email-panel";
 import { SiteFooter } from "../site-footer";
@@ -10,6 +10,7 @@ import { SiteFooter } from "../site-footer";
 const email = "xmmyy168@gmail.com";
 const subject = "Free eCPM Bazaar diagnosis";
 const fieldList = "date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks";
+type DemoSampleId = "14-day";
 const changeIndexByCase: Record<DemoScenarioId, number> = {
   "ecpm-drop": 1,
   "fill-rate-drop": 2,
@@ -22,6 +23,10 @@ function normalizeScenarioId(value: string | null): DemoScenarioId | null {
   }
 
   return null;
+}
+
+function normalizeSampleId(value: string | null): DemoSampleId | null {
+  return value === "14-day" ? value : null;
 }
 
 const copy = {
@@ -89,6 +94,10 @@ const copy = {
     caseLoadedTitle: "This request has been prefilled from a diagnosis case.",
     caseLoadedText:
       "Use it as a starter. Replace the sample rows with your own anonymized data before sending the request.",
+    sampleLoadedLabel: "Sample loaded",
+    sampleLoadedTitle: "This request has been prefilled from the 14-day demo sample.",
+    sampleLoadedText:
+      "Use this to test the manual diagnosis workflow. Replace the sample rows with your own anonymized export before sending.",
     openCaseDemo: "Open matching demo",
     safetyTitle: "No credentials needed",
     safetyText:
@@ -173,6 +182,9 @@ const copy = {
     caseLoadedLabel: "已载入案例",
     caseLoadedTitle: "这封请求已根据诊断案例预填。",
     caseLoadedText: "可以把它当成起点。发送前，把样例数据行替换成你自己的脱敏数据。",
+    sampleLoadedLabel: "已载入样例",
+    sampleLoadedTitle: "这封请求已根据 14 天 Demo 样例预填。",
+    sampleLoadedText: "可以用它测试人工诊断流程。发送前，把样例数据替换成你自己的脱敏导出数据。",
     openCaseDemo: "打开对应 Demo",
     safetyTitle: "不需要账号权限",
     safetyText:
@@ -200,32 +212,72 @@ const copy = {
 export function FreeDiagnosisContent() {
   const [lang, setLang] = useLanguagePreference("en");
   const [caseId, setCaseId] = useState<DemoScenarioId | null>(null);
+  const [sampleId, setSampleId] = useState<DemoSampleId | null>(null);
   const t = copy[lang];
   const activeScenario = useMemo(() => demoScenarios.find((scenario) => scenario.id === caseId) ?? null, [caseId]);
+  const activeSample = sampleId === "14-day";
   const preset = useMemo<DiagnosisRequestPreset | null>(() => {
-    if (!activeScenario) {
-      return null;
+    if (activeSample) {
+      return {
+        key: `${lang}-14-day-sample`,
+        platform: "AdMob",
+        changeIndex: 1,
+        periodIndex: 1,
+        notes:
+          lang === "zh"
+            ? "我正在参考 eCPM Bazaar 的 14 天样例。我的数据也想按最近 7 天 vs 前 7 天做对比，请帮我判断主要收入变化原因和优先检查项。"
+            : "I am using the eCPM Bazaar 14-day sample as a reference. I want to compare the latest 7 days against the previous 7 days and identify the main driver plus first checks.",
+        dataSample: metricRowsToCsv(fourteenDaySampleRows)
+      };
     }
 
-    return {
-      key: `${lang}-${activeScenario.id}`,
-      platform: activeScenario.id === "fill-rate-drop" ? "Unity LevelPlay" : activeScenario.id === "country-mix" ? "Other" : "AdMob",
-      changeIndex: changeIndexByCase[activeScenario.id],
-      periodIndex: 0,
-      notes:
-        lang === "zh"
-          ? `我正在参考 eCPM Bazaar 的「${activeScenario.title.zh}」案例。我的数据可能也有类似问题：${activeScenario.description.zh}。请帮我判断主要原因和优先检查项。`
-          : `I am using the eCPM Bazaar "${activeScenario.title.en}" case as a reference. My data may show a similar pattern: ${activeScenario.description.en}. Please help me identify the main driver and first checks.`,
-      dataSample: metricRowsToCsv(activeScenario.rows)
-    };
-  }, [activeScenario, lang]);
+    if (activeScenario) {
+      return {
+        key: `${lang}-${activeScenario.id}`,
+        platform: activeScenario.id === "fill-rate-drop" ? "Unity LevelPlay" : activeScenario.id === "country-mix" ? "Other" : "AdMob",
+        changeIndex: changeIndexByCase[activeScenario.id],
+        periodIndex: 0,
+        notes:
+          lang === "zh"
+            ? `我正在参考 eCPM Bazaar 的「${activeScenario.title.zh}」案例。我的数据可能也有类似问题：${activeScenario.description.zh}。请帮我判断主要原因和优先检查项。`
+            : `I am using the eCPM Bazaar "${activeScenario.title.en}" case as a reference. My data may show a similar pattern: ${activeScenario.description.en}. Please help me identify the main driver and first checks.`,
+        dataSample: metricRowsToCsv(activeScenario.rows)
+      };
+    }
+
+    return null;
+  }, [activeSample, activeScenario, lang]);
+  const prefillNote = useMemo(() => {
+    if (activeSample) {
+      return {
+        label: t.sampleLoadedLabel,
+        title: t.sampleLoadedTitle,
+        text: t.sampleLoadedText,
+        href: "../demo/?sample=14-day&compare=last-7-days"
+      };
+    }
+
+    if (activeScenario) {
+      return {
+        label: t.caseLoadedLabel,
+        title: t.caseLoadedTitle,
+        text: t.caseLoadedText,
+        href: `../demo/?case=${activeScenario.id}`
+      };
+    }
+
+    return null;
+  }, [activeSample, activeScenario, t]);
   const mailto = useMemo(
     () => `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(t.requestBody)}`,
     [t.requestBody]
   );
 
   useEffect(() => {
-    setCaseId(normalizeScenarioId(new URLSearchParams(window.location.search).get("case")));
+    const params = new URLSearchParams(window.location.search);
+    const linkedSampleId = normalizeSampleId(params.get("sample"));
+    setSampleId(linkedSampleId);
+    setCaseId(linkedSampleId ? null : normalizeScenarioId(params.get("case")));
   }, []);
 
   return (
@@ -331,12 +383,12 @@ export function FreeDiagnosisContent() {
         <div>
           <p className="section-label">{t.builderLabel}</p>
           <h2>{t.builderTitle}</h2>
-          {activeScenario ? (
+          {prefillNote ? (
             <div className="case-prefill-note">
-              <p className="section-label">{t.caseLoadedLabel}</p>
-              <h3>{t.caseLoadedTitle}</h3>
-              <p>{t.caseLoadedText}</p>
-              <a href={`../demo/?case=${activeScenario.id}`}>
+              <p className="section-label">{prefillNote.label}</p>
+              <h3>{prefillNote.title}</h3>
+              <p>{prefillNote.text}</p>
+              <a href={prefillNote.href}>
                 <Play size={16} aria-hidden="true" />
                 {t.openCaseDemo}
               </a>
