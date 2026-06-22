@@ -2703,6 +2703,46 @@ p {
   color: #1e40af;
 }
 
+.not-found-page {
+  min-height: 100vh;
+  padding: 32px 0 72px;
+  background:
+    linear-gradient(180deg, rgb(247 248 244 / 95%), rgb(247 248 244 / 100%)),
+    radial-gradient(circle at 78% 2%, rgb(15 118 110 / 13%), transparent 28%);
+}
+
+.not-found-panel {
+  display: grid;
+  gap: 18px;
+  width: min(920px, calc(100% - 40px));
+  margin: 44px auto 52px;
+  padding: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 80%);
+  box-shadow: 0 24px 70px rgb(16 37 31 / 8%);
+}
+
+.not-found-panel h1 {
+  max-width: 760px;
+  font-size: clamp(38px, 6vw, 64px);
+  line-height: 1.04;
+}
+
+.not-found-panel > p:last-of-type {
+  max-width: 720px;
+  color: #4e5b56;
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+
 @media (max-width: 880px) {
   .template-grid,
   .field-section,
@@ -2715,6 +2755,10 @@ p {
   .resource-cta {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .not-found-panel {
+    padding: 28px 20px;
   }
 }
 
@@ -2768,6 +2812,9 @@ p {
 
   .resource-cta .primary-action,
   .resource-cta .secondary-action,
+  .not-found-actions .primary-action,
+  .not-found-actions .secondary-action,
+  .not-found-actions .ghost-action,
   .copy-actions .primary-action,
   .form-footer .primary-action,
   .paste-actions .primary-action,

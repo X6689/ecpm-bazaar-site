@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
+import { siteDescription, siteTitle, siteUrl } from "@/lib/site-metadata";
 import "./globals.css";
-
-const siteUrl = new URL("https://ecpmbazaar.com");
-const siteTitle = "eCPM Bazaar | Diagnose mobile game ad revenue drops";
-const siteDescription =
-  "eCPM Bazaar helps small mobile game and app teams diagnose why ad revenue dropped across eCPM, fill rate, impressions, countries, placements, and ad sources.";
 
 export const metadata: Metadata = {
   metadataBase: siteUrl,
@@ -51,10 +47,6 @@ export const metadata: Metadata = {
     title: siteTitle,
     description: siteDescription,
     images: ["/og-image.png"]
-  },
-  robots: {
-    index: true,
-    follow: true
   }
 };
 
