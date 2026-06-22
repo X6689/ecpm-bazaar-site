@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, BarChart3, CheckCircle2, Copy, Play } from "lucide-react";
+import { ArrowLeft, BarChart3, CheckCircle2, Copy, Mail, Play } from "lucide-react";
 import type { DemoScenarioId } from "@/lib/demo-data";
 import { writeClipboardText } from "@/lib/clipboard";
 import { useLanguagePreference } from "@/lib/language";
@@ -172,6 +172,7 @@ const copy = {
     ctaText: "Use the browser-only demo or send anonymized fields for a free manual diagnosis.",
     tryDemo: "Try demo",
     tryThisCase: "Try this case in demo",
+    requestThisCase: "Request diagnosis",
     copyCaseLink: "Copy case link",
     copiedCaseLink: "Copied link",
     freeDiagnosis: "Free diagnosis",
@@ -199,6 +200,7 @@ const copy = {
     ctaText: "可以使用浏览器本地 Demo，也可以发送脱敏字段申请一次免费人工诊断。",
     tryDemo: "试用演示",
     tryThisCase: "在 Demo 中打开这个案例",
+    requestThisCase: "申请诊断",
     copyCaseLink: "复制案例链接",
     copiedCaseLink: "已复制链接",
     freeDiagnosis: "免费诊断",
@@ -303,6 +305,10 @@ export function CasesContent() {
                   <a className="case-demo-link" href={`../demo/?case=${item.scenarioId}`}>
                     <Play size={17} aria-hidden="true" />
                     {t.tryThisCase}
+                  </a>
+                  <a className="case-free-link" href={`../free-diagnosis/?case=${item.scenarioId}`}>
+                    <Mail size={17} aria-hidden="true" />
+                    {t.requestThisCase}
                   </a>
                   <button className="case-copy-link" type="button" onClick={() => copyCaseLink(item.scenarioId)}>
                     {copiedCase === item.scenarioId ? <CheckCircle2 size={17} aria-hidden="true" /> : <Copy size={17} aria-hidden="true" />}

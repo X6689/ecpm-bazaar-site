@@ -2488,11 +2488,12 @@ p {
 
 .case-card-actions {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(170px, 0.55fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
-.case-copy-link {
+.case-copy-link,
+.case-free-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2506,6 +2507,15 @@ p {
   cursor: pointer;
   font-size: 14px;
   font-weight: 800;
+}
+
+.case-free-link {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.case-copy-link {
+  grid-column: 1 / -1;
 }
 
 .diagnosis-output-section {
@@ -2586,6 +2596,44 @@ p {
   display: grid;
   gap: 14px;
   min-width: 0;
+}
+
+.case-prefill-note {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 16px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.case-prefill-note h3 {
+  color: var(--deep);
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.case-prefill-note p:not(.section-label) {
+  color: #255f3b;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.case-prefill-note a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #166534;
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .diagnosis-request-form {
@@ -2850,6 +2898,7 @@ p {
   .resource-cta .secondary-action,
   .case-card-actions,
   .case-demo-link,
+  .case-free-link,
   .case-copy-link,
   .not-found-actions .primary-action,
   .not-found-actions .secondary-action,

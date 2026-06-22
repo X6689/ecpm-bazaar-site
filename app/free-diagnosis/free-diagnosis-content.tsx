@@ -1,14 +1,28 @@
 "use client";
 
-import { useMemo } from "react";
-import { ArrowLeft, CheckCircle2, Mail, ShieldCheck } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, CheckCircle2, Mail, Play, ShieldCheck } from "lucide-react";
+import { demoScenarios, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
-import { CopyEmailPanel } from "./copy-email-panel";
+import { CopyEmailPanel, type DiagnosisRequestPreset } from "./copy-email-panel";
 import { SiteFooter } from "../site-footer";
 
 const email = "xmmyy168@gmail.com";
 const subject = "Free eCPM Bazaar diagnosis";
 const fieldList = "date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks";
+const changeIndexByCase: Record<DemoScenarioId, number> = {
+  "ecpm-drop": 1,
+  "fill-rate-drop": 2,
+  "country-mix": 4
+};
+
+function normalizeScenarioId(value: string | null): DemoScenarioId | null {
+  if (demoScenarios.some((scenario) => scenario.id === value)) {
+    return value as DemoScenarioId;
+  }
+
+  return null;
+}
 
 const copy = {
   en: {
@@ -71,6 +85,11 @@ const copy = {
     previewAction: "Check source availability, waterfall / floor settings, and platform status first.",
     builderLabel: "Request builder",
     builderTitle: "Fill this in and generate an email diagnosis request",
+    caseLoadedLabel: "Case loaded",
+    caseLoadedTitle: "This request has been prefilled from a diagnosis case.",
+    caseLoadedText:
+      "Use it as a starter. Replace the sample rows with your own anonymized data before sending the request.",
+    openCaseDemo: "Open matching demo",
     safetyTitle: "No credentials needed",
     safetyText:
       "eCPM Bazaar does not need your AdMob, AppLovin MAX, Unity LevelPlay, TopOn, or Google login. For early feedback, anonymized report rows are enough.",
@@ -151,6 +170,10 @@ const copy = {
     previewAction: "先检查广告源可用性、瀑布流 / 底价配置和平台状态。",
     builderLabel: "请求生成器",
     builderTitle: "填写这些信息，生成一封诊断请求邮件",
+    caseLoadedLabel: "已载入案例",
+    caseLoadedTitle: "这封请求已根据诊断案例预填。",
+    caseLoadedText: "可以把它当成起点。发送前，把样例数据行替换成你自己的脱敏数据。",
+    openCaseDemo: "打开对应 Demo",
     safetyTitle: "不需要账号权限",
     safetyText:
       "eCPM Bazaar 不需要你的 AdMob、AppLovin MAX、Unity LevelPlay、TopOn 或 Google 登录权限。早期反馈只需要脱敏报表行。",
@@ -176,11 +199,34 @@ const copy = {
 
 export function FreeDiagnosisContent() {
   const [lang, setLang] = useLanguagePreference("en");
+  const [caseId, setCaseId] = useState<DemoScenarioId | null>(null);
   const t = copy[lang];
+  const activeScenario = useMemo(() => demoScenarios.find((scenario) => scenario.id === caseId) ?? null, [caseId]);
+  const preset = useMemo<DiagnosisRequestPreset | null>(() => {
+    if (!activeScenario) {
+      return null;
+    }
+
+    return {
+      key: `${lang}-${activeScenario.id}`,
+      platform: activeScenario.id === "fill-rate-drop" ? "Unity LevelPlay" : activeScenario.id === "country-mix" ? "Other" : "AdMob",
+      changeIndex: changeIndexByCase[activeScenario.id],
+      periodIndex: 0,
+      notes:
+        lang === "zh"
+          ? `我正在参考 eCPM Bazaar 的「${activeScenario.title.zh}」案例。我的数据可能也有类似问题：${activeScenario.description.zh}。请帮我判断主要原因和优先检查项。`
+          : `I am using the eCPM Bazaar "${activeScenario.title.en}" case as a reference. My data may show a similar pattern: ${activeScenario.description.en}. Please help me identify the main driver and first checks.`,
+      dataSample: metricRowsToCsv(activeScenario.rows)
+    };
+  }, [activeScenario, lang]);
   const mailto = useMemo(
     () => `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(t.requestBody)}`,
     [t.requestBody]
   );
+
+  useEffect(() => {
+    setCaseId(normalizeScenarioId(new URLSearchParams(window.location.search).get("case")));
+  }, []);
 
   return (
     <main className="resource-page" lang={lang === "zh" ? "zh-CN" : "en"}>
@@ -285,8 +331,19 @@ export function FreeDiagnosisContent() {
         <div>
           <p className="section-label">{t.builderLabel}</p>
           <h2>{t.builderTitle}</h2>
+          {activeScenario ? (
+            <div className="case-prefill-note">
+              <p className="section-label">{t.caseLoadedLabel}</p>
+              <h3>{t.caseLoadedTitle}</h3>
+              <p>{t.caseLoadedText}</p>
+              <a href={`../demo/?case=${activeScenario.id}`}>
+                <Play size={16} aria-hidden="true" />
+                {t.openCaseDemo}
+              </a>
+            </div>
+          ) : null}
         </div>
-        <CopyEmailPanel body={t.requestBody} fieldList={fieldList} lang={lang} mailto={mailto} />
+        <CopyEmailPanel body={t.requestBody} fieldList={fieldList} lang={lang} mailto={mailto} preset={preset} />
       </section>
 
       <section className="resource-cta danger-note">

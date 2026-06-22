@@ -1,16 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle2, Copy, Mail, Send } from "lucide-react";
 import { writeClipboardText } from "@/lib/clipboard";
 
 type Lang = "en" | "zh";
+
+export type DiagnosisRequestPreset = {
+  key: string;
+  platform?: string;
+  changeIndex?: number;
+  periodIndex?: number;
+  notes?: string;
+  dataSample?: string;
+};
 
 type CopyEmailPanelProps = {
   body: string;
   fieldList: string;
   lang?: Lang;
   mailto: string;
+  preset?: DiagnosisRequestPreset | null;
 };
 
 const contactEmail = "xmmyy168@gmail.com";
@@ -99,7 +109,7 @@ function trimOrFallback(value: string, fallback: string) {
   return trimmed.length > 0 ? trimmed : fallback;
 }
 
-export function CopyEmailPanel({ body, fieldList, lang = "en", mailto }: CopyEmailPanelProps) {
+export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }: CopyEmailPanelProps) {
   const [copied, setCopied] = useState<"request" | "body" | "fields" | null>(null);
   const [email, setEmail] = useState("");
   const [platform, setPlatform] = useState(platformOptions[0]);
@@ -109,6 +119,28 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto }: CopyEma
   const [dataSample, setDataSample] = useState("");
   const [openedDraft, setOpenedDraft] = useState(false);
   const t = copy[lang];
+
+  useEffect(() => {
+    if (!preset) {
+      return;
+    }
+
+    if (preset.platform && platformOptions.includes(preset.platform)) {
+      setPlatform(preset.platform);
+    }
+
+    if (typeof preset.changeIndex === "number") {
+      setChangeIndex(preset.changeIndex);
+    }
+
+    if (typeof preset.periodIndex === "number") {
+      setPeriodIndex(preset.periodIndex);
+    }
+
+    setNotes(preset.notes ?? "");
+    setDataSample(preset.dataSample ?? "");
+    setOpenedDraft(false);
+  }, [preset]);
 
   const diagnosisRequest = [
     t.requestIntro,
