@@ -1142,7 +1142,7 @@ export default function DemoPage() {
         `${t.cardPlacement}: ${diagnosisCard.placement}`,
         `${t.cardAdSource}: ${diagnosisCard.adSource}`,
         `${t.cardSuggestedAction}: ${diagnosisCard.suggestedAction}`,
-        "https://ecpmbazaar.com/demo/"
+        "http://ecpmbazaar.com/demo/"
       ].join("\n"),
     [diagnosisCard, t]
   );
@@ -1181,7 +1181,7 @@ export default function DemoPage() {
         "",
         "注意事项：",
         ...caveatLines,
-        "Demo: https://ecpmbazaar.com/demo/"
+        "Demo: http://ecpmbazaar.com/demo/"
       ].filter(Boolean).join("\n");
     }
 
@@ -1206,7 +1206,7 @@ export default function DemoPage() {
       "",
       "Caveats:",
       ...caveatLines,
-      "Demo: https://ecpmbazaar.com/demo/"
+      "Demo: http://ecpmbazaar.com/demo/"
     ].filter(Boolean).join("\n");
   }, [caveats, lang, rankedDrivers, report, suggestedChecks, t.driverLabels]);
 

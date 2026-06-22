@@ -7,8 +7,8 @@ This project is configured as a static Next.js export for Pages/CDN hosting.
 The canonical public site is:
 
 ```text
-https://ecpmbazaar.com/
-https://ecpmbazaar.com/demo/
+http://ecpmbazaar.com/
+http://ecpmbazaar.com/demo/
 ```
 
 Build the custom-domain version without a repo `basePath`:
@@ -20,6 +20,10 @@ npm run build
 
 `public/CNAME` is copied into `out/CNAME` during export so GitHub Pages can bind
 the custom domain.
+
+Do not force HTTPS until GitHub Pages shows a valid certificate for
+`ecpmbazaar.com`. The current metadata and sitemap use HTTP because the public
+HTTP site works while HTTPS may fail during certificate provisioning.
 
 In Squarespace Domains, point the apex domain to GitHub Pages:
 

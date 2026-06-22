@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const siteUrl = new URL("https://ecpmbazaar.com");
+export const siteUrl = new URL("http://ecpmbazaar.com");
 
 export const siteTitle = "eCPM Bazaar | Diagnose mobile game ad revenue drops";
 
