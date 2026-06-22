@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowLeft, Mail, ShieldCheck } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Mail, ShieldCheck } from "lucide-react";
 import { CopyEmailPanel } from "./copy-email-panel";
 
 export const metadata: Metadata = {
@@ -20,6 +20,7 @@ const body = [
   "App type: mobile game / app",
   "What changed: revenue / eCPM / impressions / fill rate / country mix / ad source",
   "Comparison period: latest day vs previous day / last 7 days vs previous 7 days",
+  "Preferred output: diagnosis card + paste-ready short report",
   "",
   "I can share anonymized rows with these fields:",
   fieldList,
@@ -40,6 +41,21 @@ const steps = [
   {
     title: "3. Send fields, not account access",
     text: "CSV rows are enough for early diagnosis. Do not send passwords, login sessions, API keys, or private account screenshots."
+  }
+];
+
+const outputs = [
+  {
+    label: "Diagnosis card",
+    value: "Problem, main cause, severity, country, placement, ad source, and next action."
+  },
+  {
+    label: "Paste-ready report",
+    value: "A short explanation you can paste into email, Reddit, or an internal team thread."
+  },
+  {
+    label: "First checks",
+    value: "A small priority list so you know what to inspect before changing mediation settings."
   }
 ];
 
@@ -92,6 +108,54 @@ export default function FreeDiagnosisPage() {
             <p>{step.text}</p>
           </article>
         ))}
+      </section>
+
+      <section className="diagnosis-output-section" aria-label="What you get back">
+        <div className="diagnosis-output-copy">
+          <p className="section-label">What you get back</p>
+          <h2>A diagnosis card and a short report, not a sales call.</h2>
+          <p>
+            The first version is intentionally lightweight. I will look at the anonymized rows and return a clear
+            diagnosis you can act on or discuss with your team.
+          </p>
+          <div className="diagnosis-output-list">
+            {outputs.map((item) => (
+              <span key={item.label}>
+                <CheckCircle2 size={17} aria-hidden="true" />
+                <strong>{item.label}</strong>
+                {item.value}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="mini-diagnosis-card free-diagnosis-preview-card">
+          <span className="share-card-brand">eCPM Bazaar</span>
+          <h3>Revenue dropped 31%</h3>
+          <div className="mini-cause">
+            <span>Main cause</span>
+            <strong>Fill rate dropped</strong>
+          </div>
+          <dl>
+            <div>
+              <dt>Severity</dt>
+              <dd>High</dd>
+            </div>
+            <div>
+              <dt>Country</dt>
+              <dd>United States</dd>
+            </div>
+            <div>
+              <dt>Placement</dt>
+              <dd>Rewarded Video</dd>
+            </div>
+            <div>
+              <dt>Ad source</dt>
+              <dd>Unity Ads</dd>
+            </div>
+          </dl>
+          <p>Check source availability, waterfall / floor settings, and platform status first.</p>
+        </div>
       </section>
 
       <section className="field-section">

@@ -42,6 +42,21 @@ const copy = {
     tertiary: "下载 CSV 模板",
     trustItems: ["无需注册或后台登录", "无需 SDK 或 API 授权", "只看脱敏报表字段", "可复制结果到 Reddit / 邮件讨论"],
     driverChips: ["eCPM", "展示量", "填充率", "国家结构", "广告位", "广告源"],
+    cardSectionLabel: "Diagnosis Card",
+    cardSectionTitle: "把广告收入下降，变成一张看得懂、能分享、能行动的诊断卡。",
+    cardSectionText:
+      "Demo 不只是展示图表，还会把 CSV 里的变化整理成一张短诊断卡：问题是什么、主要原因是什么、影响哪个国家/广告位/广告源、下一步该先查哪里。",
+    cardSectionPoints: ["适合发到团队群、邮件或 Reddit", "比一屏指标更容易让别人理解", "后续免费诊断也会按这个格式返回"],
+    homeCardHeadline: "收入下降诊断卡",
+    homeCardProblem: "收入下降 31%，但 eCPM 基本稳定。",
+    homeCardDetails: [
+      { label: "主要原因", value: "填充率下降" },
+      { label: "国家地区", value: "美国" },
+      { label: "广告位", value: "激励视频" },
+      { label: "广告源", value: "Unity Ads" }
+    ],
+    homeCardActionLabel: "建议动作",
+    homeCardAction: "先检查该广告源可用性、瀑布流/底价配置和平台状态。",
     validationLabel: "Free Test Diagnosis",
     validationTitle: "正在寻找首批 10 个小型游戏/App 团队测试诊断流程。",
     validationText:
@@ -145,6 +160,21 @@ const copy = {
     tertiary: "Download CSV templates",
     trustItems: ["No signup or dashboard login", "No SDK or API permission", "Anonymized report fields only", "Copy results into Reddit or email"],
     driverChips: ["eCPM", "Impressions", "Fill rate", "Country mix", "Placement", "Ad source"],
+    cardSectionLabel: "Diagnosis Card",
+    cardSectionTitle: "Turn an ad revenue drop into a card your team can understand and act on.",
+    cardSectionText:
+      "The demo does more than show metrics. It turns CSV changes into a short diagnosis card: what happened, the likely driver, which country / placement / ad source was affected, and what to check first.",
+    cardSectionPoints: ["Useful for team chat, email, or Reddit replies", "Easier to understand than a wall of metrics", "Free diagnosis requests will use the same output shape"],
+    homeCardHeadline: "Revenue drop diagnosis card",
+    homeCardProblem: "Revenue dropped 31%, while eCPM stayed close to normal.",
+    homeCardDetails: [
+      { label: "Main cause", value: "Fill rate dropped" },
+      { label: "Country", value: "United States" },
+      { label: "Placement", value: "Rewarded Video" },
+      { label: "Ad source", value: "Unity Ads" }
+    ],
+    homeCardActionLabel: "Suggested action",
+    homeCardAction: "Check source availability, waterfall / floor settings, and platform status first.",
     validationLabel: "Free Test Diagnosis",
     validationTitle: "Looking for the first 10 small game/app teams to test the workflow.",
     validationText:
@@ -351,6 +381,52 @@ export default function Home() {
                 <i style={{ width: driver.width }} />
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="home-card-section" aria-label={t.cardSectionLabel}>
+        <div className="home-card-copy">
+          <p className="section-label">
+            <CheckCircle2 size={16} aria-hidden="true" />
+            {t.cardSectionLabel}
+          </p>
+          <h2>{t.cardSectionTitle}</h2>
+          <p>{t.cardSectionText}</p>
+          <div className="home-card-points">
+            {t.cardSectionPoints.map((item) => (
+              <span key={item}>
+                <CheckCircle2 size={16} aria-hidden="true" />
+                {item}
+              </span>
+            ))}
+          </div>
+          <div className="validation-actions">
+            <a className="primary-action" href="demo/">
+              {t.secondary}
+              <ArrowUpRight size={18} aria-hidden="true" />
+            </a>
+            <a className="secondary-action" href="free-diagnosis/">
+              {t.primary}
+            </a>
+          </div>
+        </div>
+
+        <div className="home-diagnosis-card" aria-label={t.homeCardHeadline}>
+          <span className="share-card-brand">eCPM Bazaar</span>
+          <h3>{t.homeCardHeadline}</h3>
+          <p>{t.homeCardProblem}</p>
+          <dl>
+            {t.homeCardDetails.map((detail) => (
+              <div key={detail.label}>
+                <dt>{detail.label}</dt>
+                <dd>{detail.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="home-card-action">
+            <span>{t.homeCardActionLabel}</span>
+            <p>{t.homeCardAction}</p>
           </div>
         </div>
       </section>

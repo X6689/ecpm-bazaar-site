@@ -40,6 +40,7 @@ export function CopyEmailPanel({ body, fieldList, mailto }: CopyEmailPanelProps)
     `Platform: ${platform}`,
     `Main change: ${changeType}`,
     `Comparison period: ${period}`,
+    "Preferred output: diagnosis card + paste-ready short report",
     "",
     "Context / question:",
     trimOrFallback(notes, "[briefly describe what changed and what you already checked]"),
