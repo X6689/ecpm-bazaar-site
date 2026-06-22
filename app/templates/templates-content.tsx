@@ -40,6 +40,18 @@ const templates = [
       title: "Unity LevelPlay / TopOn 模板",
       note: "适合一行代表日期、国家、广告位和广告源组合的聚合变现报表。"
     }
+  },
+  {
+    href: "14-day-ecpm-bazaar-sample.csv",
+    fields: "14 dates, 2 segments, eCPM-drop example",
+    en: {
+      title: "14-day sample",
+      note: "Use this ready-made sample to test Last 7 days vs previous 7 days in the public demo."
+    },
+    zh: {
+      title: "14 天示例",
+      note: "用这个现成示例测试公开演示里的最近 7 天 vs 前 7 天对比。"
+    }
   }
 ];
 
@@ -75,6 +87,30 @@ const acceptedAliases = [
   ["clicks", "clicks, ad clicks"]
 ] as const;
 
+const comparisonWindows = [
+  [
+    "latest day",
+    {
+      en: "Needs at least 2 report dates. The demo compares the latest date with the previous date.",
+      zh: "至少需要 2 个报表日期。Demo 会比较最近日期和前一个日期。"
+    }
+  ],
+  [
+    "last 7 days",
+    {
+      en: "Needs at least 14 report dates. The demo compares the latest 7 dates with the previous 7 dates.",
+      zh: "至少需要 14 个报表日期。Demo 会比较最近 7 个日期和前 7 个日期。"
+    }
+  ],
+  [
+    "segment rows",
+    {
+      en: "Keep the same app, placement, country, and ad source names across periods so segment drops can be matched.",
+      zh: "两个周期里尽量保持相同的 App、广告位、国家和广告源名称，这样才能匹配分组下滑。"
+    }
+  ]
+] as const;
+
 const copy = {
   en: {
     back: "Back to site",
@@ -87,8 +123,10 @@ const copy = {
     badge: "CSV templates",
     title: "Prepare ad monetization data for diagnosis.",
     lede:
-      "These templates help small mobile game and app teams compare the latest day with the previous day by revenue, weighted eCPM, impressions, fill rate, country, placement, and ad source. You can anonymize app names before using the demo.",
+      "These templates help small mobile game and app teams compare the latest day or latest 7 days against the previous period by revenue, weighted eCPM, impressions, fill rate, country, placement, and ad source. You can anonymize app names before using the demo.",
     download: "Download CSV",
+    comparisonLabel: "Comparison windows",
+    comparisonTitle: "How much data should I prepare?",
     requiredLabel: "Required fields",
     requiredTitle: "Minimum data needed for a useful diagnosis",
     recommendedLabel: "Recommended fields",
@@ -112,8 +150,10 @@ const copy = {
     badge: "CSV 模板",
     title: "准备可用于诊断的广告变现数据。",
     lede:
-      "这些模板帮助小型移动游戏和 App 团队按收入、加权 eCPM、展示量、填充率、国家、广告位和广告源，对比最近一天与前一天。使用 Demo 前可以先把 App 名称脱敏。",
+      "这些模板帮助小型移动游戏和 App 团队按收入、加权 eCPM、展示量、填充率、国家、广告位和广告源，对比最近一天或最近 7 天与上一周期。使用 Demo 前可以先把 App 名称脱敏。",
     download: "下载 CSV",
+    comparisonLabel: "对比周期",
+    comparisonTitle: "应该准备多少数据？",
     requiredLabel: "必填字段",
     requiredTitle: "一次有用诊断需要的最少数据",
     recommendedLabel: "建议字段",
@@ -180,6 +220,25 @@ export function TemplatesContent() {
             </a>
           </article>
         ))}
+      </section>
+
+      <section className="field-section">
+        <div>
+          <p className="section-label">{t.comparisonLabel}</p>
+          <h2>{t.comparisonTitle}</h2>
+        </div>
+        <div className="field-table-wrap">
+          <table className="field-table">
+            <tbody>
+              {comparisonWindows.map(([windowName, description]) => (
+                <tr key={windowName}>
+                  <th>{windowName}</th>
+                  <td>{description[lang]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section className="field-section">

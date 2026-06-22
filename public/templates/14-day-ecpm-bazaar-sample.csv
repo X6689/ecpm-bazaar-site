@@ -1,0 +1,29 @@
+date,appName,placementName,country,network,revenue,ecpm,impressions,requests,fills,clicks
+2026-06-08,Sample Game,Rewarded Home,US,AdMob,120.00,20.00,6000,7800,6900,280
+2026-06-09,Sample Game,Rewarded Home,US,AdMob,122.00,20.00,6100,7900,7000,286
+2026-06-10,Sample Game,Rewarded Home,US,AdMob,118.00,20.00,5900,7700,6800,272
+2026-06-11,Sample Game,Rewarded Home,US,AdMob,124.00,20.00,6200,8050,7100,291
+2026-06-12,Sample Game,Rewarded Home,US,AdMob,126.00,20.00,6300,8150,7200,296
+2026-06-13,Sample Game,Rewarded Home,US,AdMob,121.00,20.00,6050,7850,6950,284
+2026-06-14,Sample Game,Rewarded Home,US,AdMob,123.00,20.00,6150,8000,7050,288
+2026-06-15,Sample Game,Rewarded Home,US,AdMob,88.50,15.00,5900,7900,6900,230
+2026-06-16,Sample Game,Rewarded Home,US,AdMob,90.00,15.00,6000,8000,7000,236
+2026-06-17,Sample Game,Rewarded Home,US,AdMob,87.00,15.00,5800,7750,6800,225
+2026-06-18,Sample Game,Rewarded Home,US,AdMob,91.50,15.00,6100,8100,7100,240
+2026-06-19,Sample Game,Rewarded Home,US,AdMob,93.00,15.00,6200,8200,7200,244
+2026-06-20,Sample Game,Rewarded Home,US,AdMob,89.25,15.00,5950,7950,6950,232
+2026-06-21,Sample Game,Rewarded Home,US,AdMob,90.75,15.00,6050,8050,7050,238
+2026-06-08,Sample Game,Interstitial,BR,AppLovin,42.00,6.00,7000,9000,7900,130
+2026-06-09,Sample Game,Interstitial,BR,AppLovin,42.60,6.00,7100,9100,8000,132
+2026-06-10,Sample Game,Interstitial,BR,AppLovin,41.40,6.00,6900,8900,7800,128
+2026-06-11,Sample Game,Interstitial,BR,AppLovin,43.20,6.00,7200,9200,8100,134
+2026-06-12,Sample Game,Interstitial,BR,AppLovin,43.80,6.00,7300,9300,8200,136
+2026-06-13,Sample Game,Interstitial,BR,AppLovin,42.30,6.00,7050,9050,7950,131
+2026-06-14,Sample Game,Interstitial,BR,AppLovin,42.90,6.00,7150,9150,8050,133
+2026-06-15,Sample Game,Interstitial,BR,AppLovin,42.00,6.00,7000,9000,7900,130
+2026-06-16,Sample Game,Interstitial,BR,AppLovin,42.60,6.00,7100,9100,8000,132
+2026-06-17,Sample Game,Interstitial,BR,AppLovin,41.40,6.00,6900,8900,7800,128
+2026-06-18,Sample Game,Interstitial,BR,AppLovin,43.20,6.00,7200,9200,8100,134
+2026-06-19,Sample Game,Interstitial,BR,AppLovin,43.80,6.00,7300,9300,8200,136
+2026-06-20,Sample Game,Interstitial,BR,AppLovin,42.30,6.00,7050,9050,7950,131
+2026-06-21,Sample Game,Interstitial,BR,AppLovin,42.90,6.00,7150,9150,8050,133

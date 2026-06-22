@@ -4,7 +4,7 @@ import { TemplatesContent } from "./templates-content";
 export const metadata: Metadata = {
   title: "CSV Templates | eCPM Bazaar",
   description:
-    "Download CSV templates for diagnosing mobile ad revenue changes from AdMob, AppLovin MAX, Unity LevelPlay, TopOn, or generic mediation reports."
+    "Download CSV templates and a 14-day sample for diagnosing mobile ad revenue changes from AdMob, AppLovin MAX, Unity LevelPlay, TopOn, or generic mediation reports."
 };
 
 export default function TemplatesPage() {
