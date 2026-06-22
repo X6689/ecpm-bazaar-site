@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, CheckCircle2, Mail, Play, ShieldCheck } from "lucide-react";
 import { demoScenarios, fourteenDaySampleRows, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
+import { demoReviewDraftStorageKey, parseDemoReviewDraft, type DemoReviewDraft } from "@/lib/review-draft";
 import { CopyEmailPanel, type DiagnosisRequestPreset } from "./copy-email-panel";
 import { SiteFooter } from "../site-footer";
 
@@ -98,7 +99,12 @@ const copy = {
     sampleLoadedTitle: "This request has been prefilled from the 14-day demo sample.",
     sampleLoadedText:
       "Use this to test the manual diagnosis workflow. Replace the sample rows with your own anonymized export before sending.",
+    demoDraftLoadedLabel: "Demo draft loaded",
+    demoDraftLoadedTitle: "This request has been prefilled from your current demo result.",
+    demoDraftLoadedText:
+      "The CSV rows and diagnosis summary stayed in your browser session. Review or anonymize them before sending.",
     openCaseDemo: "Open matching demo",
+    openDemo: "Open demo",
     safetyTitle: "No credentials needed",
     safetyText:
       "eCPM Bazaar does not need your AdMob, AppLovin MAX, Unity LevelPlay, TopOn, or Google login. For early feedback, anonymized report rows are enough.",
@@ -185,7 +191,11 @@ const copy = {
     sampleLoadedLabel: "已载入样例",
     sampleLoadedTitle: "这封请求已根据 14 天 Demo 样例预填。",
     sampleLoadedText: "可以用它测试人工诊断流程。发送前，把样例数据替换成你自己的脱敏导出数据。",
+    demoDraftLoadedLabel: "已载入 Demo 草稿",
+    demoDraftLoadedTitle: "这封请求已根据你当前的 Demo 结果预填。",
+    demoDraftLoadedText: "CSV 行和诊断摘要只保存在你的浏览器会话中。发送前请再次检查并脱敏。",
     openCaseDemo: "打开对应 Demo",
+    openDemo: "打开 Demo",
     safetyTitle: "不需要账号权限",
     safetyText:
       "eCPM Bazaar 不需要你的 AdMob、AppLovin MAX、Unity LevelPlay、TopOn 或 Google 登录权限。早期反馈只需要脱敏报表行。",
@@ -213,6 +223,7 @@ export function FreeDiagnosisContent() {
   const [lang, setLang] = useLanguagePreference("en");
   const [caseId, setCaseId] = useState<DemoScenarioId | null>(null);
   const [sampleId, setSampleId] = useState<DemoSampleId | null>(null);
+  const [demoDraft, setDemoDraft] = useState<DemoReviewDraft | null>(null);
   const t = copy[lang];
   const activeScenario = useMemo(() => demoScenarios.find((scenario) => scenario.id === caseId) ?? null, [caseId]);
   const activeSample = sampleId === "14-day";
@@ -245,15 +256,46 @@ export function FreeDiagnosisContent() {
       };
     }
 
+    if (demoDraft) {
+      const rowNote = demoDraft.truncated
+        ? lang === "zh"
+          ? `\n\n注意：草稿只包含前 200 行，共 ${demoDraft.rowCount} 行。请在邮件中附上完整脱敏 CSV。`
+          : `\n\nNote: the draft includes the first 200 rows out of ${demoDraft.rowCount}. Please attach the full anonymized CSV in email.`
+        : "";
+
+      return {
+        key: `${lang}-demo-draft-${demoDraft.createdAt}`,
+        platform: "Other",
+        changeIndex: demoDraft.changeIndex,
+        periodIndex: demoDraft.periodIndex,
+        notes:
+          lang === "zh"
+            ? `我在 eCPM Bazaar 公开 Demo 中生成了一个诊断结果。\n\n数据来源：${demoDraft.sourceLabel}\n对比方式：${demoDraft.comparisonMode}\n\n${demoDraft.diagnosisText}${rowNote}`
+            : `I generated this diagnosis in the public eCPM Bazaar demo.\n\nSource: ${demoDraft.sourceLabel}\nComparison: ${demoDraft.comparisonMode}\n\n${demoDraft.diagnosisText}${rowNote}`,
+        dataSample: demoDraft.dataSample
+      };
+    }
+
     return null;
-  }, [activeSample, activeScenario, lang]);
+  }, [activeSample, activeScenario, demoDraft, lang]);
   const prefillNote = useMemo(() => {
     if (activeSample) {
       return {
         label: t.sampleLoadedLabel,
         title: t.sampleLoadedTitle,
         text: t.sampleLoadedText,
-        href: "../demo/?sample=14-day&compare=last-7-days"
+        href: "../demo/?sample=14-day&compare=last-7-days",
+        linkLabel: t.openDemo
+      };
+    }
+
+    if (demoDraft) {
+      return {
+        label: t.demoDraftLoadedLabel,
+        title: t.demoDraftLoadedTitle,
+        text: t.demoDraftLoadedText,
+        href: "../demo/",
+        linkLabel: t.openDemo
       };
     }
 
@@ -262,12 +304,13 @@ export function FreeDiagnosisContent() {
         label: t.caseLoadedLabel,
         title: t.caseLoadedTitle,
         text: t.caseLoadedText,
-        href: `../demo/?case=${activeScenario.id}`
+        href: `../demo/?case=${activeScenario.id}`,
+        linkLabel: t.openCaseDemo
       };
     }
 
     return null;
-  }, [activeSample, activeScenario, t]);
+  }, [activeSample, activeScenario, demoDraft, t]);
   const mailto = useMemo(
     () => `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(t.requestBody)}`,
     [t.requestBody]
@@ -276,8 +319,10 @@ export function FreeDiagnosisContent() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const linkedSampleId = normalizeSampleId(params.get("sample"));
+    const linkedDraft = params.get("draft") === "demo";
     setSampleId(linkedSampleId);
-    setCaseId(linkedSampleId ? null : normalizeScenarioId(params.get("case")));
+    setDemoDraft(linkedDraft ? parseDemoReviewDraft(window.sessionStorage.getItem(demoReviewDraftStorageKey)) : null);
+    setCaseId(linkedSampleId || linkedDraft ? null : normalizeScenarioId(params.get("case")));
   }, []);
 
   return (
@@ -390,7 +435,7 @@ export function FreeDiagnosisContent() {
               <p>{prefillNote.text}</p>
               <a href={prefillNote.href}>
                 <Play size={16} aria-hidden="true" />
-                {t.openCaseDemo}
+                {prefillNote.linkLabel ?? t.openCaseDemo}
               </a>
             </div>
           ) : null}

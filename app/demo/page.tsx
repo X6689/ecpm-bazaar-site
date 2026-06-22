@@ -18,6 +18,7 @@ import {
 import { writeClipboardText } from "@/lib/clipboard";
 import { demoRows, demoScenarios, fourteenDaySampleRows, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
+import { demoReviewDraftStorageKey, type DemoReviewDraft } from "@/lib/review-draft";
 import type { MetricRow } from "@/lib/types";
 import { SiteFooter } from "../site-footer";
 
@@ -181,6 +182,22 @@ function normalizeComparisonMode(value: string | null): ComparisonMode | null {
 
 function normalizeSampleId(value: string | null): DemoSampleId | null {
   return value === "14-day" ? value : null;
+}
+
+function changeIndexForDriver(driver: Driver) {
+  const indexByDriver: Record<Driver, number> = {
+    revenue: 0,
+    ecpm: 1,
+    fillRate: 2,
+    impressions: 3,
+    countryMix: 4
+  };
+
+  return indexByDriver[driver];
+}
+
+function periodIndexForComparison(mode: ComparisonMode) {
+  return mode === "last-7-days" ? 1 : 0;
 }
 
 const copy = {
@@ -981,7 +998,7 @@ export default function DemoPage() {
     ? "../free-diagnosis/?sample=14-day"
     : shouldShareScenario()
       ? `../free-diagnosis/?case=${activeScenarioId}`
-      : "../free-diagnosis/";
+      : "../free-diagnosis/?draft=demo";
 
   const dataIssues = useMemo(() => {
     const issues = new Set(csvIssues);
@@ -1284,6 +1301,33 @@ export default function DemoPage() {
   function selectComparisonMode(mode: ComparisonMode) {
     setComparisonMode(mode);
     replaceDemoUrl(shouldShareScenario() ? activeScenarioId : null, mode, shouldShareFourteenDaySample() ? "14-day" : null);
+  }
+
+  function saveDemoReviewDraft() {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const maxDraftRows = 200;
+    const draftRows = rows.slice(0, maxDraftRows);
+    const draft: DemoReviewDraft = {
+      version: 1,
+      createdAt: new Date().toISOString(),
+      sourceLabel,
+      comparisonMode,
+      rowCount: rows.length,
+      truncated: rows.length > maxDraftRows,
+      changeIndex: changeIndexForDriver(report.driver),
+      periodIndex: periodIndexForComparison(comparisonMode),
+      diagnosisText,
+      dataSample: metricRowsToCsv(draftRows)
+    };
+
+    try {
+      window.sessionStorage.setItem(demoReviewDraftStorageKey, JSON.stringify(draft));
+    } catch {
+      // If private browsing blocks storage, the normal free diagnosis page still works.
+    }
   }
 
   async function copyDemoLink() {
@@ -1869,7 +1913,7 @@ export default function DemoPage() {
       <section className="demo-panel data-panel">
         <div className="demo-panel-header">
           <h2>{t.dataPreview}</h2>
-          <a href={freeDiagnosisHref}>
+          <a href={freeDiagnosisHref} onClick={saveDemoReviewDraft}>
             <Mail size={17} aria-hidden="true" />
             {t.requestReview}
           </a>
