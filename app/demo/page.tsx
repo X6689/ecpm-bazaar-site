@@ -19,6 +19,7 @@ import { writeClipboardText } from "@/lib/clipboard";
 import { demoRows } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
 import type { MetricRow } from "@/lib/types";
+import { SiteFooter } from "../site-footer";
 
 type Driver = "revenue" | "impressions" | "ecpm" | "fillRate";
 type DiagnosisSeverity = "high" | "medium" | "low";
@@ -1557,6 +1558,8 @@ export default function DemoPage() {
           </table>
         </div>
       </section>
+
+      <SiteFooter lang={lang} />
     </main>
   );
 }

@@ -859,6 +859,79 @@ p {
   height: auto;
 }
 
+.site-footer {
+  width: min(1120px, calc(100% - 40px));
+  margin: 70px auto 0;
+  padding: 34px 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.site-footer-main {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.2fr) minmax(150px, 0.55fr) minmax(210px, 0.8fr) minmax(220px, 0.72fr);
+  gap: 30px;
+}
+
+.site-footer-brand {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.site-footer-brand h2 {
+  max-width: 440px;
+  color: var(--deep);
+  font-size: 28px;
+  line-height: 1.15;
+}
+
+.site-footer-brand p:last-child,
+.site-footer-column p {
+  color: #4e5b56;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.site-footer-column {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.site-footer-column h3 {
+  color: var(--deep);
+  font-size: 15px;
+}
+
+.site-footer-column nav,
+.site-footer-trust {
+  display: grid;
+  gap: 8px;
+}
+
+.site-footer-column nav a,
+.site-footer-trust span,
+.site-footer-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  color: #41524b;
+  font-size: 14px;
+  font-weight: 720;
+  line-height: 1.45;
+}
+
+.site-footer-column nav a svg,
+.site-footer-email svg {
+  color: var(--teal);
+}
+
+.site-footer-trust svg {
+  flex: 0 0 auto;
+  color: var(--teal);
+}
+
 @media (max-width: 880px) {
   .nav-shell {
     align-items: flex-start;
@@ -904,9 +977,14 @@ p {
   .signal-grid,
   .focus-grid,
   .home-diagnosis-card dl,
-  .resource-link-grid {
+  .resource-link-grid,
+  .site-footer-main {
     grid-template-columns: 1fr;
     flex-direction: column;
+  }
+
+  .site-footer {
+    margin-top: 54px;
   }
 }
 

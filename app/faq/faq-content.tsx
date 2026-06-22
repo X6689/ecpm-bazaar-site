@@ -2,6 +2,7 @@
 
 import { ArrowLeft, CircleHelp, Mail } from "lucide-react";
 import { useLanguagePreference } from "@/lib/language";
+import { SiteFooter } from "../site-footer";
 
 const faqs = [
   {
@@ -179,6 +180,8 @@ export function FaqContent() {
           {t.freeDiagnosis}
         </a>
       </section>
+
+      <SiteFooter lang={lang} />
     </main>
   );
 }

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { ArrowLeft, CheckCircle2, Mail, ShieldCheck } from "lucide-react";
 import { useLanguagePreference } from "@/lib/language";
 import { CopyEmailPanel } from "./copy-email-panel";
+import { SiteFooter } from "../site-footer";
 
 const email = "xmmyy168@gmail.com";
 const subject = "Free eCPM Bazaar diagnosis";
@@ -298,6 +299,8 @@ export function FreeDiagnosisContent() {
           {t.dataSafety}
         </a>
       </section>
+
+      <SiteFooter lang={lang} />
     </main>
   );
 }

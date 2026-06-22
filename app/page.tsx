@@ -15,6 +15,7 @@ import {
   Users
 } from "lucide-react";
 import { useLanguagePreference } from "@/lib/language";
+import { SiteFooter } from "./site-footer";
 
 const contactEmail = "xmmyy168@gmail.com";
 
@@ -553,6 +554,8 @@ export default function Home() {
           />
         </a>
       </section>
+
+      <SiteFooter lang={lang} />
     </main>
   );
 }

@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Mail, ShieldCheck } from "lucide-react";
 import { useLanguagePreference } from "@/lib/language";
+import { SiteFooter } from "../site-footer";
 
 const principles = [
   {
@@ -204,6 +205,8 @@ export function PrivacyContent() {
           {t.freeDiagnosis}
         </a>
       </section>
+
+      <SiteFooter lang={lang} />
     </main>
   );
 }

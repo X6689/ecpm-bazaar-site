@@ -2,6 +2,7 @@
 
 import { ArrowLeft, BarChart3, CheckCircle2 } from "lucide-react";
 import { useLanguagePreference } from "@/lib/language";
+import { SiteFooter } from "../site-footer";
 
 const cases = [
   {
@@ -265,6 +266,8 @@ export function CasesContent() {
           {t.faq}
         </a>
       </section>
+
+      <SiteFooter lang={lang} />
     </main>
   );
 }

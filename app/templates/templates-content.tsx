@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Download, FileSpreadsheet, ShieldCheck } from "lucide-react";
 import { useLanguagePreference } from "@/lib/language";
+import { SiteFooter } from "../site-footer";
 
 const templates = [
   {
@@ -251,6 +252,8 @@ export function TemplatesContent() {
           {t.dataSafety}
         </a>
       </section>
+
+      <SiteFooter lang={lang} />
     </main>
   );
 }
