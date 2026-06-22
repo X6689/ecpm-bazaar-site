@@ -1305,6 +1305,60 @@ p {
   cursor: pointer;
 }
 
+.scenario-panel {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.scenario-panel .demo-panel-header {
+  margin-bottom: 0;
+}
+
+.scenario-help {
+  max-width: 780px;
+  color: #4e5b56;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.scenario-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.scenario-card {
+  display: grid;
+  gap: 9px;
+  min-height: 138px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 78%);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.scenario-card strong {
+  color: var(--deep);
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.scenario-card span {
+  color: #4e5b56;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.scenario-card.active {
+  border-color: #99f6e4;
+  background: #ecfdf5;
+  box-shadow: inset 0 0 0 1px #99f6e4;
+}
+
 .diagnosis-badge {
   gap: 7px;
   border-radius: 8px;
@@ -1950,6 +2004,7 @@ p {
   .demo-hero,
   .demo-grid,
   .demo-assist-grid,
+  .scenario-card-grid,
   .share-card-preview {
     grid-template-columns: 1fr;
   }

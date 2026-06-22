@@ -16,12 +16,12 @@ import {
   Table2
 } from "lucide-react";
 import { writeClipboardText } from "@/lib/clipboard";
-import { demoRows } from "@/lib/demo-data";
+import { demoRows, demoScenarios, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
 import type { MetricRow } from "@/lib/types";
 import { SiteFooter } from "../site-footer";
 
-type Driver = "revenue" | "impressions" | "ecpm" | "fillRate";
+type Driver = "revenue" | "impressions" | "ecpm" | "fillRate" | "countryMix";
 type DiagnosisSeverity = "high" | "medium" | "low";
 type BreakdownRow = {
   key: string;
@@ -150,14 +150,6 @@ const displayFields: CsvField[] = [
   "fillRate"
 ];
 
-const sampleCsv = `date,appName,placementName,country,network,revenue,ecpm,impressions,requests,fills,clicks
-2026-06-14,Idle Ocean,Rewarded Home,US,AdMob,128.42,18.70,6868,9200,7100,318
-2026-06-15,Idle Ocean,Rewarded Home,US,AdMob,84.10,12.40,6782,9300,6280,261
-2026-06-14,Idle Ocean,Interstitial Level,BR,AppLovin,42.11,5.40,7798,13000,9100,151
-2026-06-15,Idle Ocean,Interstitial Level,BR,AppLovin,45.02,5.70,7898,12100,8950,166
-2026-06-14,Merge Farm,Banner Bottom,JP,Unity Ads,36.20,2.80,12928,16500,15100,93
-2026-06-15,Merge Farm,Banner Bottom,JP,Unity Ads,31.08,2.76,11260,16300,14980,81`;
-
 const copy = {
   en: {
     back: "Back to site",
@@ -166,7 +158,11 @@ const copy = {
     lede:
       "Use the sample data or upload a CSV. eCPM Bazaar compares the latest day with the previous day and explains whether revenue moved because of eCPM, impressions, fill rate, country, placement, or ad source changes.",
     useSample: "Load sample CSV",
-    downloadSample: "Download sample CSV",
+    downloadSample: "Download current CSV",
+    scenarioLabel: "Diagnosis cases",
+    scenarioTitle: "Try three common ad revenue drop scenarios",
+    scenarioHelp:
+      "Switch between anonymized cases to see how the diagnosis changes when the main driver is pricing, fill, or traffic mix.",
     copyLink: "Copy demo link",
     copyResult: "Copy diagnosis",
     copied: "Copied",
@@ -192,6 +188,7 @@ const copy = {
     templates: "CSV templates",
     contact: "Free diagnosis",
     sourceSample: "Sample CSV loaded",
+    sourceScenario: "Diagnosis case loaded",
     sourceDemo: "Built-in demo data",
     sourceUpload: "Uploaded CSV",
     sourcePaste: "Pasted CSV",
@@ -261,12 +258,14 @@ const copy = {
       revenue: "Revenue",
       impressions: "Impressions",
       ecpm: "eCPM",
-      fillRate: "Fill rate"
+      fillRate: "Fill rate",
+      countryMix: "Country mix"
     },
     advice: {
       impressions: "Traffic or placement exposure changed. Check sessions, ad request logic, retention, and recent product releases.",
       ecpm: "Pricing changed. Check country mix, bidder/source performance, floors, seasonality, and mediation waterfall changes.",
       fillRate: "Fill changed. Check match/fill rate by country, ad source availability, floor settings, and platform status.",
+      countryMix: "The weighted eCPM moved because impression share shifted between countries. Compare country-level share and eCPM before changing global settings.",
       revenue: "The drop is broad. Start with the largest country, placement, and ad source contributors before changing settings."
     },
     summaryPrefix: "The largest drop is concentrated in",
@@ -279,7 +278,10 @@ const copy = {
     lede:
       "使用样例数据或上传 CSV。eCPM Bazaar 会比较最近一天和前一天，判断收入变化更可能来自 eCPM、展示量、填充率、国家地区、广告位还是广告来源。",
     useSample: "载入样例 CSV",
-    downloadSample: "下载样例 CSV",
+    downloadSample: "下载当前 CSV",
+    scenarioLabel: "诊断案例",
+    scenarioTitle: "试试三类常见广告收入下降场景",
+    scenarioHelp: "切换脱敏案例，看看主要原因是单价、填充还是流量结构时，诊断结论会如何变化。",
     copyLink: "复制演示链接",
     copyResult: "复制诊断结果",
     copied: "已复制",
@@ -305,6 +307,7 @@ const copy = {
     templates: "CSV 模板",
     contact: "免费诊断",
     sourceSample: "已载入样例 CSV",
+    sourceScenario: "已载入诊断案例",
     sourceDemo: "内置演示数据",
     sourceUpload: "已上传 CSV",
     sourcePaste: "已粘贴 CSV",
@@ -374,12 +377,14 @@ const copy = {
       revenue: "收入",
       impressions: "展示量",
       ecpm: "eCPM",
-      fillRate: "填充率"
+      fillRate: "填充率",
+      countryMix: "国家结构"
     },
     advice: {
       impressions: "流量或广告位曝光发生变化。先检查会话、广告请求逻辑、留存和最近产品改动。",
       ecpm: "单价发生变化。先检查国家结构、广告源表现、底价、季节性和瀑布流配置。",
       fillRate: "填充发生变化。先按国家检查 match/fill rate、广告源可用性、底价配置和平台状态。",
+      countryMix: "加权 eCPM 变化主要来自国家展示占比变化。先比较各国家展示占比和国家级 eCPM，再改全局配置。",
       revenue: "下滑比较分散。先从贡献最大的国家、广告位和广告来源开始拆解，不急着改配置。"
     },
     summaryPrefix: "最大下滑集中在",
@@ -642,15 +647,72 @@ function totals(rows: MetricRow[]) {
   };
 }
 
+function countryMixChange(currentRows: MetricRow[], previousRows: MetricRow[]) {
+  const current = totals(currentRows);
+  const previous = totals(previousRows);
+  const globalEcpmChange = percentChange(current.ecpm, previous.ecpm);
+
+  if (globalEcpmChange > -5 || current.impressions === 0 || previous.impressions === 0) {
+    return 0;
+  }
+
+  const countries = new Set([...currentRows.map((row) => row.country), ...previousRows.map((row) => row.country)]);
+  let shareShift = 0;
+  let weightedCountryEcpmMovement = 0;
+
+  for (const country of countries) {
+    const currentCountry = totals(currentRows.filter((row) => row.country === country));
+    const previousCountry = totals(previousRows.filter((row) => row.country === country));
+
+    if (previousCountry.impressions === 0 || currentCountry.impressions === 0) {
+      continue;
+    }
+
+    const previousShare = previousCountry.impressions / previous.impressions;
+    const currentShare = currentCountry.impressions / current.impressions;
+    const shareDelta = currentShare - previousShare;
+    const isLowerValueCountry = previousCountry.ecpm < previous.ecpm * 0.75;
+    const isHigherValueCountry = previousCountry.ecpm > previous.ecpm * 1.15;
+
+    if ((isLowerValueCountry && shareDelta > 0.03) || (isHigherValueCountry && shareDelta < -0.03)) {
+      shareShift += Math.abs(shareDelta);
+    }
+
+    weightedCountryEcpmMovement += Math.abs(percentChange(currentCountry.ecpm, previousCountry.ecpm)) * currentShare;
+  }
+
+  if (shareShift >= 0.12 && weightedCountryEcpmMovement < Math.abs(globalEcpmChange) * 0.7) {
+    return -Math.max(Math.abs(globalEcpmChange), shareShift * 100);
+  }
+
+  return 0;
+}
+
 function chooseDriver(changes: Record<Driver, number>): Driver {
-  const dropDrivers: Array<{ driver: Driver; change: number }> = [
+  if (changes.countryMix < -5) {
+    return "countryMix";
+  }
+
+  if (changes.fillRate < -8 && changes.ecpm > -6) {
+    return "fillRate";
+  }
+
+  if (changes.ecpm < -8 && changes.fillRate > -8) {
+    return "ecpm";
+  }
+
+  if (changes.impressions < -8 && changes.fillRate > -8) {
+    return "impressions";
+  }
+
+  const specificDrivers: Array<{ driver: Driver; change: number }> = [
     { driver: "fillRate" as const, change: changes.fillRate },
     { driver: "ecpm" as const, change: changes.ecpm },
     { driver: "impressions" as const, change: changes.impressions },
-    { driver: "revenue" as const, change: changes.revenue }
+    { driver: "countryMix" as const, change: changes.countryMix }
   ].filter((item) => item.change < -3);
 
-  return dropDrivers.sort((a, b) => a.change - b.change)[0]?.driver ?? "revenue";
+  return specificDrivers.sort((a, b) => a.change - b.change)[0]?.driver ?? "revenue";
 }
 
 function segmentKey(row: MetricRow) {
@@ -673,7 +735,8 @@ function buildBreakdowns(currentRows: MetricRow[], previousRows: MetricRow[]): B
         revenue: percentChange(current.revenue, previous.revenue),
         impressions: percentChange(current.impressions, previous.impressions),
         ecpm: percentChange(current.ecpm, previous.ecpm),
-        fillRate: percentChange(current.fillRate, previous.fillRate)
+        fillRate: percentChange(current.fillRate, previous.fillRate),
+        countryMix: 0
       };
 
       return {
@@ -702,7 +765,8 @@ function diagnose(rows: MetricRow[]) {
     revenue: percentChange(current.revenue, previous.revenue),
     impressions: percentChange(current.impressions, previous.impressions),
     ecpm: percentChange(current.ecpm, previous.ecpm),
-    fillRate: percentChange(current.fillRate, previous.fillRate)
+    fillRate: percentChange(current.fillRate, previous.fillRate),
+    countryMix: countryMixChange(currentRows, previousRows)
   };
 
   const driver = chooseDriver(changes);
@@ -736,7 +800,8 @@ export default function DemoPage() {
   const [rows, setRows] = useState<MetricRow[]>(demoRows);
   const [fieldStatuses, setFieldStatuses] = useState<FieldStatus[]>(createFieldStatuses());
   const [csvIssues, setCsvIssues] = useState<IssueKey[]>([]);
-  const [source, setSource] = useState<"demo" | "sample" | "upload" | "paste">("demo");
+  const [source, setSource] = useState<"demo" | "sample" | "scenario" | "upload" | "paste">("demo");
+  const [activeScenarioId, setActiveScenarioId] = useState<DemoScenarioId>(demoScenarios[0].id);
   const [error, setError] = useState("");
   const [pastedCsv, setPastedCsv] = useState("");
   const [copied, setCopied] = useState(false);
@@ -746,8 +811,18 @@ export default function DemoPage() {
   const [manualCopyText, setManualCopyText] = useState("");
   const t = copy[lang];
   const report = useMemo(() => diagnose(rows), [rows]);
+  const activeScenario = demoScenarios.find((scenario) => scenario.id === activeScenarioId) ?? demoScenarios[0];
+  const currentCsv = useMemo(() => metricRowsToCsv(rows), [rows]);
   const sourceLabel =
-    source === "upload" ? t.sourceUpload : source === "paste" ? t.sourcePaste : source === "sample" ? t.sourceSample : t.sourceDemo;
+    source === "upload"
+      ? t.sourceUpload
+      : source === "paste"
+        ? t.sourcePaste
+        : source === "sample"
+          ? t.sourceSample
+          : source === "scenario"
+            ? `${t.sourceScenario}: ${activeScenario.title[lang]}`
+            : t.sourceDemo;
   const dataIssues = useMemo(() => {
     const issues = new Set(csvIssues);
     if (rows.length > 0 && report.previousDate && report.currentDate && !report.largestDrop) {
@@ -760,7 +835,7 @@ export default function DemoPage() {
     .every((field) => Boolean(field.matchedHeader));
   const rankedDrivers = useMemo(
     () =>
-      (["ecpm", "impressions", "fillRate", "revenue"] as Driver[])
+      (["countryMix", "ecpm", "impressions", "fillRate", "revenue"] as Driver[])
         .map((driver) => ({ driver, change: report.changes[driver] }))
         .sort((a, b) => a.change - b.change),
     [report.changes]
@@ -784,6 +859,11 @@ export default function DemoPage() {
               "查看底价、广告源可用性、平台状态和是否有请求错误。",
               "如果 eCPM 稳定但 fill 下降，优先排查填充和瀑布流，而不是先改价格。"
             ],
+            countryMix: [
+              "比较各国家展示占比是否从高 eCPM 国家转向低 eCPM 国家。",
+              "分别检查 US、BR、IN 等国家级 eCPM 是否稳定，避免误判为全局价格下降。",
+              "先看买量、自然流量来源和地区分布，再改全局 mediation 配置。"
+            ],
             revenue: [
               "先看 top segment drops，不要先改全局配置。",
               "按国家、广告位、广告源逐层拆分，确认主要收入损失来自哪里。",
@@ -805,6 +885,11 @@ export default function DemoPage() {
               "Review requests, fills, and match/fill rate by country, placement, and ad source.",
               "Check floor settings, source availability, platform status, and request errors.",
               "If eCPM is stable but fill dropped, investigate fill and waterfall availability before changing pricing."
+            ],
+            countryMix: [
+              "Compare whether impression share moved from high-eCPM countries toward lower-eCPM countries.",
+              "Check whether country-level eCPM stayed stable before treating this as a global pricing issue.",
+              "Review UA, organic traffic sources, and regional distribution before changing global mediation settings."
             ],
             revenue: [
               "Start from the top segment drops instead of changing global settings first.",
@@ -853,9 +938,9 @@ export default function DemoPage() {
       sourceChange,
       severity,
       mainCause: t.driverLabels[report.driver],
-      country: dropRow?.country ?? (lang === "zh" ? "混合" : "Mixed"),
-      placement: dropRow?.placementName ?? (lang === "zh" ? "混合广告位" : "Mixed placements"),
-      adSource: dropRow?.network ?? (lang === "zh" ? "混合广告源" : "Mixed sources"),
+      country: report.driver === "countryMix" ? (lang === "zh" ? "国家结构变化" : "Country mix shift") : dropRow?.country ?? (lang === "zh" ? "混合" : "Mixed"),
+      placement: report.driver === "countryMix" ? (lang === "zh" ? "全部广告位" : "All placements") : dropRow?.placementName ?? (lang === "zh" ? "混合广告位" : "Mixed placements"),
+      adSource: report.driver === "countryMix" ? (lang === "zh" ? "全部广告源" : "All sources") : dropRow?.network ?? (lang === "zh" ? "混合广告源" : "Mixed sources"),
       suggestedAction: suggestedChecks[0] ?? t.advice[report.driver],
       headline: report.hasDrop
         ? lang === "zh"
@@ -976,13 +1061,29 @@ export default function DemoPage() {
   }
 
   function loadSample() {
-    const parsed = parseCsv(sampleCsv);
+    const csv = metricRowsToCsv(demoRows);
+    const parsed = parseCsv(csv);
     setRows(parsed.rows);
     setFieldStatuses(parsed.fields);
     setCsvIssues(parsed.issues);
     setSource("sample");
     setError("");
-    setPastedCsv(sampleCsv);
+    setActiveScenarioId(demoScenarios[0].id);
+    setPastedCsv(csv);
+    setManualCopyText("");
+  }
+
+  function loadScenario(scenarioId: DemoScenarioId) {
+    const scenario = demoScenarios.find((item) => item.id === scenarioId) ?? demoScenarios[0];
+    const csv = metricRowsToCsv(scenario.rows);
+    const parsed = parseCsv(csv);
+    setRows(parsed.rows);
+    setFieldStatuses(parsed.fields);
+    setCsvIssues(parsed.issues);
+    setSource("scenario");
+    setActiveScenarioId(scenario.id);
+    setError("");
+    setPastedCsv(csv);
     setManualCopyText("");
   }
 
@@ -991,6 +1092,7 @@ export default function DemoPage() {
     setFieldStatuses(createFieldStatuses());
     setCsvIssues([]);
     setSource("demo");
+    setActiveScenarioId(demoScenarios[0].id);
     setError("");
     setPastedCsv("");
     setManualCopyText("");
@@ -1178,7 +1280,7 @@ export default function DemoPage() {
           <a
             className="secondary-action"
             download="ecpm-bazaar-sample.csv"
-            href={`data:text/csv;charset=utf-8,${encodeURIComponent(sampleCsv)}`}
+            href={`data:text/csv;charset=utf-8,${encodeURIComponent(currentCsv)}`}
           >
             <Download size={18} aria-hidden="true" />
             {t.downloadSample}
@@ -1196,6 +1298,29 @@ export default function DemoPage() {
             <RotateCcw size={17} aria-hidden="true" />
             {t.reset}
           </button>
+        </div>
+      </section>
+
+      <section className="demo-panel scenario-panel" aria-label={t.scenarioLabel}>
+        <div className="demo-panel-header">
+          <div>
+            <p className="section-label">{t.scenarioLabel}</p>
+            <h2>{t.scenarioTitle}</h2>
+          </div>
+        </div>
+        <p className="scenario-help">{t.scenarioHelp}</p>
+        <div className="scenario-card-grid">
+          {demoScenarios.map((scenario) => (
+            <button
+              className={scenario.id === activeScenarioId && (source === "demo" || source === "sample" || source === "scenario") ? "scenario-card active" : "scenario-card"}
+              key={scenario.id}
+              type="button"
+              onClick={() => loadScenario(scenario.id)}
+            >
+              <strong>{scenario.title[lang]}</strong>
+              <span>{scenario.description[lang]}</span>
+            </button>
+          ))}
         </div>
       </section>
 
