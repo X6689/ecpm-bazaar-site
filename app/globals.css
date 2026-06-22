@@ -1026,6 +1026,7 @@ p {
 .data-panel,
 .breakdown-panel,
 .report-panel,
+.diagnosis-card-panel,
 .paste-panel,
 .field-check-panel,
 .quality-panel {
@@ -1215,6 +1216,176 @@ p {
   color: #172026;
   font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
   font-size: 12px;
+  line-height: 1.55;
+}
+
+.diagnosis-card-panel {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.diagnosis-card-panel .demo-panel-header {
+  margin-bottom: 0;
+}
+
+.share-card-preview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.42fr);
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgb(16 37 31 / 98%), rgb(15 58 52 / 98%)),
+    linear-gradient(90deg, rgb(185 246 220 / 7%) 1px, transparent 1px),
+    linear-gradient(0deg, rgb(185 246 220 / 7%) 1px, transparent 1px);
+  background-size: auto, 46px 46px, 46px 46px;
+  color: #f2fff8;
+  box-shadow: 0 24px 70px rgb(16 37 31 / 18%);
+}
+
+.share-card-main,
+.share-card-side,
+.share-card-action {
+  border: 1px solid rgb(255 255 255 / 13%);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 7%);
+}
+
+.share-card-main {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-height: 290px;
+  padding: 24px;
+}
+
+.share-card-brand {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 30px;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: #0f766e;
+  color: #effff7;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.share-card-main h3 {
+  max-width: 620px;
+  color: #ffffff;
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.06;
+}
+
+.share-card-main > p {
+  color: #d7e6de;
+  font-size: 20px;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.share-card-driver {
+  width: min(520px, 100%);
+  margin-top: auto;
+  padding: 16px;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #10251f;
+}
+
+.share-card-driver span,
+.share-card-action span {
+  display: block;
+  color: #166534;
+  font-size: 12px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.share-card-driver strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 28px;
+  line-height: 1.15;
+}
+
+.share-card-side {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: 18px;
+}
+
+.severity-pill {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 34px;
+  align-items: center;
+  padding: 0 11px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.severity-pill.high,
+.severity-pill.medium {
+  background: #fff7ed;
+  color: #b45309;
+}
+
+.severity-pill.low {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.share-card-side dl {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.share-card-side div {
+  padding: 12px;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 7%);
+}
+
+.share-card-side dt {
+  color: #a7f3d0;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.share-card-side dd {
+  margin: 5px 0 0;
+  color: #f2fff8;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.share-card-action {
+  grid-column: 1 / -1;
+  padding: 18px;
+  background: #fff7ed;
+  color: #10251f;
+}
+
+.share-card-action span {
+  color: #b45309;
+}
+
+.share-card-action p {
+  margin-top: 7px;
+  color: #3f2e18;
+  font-size: 17px;
+  font-weight: 750;
   line-height: 1.55;
 }
 
@@ -1577,7 +1748,8 @@ p {
 @media (max-width: 880px) {
   .demo-hero,
   .demo-grid,
-  .demo-assist-grid {
+  .demo-assist-grid,
+  .share-card-preview {
     grid-template-columns: 1fr;
   }
 
@@ -1587,6 +1759,10 @@ p {
 
   .field-chip-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .share-card-action {
+    grid-column: auto;
   }
 }
 

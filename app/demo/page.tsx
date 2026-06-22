@@ -21,6 +21,7 @@ import type { MetricRow } from "@/lib/types";
 
 type Lang = "en" | "zh";
 type Driver = "revenue" | "impressions" | "ecpm" | "fillRate";
+type DiagnosisSeverity = "high" | "medium" | "low";
 type BreakdownRow = {
   key: string;
   label: string;
@@ -213,6 +214,27 @@ const copy = {
     shareReportHelp:
       "Use this version in Reddit replies, support emails, or internal notes. It includes driver ranking, suggested checks, and caveats.",
     reportPreview: "Report preview",
+    diagnosisCard: "Diagnosis card",
+    diagnosisCardTitle: "Share the result as a diagnosis card",
+    diagnosisCardHelp:
+      "A short card for Reddit replies, X posts, support emails, or a team chat. It keeps the result easy to scan and easy to act on.",
+    copyCard: "Copy card text",
+    downloadCard: "Download card PNG",
+    cardCopied: "Card copied",
+    cardDownloaded: "Card downloaded",
+    cardProblem: "Problem",
+    cardMainCause: "Main cause",
+    cardSeverity: "Severity",
+    cardCountry: "Country",
+    cardPlacement: "Placement",
+    cardAdSource: "Ad source",
+    cardSuggestedAction: "Suggested action",
+    cardPeriod: "Period",
+    severityLabels: {
+      high: "High",
+      medium: "Medium",
+      low: "Low"
+    },
     driverRanking: "Driver ranking",
     checklist: "Suggested checks",
     caveats: "Caveats",
@@ -305,6 +327,27 @@ const copy = {
     shareReportHelp:
       "这版适合发到 Reddit、邮件或团队沟通里，包含原因排序、建议检查项和注意事项。",
     reportPreview: "报告预览",
+    diagnosisCard: "诊断卡",
+    diagnosisCardTitle: "把结果变成一张诊断卡",
+    diagnosisCardHelp:
+      "适合发到 Reddit、X、邮件或团队群里。让别人一眼看懂问题、原因和下一步检查项。",
+    copyCard: "复制卡片文本",
+    downloadCard: "下载卡片 PNG",
+    cardCopied: "卡片已复制",
+    cardDownloaded: "卡片已下载",
+    cardProblem: "问题",
+    cardMainCause: "主要原因",
+    cardSeverity: "严重程度",
+    cardCountry: "国家地区",
+    cardPlacement: "广告位",
+    cardAdSource: "广告源",
+    cardSuggestedAction: "建议动作",
+    cardPeriod: "周期",
+    severityLabels: {
+      high: "高",
+      medium: "中",
+      low: "低"
+    },
     driverRanking: "原因排序",
     checklist: "建议检查项",
     caveats: "注意事项",
@@ -519,6 +562,72 @@ function money(value: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
 }
 
+function chooseSeverity(revenueChange: number): DiagnosisSeverity {
+  if (revenueChange <= -25) return "high";
+  if (revenueChange <= -10) return "medium";
+  return "low";
+}
+
+function wrapCanvasText(context: CanvasRenderingContext2D, text: string, maxWidth: number) {
+  const words = text.split(" ");
+  const lines: string[] = [];
+  let current = "";
+
+  for (const word of words) {
+    if (context.measureText(word).width > maxWidth) {
+      if (current) {
+        lines.push(current);
+        current = "";
+      }
+      let fragment = "";
+      for (const char of word) {
+        const test = `${fragment}${char}`;
+        if (context.measureText(test).width <= maxWidth || !fragment) {
+          fragment = test;
+        } else {
+          lines.push(fragment);
+          fragment = char;
+        }
+      }
+      if (fragment) current = fragment;
+      continue;
+    }
+
+    const test = current ? `${current} ${word}` : word;
+    if (context.measureText(test).width <= maxWidth || !current) {
+      current = test;
+    } else {
+      lines.push(current);
+      current = word;
+    }
+  }
+
+  if (current) lines.push(current);
+  return lines;
+}
+
+function drawRoundRect(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+) {
+  const r = Math.min(radius, width / 2, height / 2);
+  context.beginPath();
+  context.moveTo(x + r, y);
+  context.lineTo(x + width - r, y);
+  context.quadraticCurveTo(x + width, y, x + width, y + r);
+  context.lineTo(x + width, y + height - r);
+  context.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+  context.lineTo(x + r, y + height);
+  context.quadraticCurveTo(x, y + height, x, y + height - r);
+  context.lineTo(x, y + r);
+  context.quadraticCurveTo(x, y, x + r, y);
+  context.closePath();
+}
+
 function totals(rows: MetricRow[]) {
   const requests = sum(rows, "requests");
   const fills = sum(rows, "fills");
@@ -631,6 +740,8 @@ export default function DemoPage() {
   const [pastedCsv, setPastedCsv] = useState("");
   const [copied, setCopied] = useState(false);
   const [copiedResult, setCopiedResult] = useState(false);
+  const [copiedCard, setCopiedCard] = useState(false);
+  const [downloadedCard, setDownloadedCard] = useState(false);
   const [manualCopyText, setManualCopyText] = useState("");
   const t = copy[lang];
   const report = useMemo(() => diagnose(rows), [rows]);
@@ -719,6 +830,57 @@ export default function DemoPage() {
     const issueNotes = dataIssues.map((issue) => t[issue]);
     return [...issueNotes, ...base];
   }, [dataIssues, lang, t]);
+  const diagnosisCard = useMemo(() => {
+    const dropRow = report.largestDrop?.row;
+    const previousDropRow = report.largestDrop?.previousRow;
+    const severity = chooseSeverity(report.changes.revenue);
+    const period = `${report.previousDate ?? "previous"} -> ${report.currentDate ?? "latest"}`;
+    const problem =
+      lang === "zh"
+        ? `收入 ${money(report.previous.revenue)} -> ${money(report.current.revenue)} (${pct(report.changes.revenue)})`
+        : `Revenue ${money(report.previous.revenue)} -> ${money(report.current.revenue)} (${pct(report.changes.revenue)})`;
+    const sourceChange =
+      dropRow && previousDropRow
+        ? `${money(previousDropRow.revenue)} -> ${money(dropRow.revenue)}`
+        : lang === "zh"
+          ? "混合分组"
+          : "Mixed segments";
+
+    return {
+      period,
+      problem,
+      sourceChange,
+      severity,
+      mainCause: t.driverLabels[report.driver],
+      country: dropRow?.country ?? (lang === "zh" ? "混合" : "Mixed"),
+      placement: dropRow?.placementName ?? (lang === "zh" ? "混合广告位" : "Mixed placements"),
+      adSource: dropRow?.network ?? (lang === "zh" ? "混合广告源" : "Mixed sources"),
+      suggestedAction: suggestedChecks[0] ?? t.advice[report.driver],
+      headline: report.hasDrop
+        ? lang === "zh"
+          ? "收入下降诊断卡"
+          : "Ad revenue diagnosis card"
+        : lang === "zh"
+          ? "收入变化诊断卡"
+          : "Ad revenue change card"
+    };
+  }, [lang, report, suggestedChecks, t.advice, t.driverLabels]);
+  const diagnosisCardText = useMemo(
+    () =>
+      [
+        diagnosisCard.headline,
+        `${t.cardPeriod}: ${diagnosisCard.period}`,
+        `${t.cardProblem}: ${diagnosisCard.problem}`,
+        `${t.cardMainCause}: ${diagnosisCard.mainCause}`,
+        `${t.cardSeverity}: ${t.severityLabels[diagnosisCard.severity]}`,
+        `${t.cardCountry}: ${diagnosisCard.country}`,
+        `${t.cardPlacement}: ${diagnosisCard.placement}`,
+        `${t.cardAdSource}: ${diagnosisCard.adSource}`,
+        `${t.cardSuggestedAction}: ${diagnosisCard.suggestedAction}`,
+        "https://ecpmbazaar.com/demo/"
+      ].join("\n"),
+    [diagnosisCard, t]
+  );
   const diagnosisText = useMemo(() => {
     const largestDrop = report.largestDrop
       ? `${report.largestDrop.row.appName} / ${report.largestDrop.row.placementName} / ${report.largestDrop.row.country} / ${report.largestDrop.row.network}: ${money(report.largestDrop.previousRow?.revenue ?? 0)} -> ${money(report.largestDrop.row.revenue)}`
@@ -854,6 +1016,131 @@ export default function DemoPage() {
       setCopiedResult(false);
       setManualCopyText(diagnosisText);
     }
+  }
+
+  async function copyDiagnosisCard() {
+    if (await writeClipboardText(diagnosisCardText)) {
+      setCopiedCard(true);
+      setManualCopyText("");
+      window.setTimeout(() => setCopiedCard(false), 1600);
+    } else {
+      setCopiedCard(false);
+      setManualCopyText(diagnosisCardText);
+    }
+  }
+
+  function downloadDiagnosisCard() {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1200;
+    canvas.height = 675;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    const gradient = context.createLinearGradient(0, 0, 1200, 675);
+    gradient.addColorStop(0, "#10251f");
+    gradient.addColorStop(1, "#0f3a34");
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, 1200, 675);
+
+    context.strokeStyle = "rgba(185, 246, 220, 0.08)";
+    context.lineWidth = 1;
+    for (let x = 0; x <= 1200; x += 60) {
+      context.beginPath();
+      context.moveTo(x, 0);
+      context.lineTo(x, 675);
+      context.stroke();
+    }
+    for (let y = 0; y <= 675; y += 60) {
+      context.beginPath();
+      context.moveTo(0, y);
+      context.lineTo(1200, y);
+      context.stroke();
+    }
+
+    context.fillStyle = "rgba(255, 255, 255, 0.96)";
+    drawRoundRect(context, 68, 58, 1064, 560, 18);
+    context.fill();
+
+    context.fillStyle = "#0f766e";
+    drawRoundRect(context, 100, 92, 180, 38, 8);
+    context.fill();
+    context.fillStyle = "#effff7";
+    context.font = "700 18px Inter, system-ui, sans-serif";
+    context.fillText("eCPM Bazaar", 120, 117);
+
+    context.fillStyle = "#10251f";
+    context.font = "800 46px Inter, system-ui, sans-serif";
+    context.fillText(diagnosisCard.headline, 100, 184);
+
+    context.fillStyle = "#4e5b56";
+    context.font = "600 22px Inter, system-ui, sans-serif";
+    context.fillText(`${t.cardPeriod}: ${diagnosisCard.period}`, 100, 224);
+
+    context.fillStyle = "#172026";
+    context.font = "800 34px Inter, system-ui, sans-serif";
+    wrapCanvasText(context, diagnosisCard.problem, 670).slice(0, 2).forEach((line, index) => {
+      context.fillText(line, 100, 292 + index * 42);
+    });
+
+    context.fillStyle = "#f0fdf4";
+    drawRoundRect(context, 100, 356, 500, 88, 10);
+    context.fill();
+    context.fillStyle = "#166534";
+    context.font = "800 17px Inter, system-ui, sans-serif";
+    context.fillText(t.cardMainCause.toUpperCase(), 124, 388);
+    context.fillStyle = "#10251f";
+    context.font = "800 34px Inter, system-ui, sans-serif";
+    context.fillText(diagnosisCard.mainCause, 124, 426);
+
+    const severityColor = diagnosisCard.severity === "high" ? "#b45309" : diagnosisCard.severity === "medium" ? "#d97706" : "#15803d";
+    context.fillStyle = diagnosisCard.severity === "low" ? "#f0fdf4" : "#fff7ed";
+    drawRoundRect(context, 624, 356, 220, 88, 10);
+    context.fill();
+    context.fillStyle = severityColor;
+    context.font = "800 17px Inter, system-ui, sans-serif";
+    context.fillText(t.cardSeverity.toUpperCase(), 648, 388);
+    context.font = "800 34px Inter, system-ui, sans-serif";
+    context.fillText(t.severityLabels[diagnosisCard.severity], 648, 426);
+
+    const detailRows = [
+      [t.cardCountry, diagnosisCard.country],
+      [t.cardPlacement, diagnosisCard.placement],
+      [t.cardAdSource, diagnosisCard.adSource],
+      [lang === "zh" ? "分组变化" : "Segment change", diagnosisCard.sourceChange]
+    ];
+    context.font = "700 17px Inter, system-ui, sans-serif";
+    detailRows.forEach(([label, value], index) => {
+      const x = 100 + (index % 2) * 374;
+      const y = 492 + Math.floor(index / 2) * 58;
+      context.fillStyle = "#65727d";
+      context.fillText(label, x, y);
+      context.fillStyle = "#172026";
+      context.font = "800 22px Inter, system-ui, sans-serif";
+      wrapCanvasText(context, value, 320).slice(0, 1).forEach((line) => context.fillText(line, x, y + 30));
+      context.font = "700 17px Inter, system-ui, sans-serif";
+    });
+
+    context.fillStyle = "#10251f";
+    drawRoundRect(context, 878, 92, 220, 452, 14);
+    context.fill();
+    context.fillStyle = "#a7f3d0";
+    context.font = "800 18px Inter, system-ui, sans-serif";
+    context.fillText(t.cardSuggestedAction, 906, 136);
+    context.fillStyle = "#f2fff8";
+    context.font = "700 24px Inter, system-ui, sans-serif";
+    wrapCanvasText(context, diagnosisCard.suggestedAction, 164).slice(0, 7).forEach((line, index) => {
+      context.fillText(line, 906, 188 + index * 34);
+    });
+    context.fillStyle = "#b9c9c2";
+    context.font = "700 18px Inter, system-ui, sans-serif";
+    context.fillText("ecpmbazaar.com/demo", 906, 506);
+
+    const link = document.createElement("a");
+    link.download = "ecpm-bazaar-diagnosis-card.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+    setDownloadedCard(true);
+    window.setTimeout(() => setDownloadedCard(false), 1600);
   }
 
   return (
@@ -1054,6 +1341,63 @@ export default function DemoPage() {
             </div>
           ))}
         </article>
+      </section>
+
+      <section className="demo-panel diagnosis-card-panel" aria-label={t.diagnosisCard}>
+        <div className="demo-panel-header">
+          <div>
+            <p className="section-label">{t.diagnosisCard}</p>
+            <h2>{t.diagnosisCardTitle}</h2>
+          </div>
+          <div className="diagnosis-tools">
+            <button className="copy-result-button" type="button" onClick={copyDiagnosisCard}>
+              <Copy size={16} aria-hidden="true" />
+              {copiedCard ? t.cardCopied : t.copyCard}
+            </button>
+            <button className="copy-result-button" type="button" onClick={downloadDiagnosisCard}>
+              <Download size={16} aria-hidden="true" />
+              {downloadedCard ? t.cardDownloaded : t.downloadCard}
+            </button>
+          </div>
+        </div>
+        <p className="report-help">{t.diagnosisCardHelp}</p>
+
+        <div className="share-card-preview">
+          <div className="share-card-main">
+            <span className="share-card-brand">eCPM Bazaar</span>
+            <h3>{diagnosisCard.headline}</h3>
+            <p>{diagnosisCard.problem}</p>
+            <div className="share-card-driver">
+              <span>{t.cardMainCause}</span>
+              <strong>{diagnosisCard.mainCause}</strong>
+            </div>
+          </div>
+
+          <div className="share-card-side">
+            <span className={`severity-pill ${diagnosisCard.severity}`}>
+              {t.cardSeverity}: {t.severityLabels[diagnosisCard.severity]}
+            </span>
+            <dl>
+              <div>
+                <dt>{t.cardCountry}</dt>
+                <dd>{diagnosisCard.country}</dd>
+              </div>
+              <div>
+                <dt>{t.cardPlacement}</dt>
+                <dd>{diagnosisCard.placement}</dd>
+              </div>
+              <div>
+                <dt>{t.cardAdSource}</dt>
+                <dd>{diagnosisCard.adSource}</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div className="share-card-action">
+            <span>{t.cardSuggestedAction}</span>
+            <p>{diagnosisCard.suggestedAction}</p>
+          </div>
+        </div>
       </section>
 
       <section className="demo-panel report-panel" aria-label={t.shareReport}>
