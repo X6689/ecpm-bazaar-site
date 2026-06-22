@@ -1,7 +1,9 @@
 "use client";
 
-import { ArrowLeft, BarChart3, CheckCircle2, Play } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, BarChart3, CheckCircle2, Copy, Play } from "lucide-react";
 import type { DemoScenarioId } from "@/lib/demo-data";
+import { writeClipboardText } from "@/lib/clipboard";
 import { useLanguagePreference } from "@/lib/language";
 import { SiteFooter } from "../site-footer";
 
@@ -170,6 +172,8 @@ const copy = {
     ctaText: "Use the browser-only demo or send anonymized fields for a free manual diagnosis.",
     tryDemo: "Try demo",
     tryThisCase: "Try this case in demo",
+    copyCaseLink: "Copy case link",
+    copiedCaseLink: "Copied link",
     freeDiagnosis: "Free diagnosis",
     faq: "FAQ"
   },
@@ -195,6 +199,8 @@ const copy = {
     ctaText: "可以使用浏览器本地 Demo，也可以发送脱敏字段申请一次免费人工诊断。",
     tryDemo: "试用演示",
     tryThisCase: "在 Demo 中打开这个案例",
+    copyCaseLink: "复制案例链接",
+    copiedCaseLink: "已复制链接",
     freeDiagnosis: "免费诊断",
     faq: "常见问题"
   }
@@ -202,7 +208,16 @@ const copy = {
 
 export function CasesContent() {
   const [lang, setLang] = useLanguagePreference("en");
+  const [copiedCase, setCopiedCase] = useState<DemoScenarioId | null>(null);
   const t = copy[lang];
+
+  async function copyCaseLink(scenarioId: DemoScenarioId) {
+    const url = new URL(`../demo/?case=${scenarioId}`, window.location.href);
+    if (await writeClipboardText(url.toString())) {
+      setCopiedCase(scenarioId);
+      window.setTimeout(() => setCopiedCase(null), 1600);
+    }
+  }
 
   return (
     <main className="resource-page" lang={lang === "zh" ? "zh-CN" : "en"}>
@@ -284,10 +299,16 @@ export function CasesContent() {
                     </span>
                   ))}
                 </div>
-                <a className="case-demo-link" href={`../demo/?case=${item.scenarioId}`}>
-                  <Play size={17} aria-hidden="true" />
-                  {t.tryThisCase}
-                </a>
+                <div className="case-card-actions">
+                  <a className="case-demo-link" href={`../demo/?case=${item.scenarioId}`}>
+                    <Play size={17} aria-hidden="true" />
+                    {t.tryThisCase}
+                  </a>
+                  <button className="case-copy-link" type="button" onClick={() => copyCaseLink(item.scenarioId)}>
+                    {copiedCase === item.scenarioId ? <CheckCircle2 size={17} aria-hidden="true" /> : <Copy size={17} aria-hidden="true" />}
+                    {copiedCase === item.scenarioId ? t.copiedCaseLink : t.copyCaseLink}
+                  </button>
+                </div>
               </div>
             </article>
           );

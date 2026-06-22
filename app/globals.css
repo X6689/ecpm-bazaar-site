@@ -2486,6 +2486,28 @@ p {
   font-weight: 800;
 }
 
+.case-card-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 0.55fr);
+  gap: 10px;
+}
+
+.case-copy-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 78%);
+  color: #26342f;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 800;
+}
+
 .diagnosis-output-section {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.56fr);
@@ -2826,7 +2848,9 @@ p {
 
   .resource-cta .primary-action,
   .resource-cta .secondary-action,
+  .case-card-actions,
   .case-demo-link,
+  .case-copy-link,
   .not-found-actions .primary-action,
   .not-found-actions .secondary-action,
   .not-found-actions .ghost-action,
@@ -2840,6 +2864,10 @@ p {
 
   .form-grid,
   .form-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .case-card-actions {
     grid-template-columns: 1fr;
   }
 
