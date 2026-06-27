@@ -105,6 +105,180 @@ Later changes:
 7. Convert successful free diagnoses into anonymous cases.
 8. Later sell one-time deeper reports before building a full SaaS subscription.
 
+## Pain-Led Reddit / X Content SOP
+
+Use this workflow instead of generic "tool promotion" posts.
+
+### 1. Search for customer-language pain
+
+Search Reddit, X, and developer communities with:
+
+```text
+AdMob eCPM dropped
+AppLovin revenue down
+Unity Ads low eCPM
+mobile game ad revenue dropped
+rewarded ads fill rate dropped
+MAX mediation revenue drop
+AdMob fill rate issue
+```
+
+Look for real developer complaints such as:
+
+- "My AdMob revenue dropped 40% this week."
+- "Rewarded ads stopped filling in Brazil."
+- "eCPM is down but impressions are stable."
+- "AppLovin MAX revenue suddenly dropped."
+
+These phrases are the target user's language and should shape posts, replies, and website copy.
+
+### 2. Turn one pain into a diagnosis post
+
+Example post:
+
+```text
+If your mobile game ad revenue dropped 30%, don't check eCPM first.
+
+Check this order:
+
+1. Did impressions drop?
+2. Did fill rate drop?
+3. Did country mix change?
+4. Did one placement stop showing?
+5. Did one ad source stop filling?
+6. Did eCPM actually drop?
+
+Most teams look at revenue first.
+But revenue is only the final symptom.
+```
+
+### 3. Pair posts with a diagnosis-card image
+
+Use report-style graphics, not generic AI art.
+
+```text
+Revenue Drop Diagnosis
+
+Revenue: -32%
+eCPM: stable
+Impressions: stable
+Fill Rate: 81% -> 54%
+Main Cause: Fill Rate Drop
+Likely Issue: Mediation / Ad Source Availability
+Severity: High
+```
+
+### 4. Daily cadence
+
+Post no more than two pieces per day:
+
+- One short diagnosis post.
+- One case-style breakdown.
+
+Short diagnosis example:
+
+```text
+Revenue dropped, but eCPM is stable?
+
+Then it is probably not an eCPM problem.
+
+Check:
+- fill rate
+- impressions
+- country mix
+- placement exposure
+- ad source availability
+```
+
+Case breakdown example:
+
+```text
+Example:
+
+Revenue: -28%
+eCPM: +3%
+Impressions: -2%
+Fill rate: 79% -> 51%
+
+This is not a pricing issue.
+This is likely a fill / mediation issue.
+```
+
+### 5. Reply under other people's posts
+
+This is more valuable than only posting on the eCPM Bazaar account.
+
+Reply pattern:
+
+```text
+I would not check revenue alone.
+
+Try splitting it by:
+1. country
+2. placement
+3. ad source
+4. fill rate
+5. impressions
+6. eCPM
+
+If impressions are stable but fill rate dropped, it may be a mediation or ad source availability issue.
+```
+
+Only add a soft product mention if the context is clearly relevant:
+
+```text
+I'm building a small diagnostic tool for this. Happy to test with anonymized data.
+```
+
+Do not drop a link in the first reply unless someone asks for the tool/demo.
+
+### 6. Website conversion path
+
+Lead users to:
+
+```text
+Get a free ad revenue drop diagnosis.
+```
+
+The intake should support:
+
+- revenue before / after
+- eCPM before / after
+- impressions before / after
+- fill rate before / after
+- country
+- placement
+- ad source
+- anonymous CSV rows
+
+### 7. Turn real diagnoses into anonymized cases
+
+After helping a real developer, remove private details and publish a case:
+
+```text
+Case study:
+
+A small mobile game team saw revenue drop by 35%.
+
+At first, they thought eCPM collapsed.
+
+But the real issue was:
+- Brazil traffic increased
+- rewarded video fill rate dropped
+- one ad source stopped filling
+- placement exposure was stable
+
+Diagnosis:
+Not an eCPM problem.
+It was a country + fill rate issue.
+```
+
+The business path is not generic X ad revenue. It is:
+
+```text
+Reddit/X developer pain -> professional diagnosis content -> website test user -> real case -> paid report/tool
+```
+
 ## Channel Priority
 
 1. Reddit: r/gamedev, r/IndieDev, r/Unity3D, r/androiddev, r/adops.

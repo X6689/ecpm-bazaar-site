@@ -166,7 +166,7 @@ const copy = {
     title: "Find why your mobile game ad revenue is low.",
     lede:
       "eCPM Bazaar is a free eCPM and ad monetization diagnostic tool for mobile game developers. It helps small teams without a monetization manager understand whether low revenue comes from eCPM, ARPDAU, impressions, fill rate, country mix, ad format, placement, mediation, or ad source performance.",
-    primary: "Request free diagnosis",
+    primary: "Get free revenue diagnosis",
     secondary: "Try public demo",
     tertiary: "Download CSV templates",
     trustItems: ["No signup or dashboard login", "No SDK or API permission", "Anonymized report fields only", "Copy results into Reddit or email"],
