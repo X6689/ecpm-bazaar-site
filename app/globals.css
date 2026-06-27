@@ -633,6 +633,7 @@ p {
 }
 
 .validation-card h3 {
+  grid-column: 2;
   margin-bottom: 7px;
   color: var(--deep);
   font-size: 19px;
@@ -640,6 +641,7 @@ p {
 }
 
 .validation-card p {
+  grid-column: 2;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.65;
@@ -1098,6 +1100,11 @@ p {
   .founder-note,
   .validation-card {
     grid-template-columns: 1fr;
+  }
+
+  .validation-card h3,
+  .validation-card p {
+    grid-column: 1;
   }
 
   .step-row {
