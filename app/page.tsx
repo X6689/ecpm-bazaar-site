@@ -363,6 +363,50 @@ export default function Home() {
               <span key={chip}>{chip}</span>
             ))}
           </div>
+        </div>
+
+        <div className="hero-side">
+          <div className="diagnosis-preview" aria-label="eCPM Bazaar diagnosis preview">
+            <div className="preview-top">
+              <div>
+                <p className="preview-kicker">eCPM Bazaar</p>
+                <h2>{t.previewTitle}</h2>
+              </div>
+              <span className="status-pill">
+                <CircleDot size={14} aria-hidden="true" />
+                {t.previewStatus}
+              </span>
+            </div>
+            <div className="signal-grid">
+              {t.signals.map((signal) => (
+                <div className="signal-card" key={signal.label}>
+                  <span>{signal.label}</span>
+                  <strong>{signal.value}</strong>
+                  <em className={signal.tone === "warn" ? "down" : undefined}>{signal.trend}</em>
+                </div>
+              ))}
+            </div>
+            <div className="diagnosis-box">
+              <span className="warning-icon">
+                <TriangleAlert size={20} aria-hidden="true" />
+              </span>
+              <div>
+                <h3>{t.diagnosisTitle}</h3>
+                <p>{t.diagnosisText}</p>
+              </div>
+            </div>
+            <div className="driver-list">
+              {t.drivers.map((driver) => (
+                <div className="driver-row" key={driver.label}>
+                  <div>
+                    <span>{driver.label}</span>
+                    <strong>{driver.value}</strong>
+                  </div>
+                  <i style={{ width: driver.width }} />
+                </div>
+              ))}
+            </div>
+          </div>
           <div className="fit-split" aria-label="Target customer fit">
             <div className="fit-card">
               <p className="section-label">{t.fitLabel}</p>
@@ -385,48 +429,6 @@ export default function Home() {
                 ))}
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="diagnosis-preview" aria-label="eCPM Bazaar diagnosis preview">
-          <div className="preview-top">
-            <div>
-              <p className="preview-kicker">eCPM Bazaar</p>
-              <h2>{t.previewTitle}</h2>
-            </div>
-            <span className="status-pill">
-              <CircleDot size={14} aria-hidden="true" />
-              {t.previewStatus}
-            </span>
-          </div>
-          <div className="signal-grid">
-            {t.signals.map((signal) => (
-              <div className="signal-card" key={signal.label}>
-                <span>{signal.label}</span>
-                <strong>{signal.value}</strong>
-                <em className={signal.tone === "warn" ? "down" : undefined}>{signal.trend}</em>
-              </div>
-            ))}
-          </div>
-          <div className="diagnosis-box">
-            <span className="warning-icon">
-              <TriangleAlert size={20} aria-hidden="true" />
-            </span>
-            <div>
-              <h3>{t.diagnosisTitle}</h3>
-              <p>{t.diagnosisText}</p>
-            </div>
-          </div>
-          <div className="driver-list">
-            {t.drivers.map((driver) => (
-              <div className="driver-row" key={driver.label}>
-                <div>
-                  <span>{driver.label}</span>
-                  <strong>{driver.value}</strong>
-                </div>
-                <i style={{ width: driver.width }} />
-              </div>
-            ))}
           </div>
         </div>
       </section>

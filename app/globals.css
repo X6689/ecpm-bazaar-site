@@ -146,12 +146,11 @@ p {
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1fr);
-  align-items: center;
-  gap: 56px;
+  align-items: start;
+  gap: 36px 56px;
   width: min(1120px, calc(100% - 40px));
-  min-height: calc(100vh - 86px);
   margin: 0 auto;
-  padding: 28px 0 70px;
+  padding: 28px 0 56px;
 }
 
 .hero-copy {
@@ -171,7 +170,7 @@ p {
 
 .hero h1 {
   max-width: 620px;
-  font-size: clamp(46px, 6vw, 74px);
+  font-size: clamp(44px, 5.4vw, 68px);
   line-height: 1.02;
   letter-spacing: 0;
 }
@@ -179,7 +178,7 @@ p {
 .hero-lede {
   max-width: 660px;
   color: #4e5b56;
-  font-size: 20px;
+  font-size: 19px;
   line-height: 1.75;
 }
 
@@ -230,9 +229,8 @@ p {
 
 .fit-split {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.5fr);
-  gap: 10px;
-  margin-top: 2px;
+  grid-template-columns: minmax(0, 1fr) minmax(160px, 0.55fr);
+  gap: 14px;
 }
 
 .fit-card {
@@ -321,6 +319,11 @@ p {
   background: #10251f;
   color: #f2fff8;
   box-shadow: 0 30px 90px rgb(16 37 31 / 22%);
+}
+
+.hero-side {
+  display: grid;
+  gap: 16px;
 }
 
 .preview-top,
