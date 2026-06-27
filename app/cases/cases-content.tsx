@@ -16,6 +16,7 @@ type DiagnosisCase = {
     checks: string[];
     card: {
       problem: string;
+      healthScore: string;
       cause: string;
       severity: string;
       country: string;
@@ -31,6 +32,7 @@ type DiagnosisCase = {
     checks: string[];
     card: {
       problem: string;
+      healthScore: string;
       cause: string;
       severity: string;
       country: string;
@@ -52,6 +54,7 @@ const cases: DiagnosisCase[] = [
       checks: ["Compare eCPM by country", "Check top ad sources", "Review floor or waterfall changes", "Look for platform status or demand changes"],
       card: {
         problem: "Revenue dropped 24%",
+        healthScore: "71 / 100",
         cause: "eCPM dropped",
         severity: "Medium",
         country: "Mixed geos",
@@ -68,6 +71,7 @@ const cases: DiagnosisCase[] = [
       checks: ["按国家比较 eCPM", "检查头部广告源", "复查底价或瀑布流变化", "查看平台状态或需求变化"],
       card: {
         problem: "收入下降 24%",
+        healthScore: "71 / 100",
         cause: "eCPM 下降",
         severity: "中",
         country: "多国家组合",
@@ -87,6 +91,7 @@ const cases: DiagnosisCase[] = [
       checks: ["Split requests and fills by country", "Check timeout and request logic", "Review source availability", "Inspect recent SDK or mediation releases"],
       card: {
         problem: "Revenue dropped 31%",
+        healthScore: "62 / 100",
         cause: "Fill rate dropped",
         severity: "High",
         country: "United States",
@@ -103,6 +108,7 @@ const cases: DiagnosisCase[] = [
       checks: ["按国家拆 requests 和 fills", "检查超时和请求逻辑", "复查广告源可用性", "检查近期 SDK 或聚合版本变更"],
       card: {
         problem: "收入下降 31%",
+        healthScore: "62 / 100",
         cause: "填充率下降",
         severity: "高",
         country: "美国",
@@ -122,6 +128,7 @@ const cases: DiagnosisCase[] = [
       checks: ["Compare impressions share by country", "Check UA campaigns and organic traffic sources", "Review placement exposure by region", "Separate country mix from source performance"],
       card: {
         problem: "Total eCPM dropped 18%",
+        healthScore: "78 / 100",
         cause: "Country mix changed",
         severity: "Low",
         country: "US stable, BR/IN share up",
@@ -138,6 +145,7 @@ const cases: DiagnosisCase[] = [
       checks: ["比较各国家展示占比", "检查买量和自然流量来源", "按地区复查广告位曝光", "把国家结构和广告源表现分开看"],
       card: {
         problem: "总 eCPM 下降 18%",
+        healthScore: "78 / 100",
         cause: "国家结构变化",
         severity: "低",
         country: "美国稳定，巴西/印度占比上升",
@@ -158,11 +166,12 @@ const copy = {
     navFaq: "FAQ",
     navPrivacy: "Privacy",
     language: "Language",
-    badge: "Anonymized cases",
-    title: "Three common reasons mobile ad revenue changes.",
+    badge: "Sample diagnosis reports",
+    title: "View sample mobile game ad revenue diagnosis reports.",
     lede:
-      "eCPM Bazaar is built around a simple idea: when ad revenue changes, diagnose the driver before changing mediation, floors, placements, or user acquisition decisions.",
+      "Before sending your own data, review how eCPM Bazaar turns anonymized mobile ad monetization rows into a diagnosis card, likely causes, and recommended next tests.",
     example: "Diagnosis example",
+    healthScore: "Revenue Health Score",
     mainCause: "Main cause",
     severity: "Severity",
     country: "Country",
@@ -186,11 +195,12 @@ const copy = {
     navFaq: "常见问题",
     navPrivacy: "数据安全",
     language: "语言",
-    badge: "脱敏案例",
-    title: "移动广告收入变化的三类常见原因。",
+    badge: "示例诊断报告",
+    title: "查看手游广告收益诊断示例报告。",
     lede:
-      "eCPM Bazaar 的核心思路很简单：收入变化时，先诊断驱动因素，再决定是否调整聚合、底价、广告位或买量策略。",
+      "发送自己的数据前，可以先看 eCPM Bazaar 如何把脱敏手游广告变现数据整理成诊断卡、可能原因和下一步测试建议。",
     example: "诊断案例",
+    healthScore: "收益健康评分",
     mainCause: "主要原因",
     severity: "严重程度",
     country: "国家地区",
@@ -269,6 +279,10 @@ export function CasesContent() {
                 <div className="mini-diagnosis-card">
                   <span className="share-card-brand">eCPM Bazaar</span>
                   <h3>{current.card.problem}</h3>
+                  <div className="mini-score">
+                    <span>{t.healthScore}</span>
+                    <strong>{current.card.healthScore}</strong>
+                  </div>
                   <div className="mini-cause">
                     <span>{t.mainCause}</span>
                     <strong>{current.card.cause}</strong>

@@ -25,9 +25,12 @@ type CopyEmailPanelProps = {
 
 const contactEmail = "xmmyy168@gmail.com";
 
-const platformOptions = ["AdMob", "AppLovin MAX", "Unity LevelPlay", "TopOn", "Other"];
+const platformOptions = ["AdMob", "Unity Ads", "AppLovin MAX", "Unity LevelPlay / ironSource", "TopOn", "Other"];
+const mediationOptions = ["None", "AdMob mediation", "AppLovin MAX", "Unity LevelPlay / ironSource", "TopOn", "Not sure"];
+const adFormatOptions = ["Rewarded", "Interstitial", "Banner", "Mixed"];
+const dauRangeOptions = ["<1k", "1k-10k", "10k-100k", "100k+", "Not sure"];
 const optionValues = {
-  change: ["Revenue drop", "eCPM drop", "Fill rate drop", "Impressions drop", "Country mix change", "Ad source change"],
+  change: ["Revenue low", "Revenue drop", "eCPM drop", "ARPDAU low", "Fill rate drop", "Impressions drop", "Country mix change", "Ad source change"],
   period: ["Latest day vs previous day", "Last 7 days vs previous 7 days", "Custom period"]
 };
 
@@ -35,6 +38,12 @@ const copy = {
   en: {
     emailLabel: "Your email",
     platformLabel: "Ad platform",
+    mediationLabel: "Mediation",
+    adFormatLabel: "Main ad format",
+    topGeoLabel: "Top GEO",
+    dauRangeLabel: "DAU range",
+    metricLabel: "Approx metrics",
+    metricPlaceholder: "Example: eCPM $4.20, ARPDAU $0.035, fill rate 62%, impressions/DAU 2.4",
     changeLabel: "Main change",
     periodLabel: "Comparison period",
     changedLabel: "What changed?",
@@ -57,6 +66,11 @@ const copy = {
     requestLine: "I would like a free ad revenue change diagnosis.",
     contactLine: "My contact email",
     platformLine: "Platform",
+    mediationLine: "Mediation",
+    adFormatLine: "Main ad format",
+    topGeoLine: "Top GEO",
+    dauRangeLine: "DAU range",
+    metricLine: "Approx metrics",
     changeLine: "Main change",
     periodLine: "Comparison period",
     outputLine: "Preferred output: diagnosis card + paste-ready short report",
@@ -70,6 +84,12 @@ const copy = {
   zh: {
     emailLabel: "你的邮箱",
     platformLabel: "广告平台",
+    mediationLabel: "聚合平台",
+    adFormatLabel: "主要广告形式",
+    topGeoLabel: "主要 GEO",
+    dauRangeLabel: "DAU 范围",
+    metricLabel: "大致指标",
+    metricPlaceholder: "示例：eCPM $4.20，ARPDAU $0.035，填充率 62%，展示/DAU 2.4",
     changeLabel: "主要变化",
     periodLabel: "对比周期",
     changedLabel: "发生了什么变化？",
@@ -92,6 +112,11 @@ const copy = {
     requestLine: "我想申请一次免费的广告收入变化诊断。",
     contactLine: "我的联系邮箱",
     platformLine: "平台",
+    mediationLine: "聚合平台",
+    adFormatLine: "主要广告形式",
+    topGeoLine: "主要 GEO",
+    dauRangeLine: "DAU 范围",
+    metricLine: "大致指标",
     changeLine: "主要变化",
     periodLine: "对比周期",
     outputLine: "希望输出：诊断卡 + 可复制短报告",
@@ -99,7 +124,7 @@ const copy = {
     rowsLine: "脱敏数据行或字段说明：",
     safetyLine: "我不会发送登录凭证、API key、私密账号 ID 或未脱敏的用户级数据。",
     subject: "Free eCPM Bazaar diagnosis request",
-    changeLabels: ["收入下降", "eCPM 下降", "填充率下降", "展示量下降", "国家结构变化", "广告源变化"],
+    changeLabels: ["收入偏低", "收入下降", "eCPM 下降", "ARPDAU 偏低", "填充率下降", "展示量下降", "国家结构变化", "广告源变化"],
     periodLabels: ["最近一天 vs 前一天", "最近 7 天 vs 前 7 天", "自定义周期"]
   }
 };
@@ -113,6 +138,11 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
   const [copied, setCopied] = useState<"request" | "body" | "fields" | null>(null);
   const [email, setEmail] = useState("");
   const [platform, setPlatform] = useState(platformOptions[0]);
+  const [mediation, setMediation] = useState(mediationOptions[0]);
+  const [adFormat, setAdFormat] = useState(adFormatOptions[0]);
+  const [topGeo, setTopGeo] = useState("");
+  const [dauRange, setDauRange] = useState(dauRangeOptions[0]);
+  const [metrics, setMetrics] = useState("");
   const [changeIndex, setChangeIndex] = useState(0);
   const [periodIndex, setPeriodIndex] = useState(0);
   const [notes, setNotes] = useState("");
@@ -149,6 +179,11 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
     "",
     `${t.contactLine}: ${trimOrFallback(email, t.emailFallback)}`,
     `${t.platformLine}: ${platform}`,
+    `${t.mediationLine}: ${mediation}`,
+    `${t.adFormatLine}: ${adFormat}`,
+    `${t.topGeoLine}: ${trimOrFallback(topGeo, "[US / Tier 1 / Tier 3 / mixed / other]")}`,
+    `${t.dauRangeLine}: ${dauRange}`,
+    `${t.metricLine}: ${trimOrFallback(metrics, "[eCPM / ARPDAU / fill rate / impressions per DAU]")}`,
     `${t.changeLine}: ${t.changeLabels[changeIndex]}`,
     `${t.periodLine}: ${t.periodLabels[periodIndex]}`,
     t.outputLine,
@@ -208,6 +243,34 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
             </select>
           </label>
           <label>
+            <span>{t.mediationLabel}</span>
+            <select value={mediation} onChange={(event) => setMediation(event.target.value)}>
+              {mediationOptions.map((option) => (
+                <option key={option}>{option}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>{t.adFormatLabel}</span>
+            <select value={adFormat} onChange={(event) => setAdFormat(event.target.value)}>
+              {adFormatOptions.map((option) => (
+                <option key={option}>{option}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>{t.topGeoLabel}</span>
+            <input placeholder="US / Tier 1 / BR / IN / mixed" value={topGeo} onChange={(event) => setTopGeo(event.target.value)} />
+          </label>
+          <label>
+            <span>{t.dauRangeLabel}</span>
+            <select value={dauRange} onChange={(event) => setDauRange(event.target.value)}>
+              {dauRangeOptions.map((option) => (
+                <option key={option}>{option}</option>
+              ))}
+            </select>
+          </label>
+          <label>
             <span>{t.changeLabel}</span>
             <select value={changeIndex} onChange={(event) => setChangeIndex(Number(event.target.value))}>
               {optionValues.change.map((option, index) => (
@@ -230,6 +293,11 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
         </div>
 
         <label className="form-wide">
+          <span>{t.metricLabel}</span>
+          <input placeholder={t.metricPlaceholder} value={metrics} onChange={(event) => setMetrics(event.target.value)} />
+        </label>
+
+        <label className="form-wide">
           <span>{t.changedLabel}</span>
           <textarea placeholder={t.changedPlaceholder} value={notes} onChange={(event) => setNotes(event.target.value)} />
         </label>
@@ -237,7 +305,7 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
         <label className="form-wide">
           <span>{t.rowsLabel}</span>
           <textarea
-            placeholder={`date,appName,placementName,country,network,revenue,ecpm,impressions,requests,fills,clicks\n2026-06-14,Game A,Rewarded Home,US,AdMob,128.42,18.70,6868,9200,7100,318`}
+            placeholder={`date,gameName,platform,adNetwork,mediation,adFormat,placementName,country,revenue,ecpm,arpDau,dau,impressions,impressionsPerDau,requests,fills,fillRate\n2026-06-14,Game A,Android,AdMob,AppLovin MAX,Rewarded,Rewarded Home,US,128.42,18.70,0.035,3650,6868,1.88,9200,7100,77.2`}
             value={dataSample}
             onChange={(event) => setDataSample(event.target.value)}
           />

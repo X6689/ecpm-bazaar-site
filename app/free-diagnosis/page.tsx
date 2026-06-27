@@ -4,7 +4,7 @@ import { FreeDiagnosisContent } from "./free-diagnosis-content";
 
 export const metadata: Metadata = pageMetadata(
   "Free Ad Revenue Diagnosis",
-  "Send anonymized mobile ad monetization data for a free eCPM Bazaar diagnosis. No login credentials or API keys required.",
+  "Get a free diagnosis for low mobile game ad revenue across eCPM, ARPDAU, fill rate, GEO, ad format, mediation, and ad source performance.",
   "/free-diagnosis/"
 );
 

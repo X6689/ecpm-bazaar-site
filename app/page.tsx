@@ -32,15 +32,27 @@ const copy = {
     navContact: "联系",
     contact: "联系我",
     languageLabel: "语言",
-    eyebrow: "移动广告收入诊断助手",
-    title: "诊断移动游戏/App 广告收入为什么下降。",
+    eyebrow: "手游广告收益诊断工具",
+    title: "找到你的手游广告收入为什么低。",
     lede:
-      "eCPM Bazaar 帮没有专职数据分析师的小团队判断收入变化来自 eCPM、展示量、填充率、国家结构、广告位还是广告源。你可以试公开 Demo，也可以发送脱敏报表申请免费测试诊断。",
+      "eCPM Bazaar 是面向海外移动游戏开发者的免费 eCPM 和广告变现诊断工具。它帮助没有专职 monetization manager 的小团队判断低收入来自 eCPM、ARPDAU、展示量、填充率、国家结构、广告形式、广告位还是广告源。",
     primary: "申请免费诊断",
     secondary: "试用公开演示",
     tertiary: "下载 CSV 模板",
     trustItems: ["无需注册或后台登录", "无需 SDK 或 API 授权", "只看脱敏报表字段", "可复制结果到 Reddit / 邮件讨论"],
-    driverChips: ["eCPM", "展示量", "填充率", "国家结构", "广告位", "广告源"],
+    driverChips: ["Low eCPM?", "Poor fill rate?", "Rewarded ads not performing?", "Low ARPDAU?", "Mediation not working?"],
+    fitLabel: "Best fit",
+    fitTitle: "专注有广告收入的移动游戏，不服务所有游戏项目。",
+    fitText:
+      "第一批目标客户是已经接入 AdMob、Unity Ads、AppLovin MAX、Unity LevelPlay / ironSource 或 TopOn 的移动游戏和 App 团队。",
+    fitItems: [
+      "独立手游开发者",
+      "Casual / hybrid-casual 小团队",
+      "使用广告聚合的 App 团队",
+      "没有专职变现经理的小型工作室"
+    ],
+    notFitLabel: "Not first",
+    notFitItems: ["PC / Steam 付费游戏", "主机游戏", "尚未上线的游戏", "完全没有广告数据的项目"],
     cardSectionLabel: "Diagnosis Card",
     cardSectionTitle: "把广告收入下降，变成一张看得懂、能分享、能行动的诊断卡。",
     cardSectionText:
@@ -77,11 +89,11 @@ const copy = {
     productLabel: "Product Direction",
     productTitle: "eCPM Bazaar",
     productText:
-      "一个面向小型移动游戏和 App 团队的广告收入波动诊断助手。它不承诺神奇提高 eCPM，而是帮助开发者先判断问题更可能来自流量、单价、填充、国家结构、广告位还是广告源。",
+      "一个面向海外移动游戏和 App 团队的广告收益诊断助手。它不承诺神奇提高收入，而是先帮开发者判断问题更可能来自 eCPM、ARPDAU、展示量、填充、国家结构、广告形式、广告位还是广告源。",
     functionLabel: "Core Function",
     functionTitle: "广告收入异常诊断工具",
     functionText:
-      "当收入波动出现时，eCPM Bazaar 会判断主要问题是 eCPM、填充率、展示量、国家地区、广告位，还是广告平台/广告源拖累，并给出优先排查建议。",
+      "当广告收益偏低或波动时，eCPM Bazaar 会判断主要问题是 eCPM、ARPDAU、填充率、展示频次、国家地区、广告形式、广告位，还是广告平台/广告源拖累，并给出优先排查建议。",
     diagnosisTitle: "诊断示例",
     diagnosisText:
       "美国激励视频收入下降主要由填充率从 78% 降到 54% 导致，eCPM 基本稳定。建议优先检查该广告位的广告源填充、底价配置和平台状态。",
@@ -132,7 +144,7 @@ const copy = {
     serviceLabel: "Who I Serve",
     serviceTitle: "先服务小团队，不做大而全的平台。",
     serviceText:
-      "目标用户是每天关注广告收入、eCPM 和填充率的小游戏/App 开发者。他们可能没有数据分析师，但需要快速知道收入为什么涨跌。",
+      "目标用户是每天关注广告收入、eCPM、ARPDAU 和填充率的小游戏/App 开发者。他们可能没有数据分析师或变现经理，但需要快速知道收益为什么低、为什么波动。",
     aboutLabel: "About Me",
     aboutTitle: "我会先用真实开发者数据验证这个方向。",
     aboutText:
@@ -150,15 +162,27 @@ const copy = {
     navContact: "Contact",
     contact: "Contact",
     languageLabel: "Language",
-    eyebrow: "Mobile ad revenue diagnosis assistant",
-    title: "Diagnose why mobile game and app ad revenue dropped.",
+    eyebrow: "Mobile game ad revenue diagnostic tool",
+    title: "Find why your mobile game ad revenue is low.",
     lede:
-      "eCPM Bazaar helps small teams without a dedicated analyst understand whether a revenue movement came from eCPM, impressions, fill rate, country mix, placement, or ad source performance. Try the public demo or request a free test diagnosis with anonymized report rows.",
+      "eCPM Bazaar is a free eCPM and ad monetization diagnostic tool for mobile game developers. It helps small teams without a monetization manager understand whether low revenue comes from eCPM, ARPDAU, impressions, fill rate, country mix, ad format, placement, mediation, or ad source performance.",
     primary: "Request free diagnosis",
     secondary: "Try public demo",
     tertiary: "Download CSV templates",
     trustItems: ["No signup or dashboard login", "No SDK or API permission", "Anonymized report fields only", "Copy results into Reddit or email"],
-    driverChips: ["eCPM", "Impressions", "Fill rate", "Country mix", "Placement", "Ad source"],
+    driverChips: ["Low eCPM?", "Poor fill rate?", "Rewarded ads not performing?", "Low ARPDAU?", "Mediation not working?"],
+    fitLabel: "Best fit",
+    fitTitle: "Built for mobile games with ad revenue, not every game project.",
+    fitText:
+      "The first users are teams already using AdMob, Unity Ads, AppLovin MAX, Unity LevelPlay / ironSource, TopOn, or similar ad monetization setups.",
+    fitItems: [
+      "Indie mobile game developers",
+      "Casual / hybrid-casual teams",
+      "Small app teams using ads",
+      "Studios without a monetization manager"
+    ],
+    notFitLabel: "Not first",
+    notFitItems: ["PC / premium Steam games", "Console games", "Pre-launch games", "Projects with no ad data"],
     cardSectionLabel: "Diagnosis Card",
     cardSectionTitle: "Turn an ad revenue drop into a card your team can understand and act on.",
     cardSectionText:
@@ -195,11 +219,11 @@ const copy = {
     productLabel: "Product Direction",
     productTitle: "eCPM Bazaar",
     productText:
-      "A diagnosis assistant for small mobile game and app teams. It does not promise to magically increase eCPM; it helps developers understand whether the movement came from traffic, pricing, fill, country mix, placement, or ad source performance.",
+      "A diagnosis assistant for overseas mobile game and app teams. It does not promise to magically increase revenue; it helps developers understand whether low performance came from eCPM, ARPDAU, impressions, fill, country mix, ad format, placement, mediation, or ad source performance.",
     functionLabel: "Core Function",
     functionTitle: "Ad revenue anomaly diagnosis",
     functionText:
-      "When revenue changes, eCPM Bazaar identifies whether the main driver is eCPM, fill rate, impressions, country, placement, or a specific ad platform/source, then suggests where to check first.",
+      "When ad revenue is low or changes, eCPM Bazaar identifies whether the main driver is eCPM, ARPDAU, fill rate, impressions per DAU, country, ad format, placement, or a specific ad platform/source, then suggests where to check first.",
     diagnosisTitle: "Diagnosis Example",
     diagnosisText:
       "US rewarded video revenue fell mainly because fill rate dropped from 78% to 54%, while eCPM stayed stable. Prioritize checking ad source fill, floor settings, and platform status for this placement.",
@@ -250,7 +274,7 @@ const copy = {
     serviceLabel: "Who I Serve",
     serviceTitle: "Starting with small teams, not a giant platform.",
     serviceText:
-      "The target users are mini game and app developers who check ad revenue, eCPM, and fill rate every day. They may not have a data analyst, but they need to know why revenue moved.",
+      "The target users are mini game and app developers who check ad revenue, eCPM, ARPDAU, and fill rate every day. They may not have a data analyst or monetization manager, but they need to know why revenue is low or moving.",
     aboutLabel: "About Me",
     aboutTitle: "I will validate this with real developer data first.",
     aboutText:
@@ -338,6 +362,29 @@ export default function Home() {
             {t.driverChips.map((chip) => (
               <span key={chip}>{chip}</span>
             ))}
+          </div>
+          <div className="fit-split" aria-label="Target customer fit">
+            <div className="fit-card">
+              <p className="section-label">{t.fitLabel}</p>
+              <h2>{t.fitTitle}</h2>
+              <p>{t.fitText}</p>
+              <div className="fit-list">
+                {t.fitItems.map((item) => (
+                  <span key={item}>
+                    <CheckCircle2 size={15} aria-hidden="true" />
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="fit-card fit-card-muted">
+              <p className="section-label">{t.notFitLabel}</p>
+              <div className="fit-list">
+                {t.notFitItems.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

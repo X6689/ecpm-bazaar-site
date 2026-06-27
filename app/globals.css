@@ -228,6 +228,69 @@ p {
   color: #166534;
 }
 
+.fit-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.5fr);
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.fit-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #f0fdf4;
+}
+
+.fit-card h2 {
+  color: var(--deep);
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.fit-card p:not(.section-label) {
+  color: #255f3b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.fit-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fit-list span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid #bbf7d0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #166534;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.fit-card-muted {
+  border-color: #fed7aa;
+  background: #fff7ed;
+}
+
+.fit-card-muted .section-label,
+.fit-card-muted .fit-list span {
+  color: #9a3412;
+}
+
+.fit-card-muted .fit-list span {
+  border-color: #fed7aa;
+}
+
 .primary-action,
 .secondary-action {
   display: inline-flex;
@@ -977,6 +1040,7 @@ p {
   .signal-grid,
   .focus-grid,
   .home-diagnosis-card dl,
+  .fit-split,
   .resource-link-grid,
   .site-footer-main {
     grid-template-columns: 1fr;
@@ -2402,6 +2466,29 @@ p {
   border-radius: 8px;
   background: #f0fdf4;
   color: #10251f;
+}
+
+.mini-score {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 7%);
+}
+
+.mini-score span {
+  color: #a7f3d0;
+  font-size: 12px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.mini-score strong {
+  color: #ffffff;
+  font-size: 20px;
 }
 
 .mini-cause span {

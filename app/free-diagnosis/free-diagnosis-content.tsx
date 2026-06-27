@@ -10,12 +10,13 @@ import { SiteFooter } from "../site-footer";
 
 const email = "xmmyy168@gmail.com";
 const subject = "Free eCPM Bazaar diagnosis";
-const fieldList = "date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks";
+const fieldList =
+  "date, gameName, platform, adNetwork, mediation, adFormat, placementName, country, revenue, ecpm, arpDau, dau, impressions, impressionsPerDau, requests, fills, fillRate";
 type DemoSampleId = "14-day";
 const changeIndexByCase: Record<DemoScenarioId, number> = {
-  "ecpm-drop": 1,
-  "fill-rate-drop": 2,
-  "country-mix": 4
+  "ecpm-drop": 2,
+  "fill-rate-drop": 4,
+  "country-mix": 6
 };
 
 function normalizeScenarioId(value: string | null): DemoScenarioId | null {
@@ -40,9 +41,9 @@ const copy = {
     navPrivacy: "Privacy",
     language: "Language",
     badge: "Free diagnosis",
-    title: "Send anonymized ad monetization data for a free diagnosis.",
+    title: "Get a free diagnosis for low mobile game ad revenue.",
     lede:
-      "If your mobile game or app ad revenue changed and you are not sure why, send anonymized CSV-style rows. I will help check whether the movement looks more like eCPM, impressions, fill rate, country mix, placement, or ad source performance.",
+      "If your mobile game ad revenue is low, eCPM is weak, fill rate is unstable, or rewarded ads are not performing, send anonymized ranges or CSV-style rows. I will help check whether the issue looks more like eCPM, ARPDAU, impressions per DAU, fill rate, GEO mix, ad format, placement, mediation, or ad source performance.",
     emailButton: "Email anonymized data",
     templatesButton: "Download templates",
     steps: [
@@ -52,7 +53,7 @@ const copy = {
       },
       {
         title: "2. Include two comparable periods",
-        text: "The simplest version is latest day vs previous day. A 7-day comparison is also useful if your traffic is volatile."
+        text: "The simplest version is latest day vs previous day. A 7-day comparison is also useful if your DAU or country mix is volatile."
       },
       {
         title: "3. Send fields, not account access",
@@ -66,7 +67,7 @@ const copy = {
     outputs: [
       {
         label: "Diagnosis card",
-        value: "Problem, main cause, severity, country, placement, ad source, and next action."
+        value: "Problem, health score, main cause, severity, ad format, country, placement, ad source, and next action."
       },
       {
         label: "Paste-ready report",
@@ -74,10 +75,12 @@ const copy = {
       },
       {
         label: "First checks",
-        value: "A small priority list so you know what to inspect before changing mediation settings."
+        value: "A small priority list so you know what to inspect before changing mediation, floors, or ad placement."
       }
     ],
     mainCause: "Main cause",
+    healthScore: "Revenue Health Score",
+    healthScoreValue: "62 / 100",
     previewProblem: "Revenue dropped 31%",
     previewCause: "Fill rate dropped",
     severity: "Severity",
@@ -116,7 +119,14 @@ const copy = {
       "",
       "Platform: AdMob / AppLovin MAX / Unity LevelPlay / TopOn / Other",
       "App type: mobile game / app",
-      "What changed: revenue / eCPM / impressions / fill rate / country mix / ad source",
+      "Game stage: live with ad revenue / soft launch / testing",
+      "Ad network: AdMob / Unity Ads / AppLovin MAX / ironSource / TopOn / Other",
+      "Mediation: none / AdMob mediation / AppLovin MAX / Unity LevelPlay / TopOn / not sure",
+      "Main ad format: rewarded / interstitial / banner / mixed",
+      "Main GEO: US / Tier 1 / Tier 3 / mixed / other",
+      "DAU range: <1k / 1k-10k / 10k-100k / 100k+",
+      "Approx metrics: eCPM, ARPDAU, fill rate, impressions per DAU",
+      "What changed: revenue / eCPM / ARPDAU / impressions / fill rate / country mix / ad source",
       "Comparison period: latest day vs previous day / last 7 days vs previous 7 days",
       "Preferred output: diagnosis card + paste-ready short report",
       "",
@@ -135,9 +145,9 @@ const copy = {
     navPrivacy: "数据安全",
     language: "语言",
     badge: "免费诊断",
-    title: "发送脱敏广告变现数据，申请一次免费诊断。",
+    title: "免费诊断你的手游广告收益为什么低。",
     lede:
-      "如果你的移动游戏或 App 广告收入发生变化，但不确定原因，可以发送 CSV 风格的脱敏数据行。我会帮你判断更像是 eCPM、展示量、填充率、国家结构、广告位还是广告源导致。",
+      "如果你的手游广告收入偏低、eCPM 弱、填充率不稳，或者激励视频收益不如预期，可以发送脱敏范围或 CSV 风格数据行。我会帮你判断更像是 eCPM、ARPDAU、展示频次、填充率、GEO 结构、广告形式、广告位、聚合或广告源导致。",
     emailButton: "发送脱敏数据邮件",
     templatesButton: "下载模板",
     steps: [
@@ -147,7 +157,7 @@ const copy = {
       },
       {
         title: "2. 提供两个可比周期",
-        text: "最简单是最近一天 vs 前一天。如果流量波动大，也可以用最近 7 天 vs 前 7 天。"
+        text: "最简单是最近一天 vs 前一天。如果 DAU 或国家结构波动大，也可以用最近 7 天 vs 前 7 天。"
       },
       {
         title: "3. 只发送字段，不发送账号权限",
@@ -160,7 +170,7 @@ const copy = {
     outputs: [
       {
         label: "诊断卡",
-        value: "包含问题、主要原因、严重程度、国家、广告位、广告源和下一步动作。"
+        value: "包含问题、健康评分、主要原因、严重程度、广告形式、国家、广告位、广告源和下一步动作。"
       },
       {
         label: "可复制短报告",
@@ -168,10 +178,12 @@ const copy = {
       },
       {
         label: "优先检查清单",
-        value: "告诉你改聚合设置前，应该先检查哪些地方。"
+        value: "告诉你改聚合、底价或广告位前，应该先检查哪些地方。"
       }
     ],
     mainCause: "主要原因",
+    healthScore: "收益健康评分",
+    healthScoreValue: "62 / 100",
     previewProblem: "收入下降 31%",
     previewCause: "填充率下降",
     severity: "严重程度",
@@ -207,7 +219,14 @@ const copy = {
       "",
       "平台：AdMob / AppLovin MAX / Unity LevelPlay / TopOn / Other",
       "App 类型：mobile game / app",
-      "发生了什么变化：revenue / eCPM / impressions / fill rate / country mix / ad source",
+      "游戏阶段：live with ad revenue / soft launch / testing",
+      "广告平台：AdMob / Unity Ads / AppLovin MAX / ironSource / TopOn / Other",
+      "聚合平台：none / AdMob mediation / AppLovin MAX / Unity LevelPlay / TopOn / not sure",
+      "主要广告形式：rewarded / interstitial / banner / mixed",
+      "主要 GEO：US / Tier 1 / Tier 3 / mixed / other",
+      "DAU 范围：<1k / 1k-10k / 10k-100k / 100k+",
+      "大致指标：eCPM、ARPDAU、fill rate、impressions per DAU",
+      "发生了什么变化：revenue / eCPM / ARPDAU / impressions / fill rate / country mix / ad source",
       "对比周期：latest day vs previous day / last 7 days vs previous 7 days",
       "希望输出：diagnosis card + paste-ready short report",
       "",
@@ -245,7 +264,7 @@ export function FreeDiagnosisContent() {
     if (activeScenario) {
       return {
         key: `${lang}-${activeScenario.id}`,
-        platform: activeScenario.id === "fill-rate-drop" ? "Unity LevelPlay" : activeScenario.id === "country-mix" ? "Other" : "AdMob",
+        platform: activeScenario.id === "fill-rate-drop" ? "Unity LevelPlay / ironSource" : activeScenario.id === "country-mix" ? "Other" : "AdMob",
         changeIndex: changeIndexByCase[activeScenario.id],
         periodIndex: 0,
         notes:
@@ -398,6 +417,10 @@ export function FreeDiagnosisContent() {
         <div className="mini-diagnosis-card free-diagnosis-preview-card">
           <span className="share-card-brand">eCPM Bazaar</span>
           <h3>{t.previewProblem}</h3>
+          <div className="mini-score">
+            <span>{t.healthScore}</span>
+            <strong>{t.healthScoreValue}</strong>
+          </div>
           <div className="mini-cause">
             <span>{t.mainCause}</span>
             <strong>{t.previewCause}</strong>
