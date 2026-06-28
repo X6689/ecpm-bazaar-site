@@ -1,0 +1,14 @@
+Mobile game ad revenue dropped?
+
+Don't check eCPM alone.
+
+Split the change by:
+- impressions
+- fill/match rate
+- country mix
+- placement exposure
+- ad source performance
+
+Find the real driver before changing mediation settings.
+
+Building eCPM Bazaar for this.

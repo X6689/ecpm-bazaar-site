@@ -10,5 +10,11 @@ personal-site.*.log
 *.png
 dashboard-smoke.png
 .chrome-smoke-profile/
+.chrome-screenshot-profile/
+.codex/
 .playwright-mcp/
 .reddit-posting-chrome/
+
+# Keep generated outreach/marketing assets for reuse.
+!eCPM Bazaar Outreach Assets/
+!eCPM Bazaar Outreach Assets/*.png

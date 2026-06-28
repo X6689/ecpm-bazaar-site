@@ -4,6 +4,7 @@ I built a small eCPM comparison dashboard for mobile game developers. Looking fo
 
 # Suggested subreddits
 
+- r/admob
 - r/gamedev
 - r/indiegamedev
 - r/androiddev
@@ -11,7 +12,17 @@ I built a small eCPM comparison dashboard for mobile game developers. Looking fo
 - r/SideProject
 - r/SaaS
 
-Check each subreddit rules before posting. For stricter communities, post as a feedback request instead of a promotion.
+Check each subreddit rules before posting. For stricter communities, comment for 2-4 weeks first and post as a diagnostic checklist or feedback request instead of a promotion.
+
+## Safer Reddit positioning
+
+Lead with:
+
+> I can help sanity-check whether a mobile ad revenue drop came from eCPM, impressions, fill/match rate, country mix, placement, or ad source.
+
+Do not lead with:
+
+> I built a SaaS/dashboard. Please test it.
 
 # Post body
 
