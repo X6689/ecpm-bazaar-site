@@ -33,13 +33,13 @@ const copy = {
     contact: "联系我",
     languageLabel: "语言",
     eyebrow: "手游广告收益诊断工具",
-    title: "找到你的手游广告收入为什么低。",
+    title: "诊断手游广告收入为什么下降。",
     lede:
-      "eCPM Bazaar 是面向海外移动游戏开发者的免费 eCPM 和广告变现诊断工具。它帮助没有专职 monetization manager 的小团队判断低收入来自 eCPM、ARPDAU、展示量、填充率、国家结构、广告形式、广告位还是广告源。",
-    primary: "申请免费诊断",
-    secondary: "试用公开演示",
-    tertiary: "下载 CSV 模板",
-    trustItems: ["无需注册或后台登录", "无需 SDK 或 API 授权", "只看脱敏报表字段", "可复制结果到 Reddit / 邮件讨论"],
+      "判断变化来自 eCPM、展示量、填充率、国家结构、广告位还是广告源。把一堆报表数字变成一张可行动的诊断卡。",
+    primary: "试用诊断报告",
+    secondary: "申请免费诊断",
+    tertiary: "查看 CSV 模板",
+    trustItems: ["无需注册", "无需 SDK", "只看脱敏报表", "可复制诊断结果"],
     driverChips: ["Low eCPM?", "Poor fill rate?", "Rewarded ads not performing?", "Low ARPDAU?", "Mediation not working?"],
     fitLabel: "Best fit",
     fitTitle: "专注有广告收入的移动游戏，不服务所有游戏项目。",
@@ -97,8 +97,8 @@ const copy = {
     diagnosisTitle: "诊断示例",
     diagnosisText:
       "美国激励视频收入下降主要由填充率从 78% 降到 54% 导致，eCPM 基本稳定。建议优先检查该广告位的广告源填充、底价配置和平台状态。",
-    previewTitle: "广告收入异常诊断",
-    previewStatus: "诊断中",
+    previewTitle: "收入下降诊断",
+    previewStatus: "示例报告",
     signals: [
       { label: "收入", value: "$428", trend: "-18.4%", tone: "warn" },
       { label: "eCPM", value: "$3.84", trend: "+2.6%", tone: "good" },
@@ -163,13 +163,13 @@ const copy = {
     contact: "Contact",
     languageLabel: "Language",
     eyebrow: "Mobile game ad revenue diagnostic tool",
-    title: "Find why your mobile game ad revenue is low.",
+    title: "Diagnose mobile ad revenue drops.",
     lede:
-      "eCPM Bazaar is a free eCPM and ad monetization diagnostic tool for mobile game developers. It helps small teams without a monetization manager understand whether low revenue comes from eCPM, ARPDAU, impressions, fill rate, country mix, ad format, placement, mediation, or ad source performance.",
-    primary: "Get free revenue diagnosis",
-    secondary: "Try public demo",
-    tertiary: "Download CSV templates",
-    trustItems: ["No signup or dashboard login", "No SDK or API permission", "Anonymized report fields only", "Copy results into Reddit or email"],
+      "Find whether the change came from eCPM, impressions, fill rate, country mix, placement, or ad source. Turn ad dashboards into one clear diagnosis card.",
+    primary: "Try demo report",
+    secondary: "Get free diagnosis",
+    tertiary: "See sample CSV",
+    trustItems: ["No signup", "No SDK", "Anonymized rows only", "Copy-ready diagnosis"],
     driverChips: ["Low eCPM?", "Poor fill rate?", "Rewarded ads not performing?", "Low ARPDAU?", "Mediation not working?"],
     fitLabel: "Best fit",
     fitTitle: "Built for mobile games with ad revenue, not every game project.",
@@ -227,8 +227,8 @@ const copy = {
     diagnosisTitle: "Diagnosis Example",
     diagnosisText:
       "US rewarded video revenue fell mainly because fill rate dropped from 78% to 54%, while eCPM stayed stable. Prioritize checking ad source fill, floor settings, and platform status for this placement.",
-    previewTitle: "Revenue anomaly diagnosis",
-    previewStatus: "Watching",
+    previewTitle: "Revenue drop diagnosis",
+    previewStatus: "Example report",
     signals: [
       { label: "Revenue", value: "$428", trend: "-18.4%", tone: "warn" },
       { label: "eCPM", value: "$3.84", trend: "+2.6%", tone: "good" },
@@ -339,11 +339,11 @@ export default function Home() {
           <h1>{t.title}</h1>
           <p className="hero-lede">{t.lede}</p>
           <div className="hero-actions">
-            <a className="primary-action" href="free-diagnosis/">
+            <a className="primary-action" href="demo/">
               {t.primary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
-            <a className="secondary-action" href="demo/">
+            <a className="secondary-action" href="free-diagnosis/">
               {t.secondary}
             </a>
             <a className="secondary-action" href="templates/">
@@ -356,11 +356,6 @@ export default function Home() {
                 <CheckCircle2 size={15} aria-hidden="true" />
                 {item}
               </span>
-            ))}
-          </div>
-          <div className="driver-chip-row" aria-label="Diagnosis drivers">
-            {t.driverChips.map((chip) => (
-              <span key={chip}>{chip}</span>
             ))}
           </div>
         </div>
@@ -407,29 +402,6 @@ export default function Home() {
               ))}
             </div>
           </div>
-          <div className="fit-split" aria-label="Target customer fit">
-            <div className="fit-card">
-              <p className="section-label">{t.fitLabel}</p>
-              <h2>{t.fitTitle}</h2>
-              <p>{t.fitText}</p>
-              <div className="fit-list">
-                {t.fitItems.map((item) => (
-                  <span key={item}>
-                    <CheckCircle2 size={15} aria-hidden="true" />
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="fit-card fit-card-muted">
-              <p className="section-label">{t.notFitLabel}</p>
-              <div className="fit-list">
-                {t.notFitItems.map((item) => (
-                  <span key={item}>{item}</span>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -451,11 +423,11 @@ export default function Home() {
           </div>
           <div className="validation-actions">
             <a className="primary-action" href="demo/">
-              {t.secondary}
+              {t.primary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
             <a className="secondary-action" href="free-diagnosis/">
-              {t.primary}
+              {t.secondary}
             </a>
           </div>
         </div>
@@ -489,7 +461,7 @@ export default function Home() {
           <p>{t.validationText}</p>
           <div className="validation-actions">
             <a className="primary-action" href="free-diagnosis/">
-              {t.primary}
+              {t.secondary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
             <a className="secondary-action" href="templates/">
