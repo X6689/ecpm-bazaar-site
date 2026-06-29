@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 
 export const siteUrl = new URL("https://ecpmbazaar.com");
 
-export const siteTitle = "eCPM Bazaar | Find why mobile game ad revenue is low";
+export const siteTitle = "eCPM Bazaar | Diagnose mobile ad revenue drops";
 
 export const siteDescription =
-  "eCPM Bazaar helps mobile game developers diagnose low ad revenue across eCPM, ARPDAU, fill rate, impressions per DAU, GEO, ad format, placement, mediation, and ad sources.";
+  "eCPM Bazaar helps small mobile game and app teams find whether ad revenue changed because of eCPM, impressions, fill rate, country mix, placement, mediation, or ad sources.";
 
 const ogImage = {
   url: "/og-image.png",

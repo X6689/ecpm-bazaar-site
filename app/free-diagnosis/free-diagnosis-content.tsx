@@ -41,9 +41,9 @@ const copy = {
     navPrivacy: "Privacy",
     language: "Language",
     badge: "Free diagnosis",
-    title: "Get a free diagnosis for low mobile game ad revenue.",
+    title: "Get a free manual diagnosis of your mobile ad revenue drop.",
     lede:
-      "If your mobile game ad revenue is low, eCPM is weak, fill rate is unstable, or rewarded ads are not performing, send anonymized ranges or CSV-style rows. I will help check whether the issue looks more like eCPM, ARPDAU, impressions per DAU, fill rate, GEO mix, ad format, placement, mediation, or ad source performance.",
+      "Takes 2-3 minutes. No dashboard access. No account ID. CSV-style rows are enough. I will help check whether the issue looks more like eCPM, ARPDAU, impressions per DAU, fill rate, GEO mix, ad format, placement, mediation, or ad source performance.",
     emailButton: "Email anonymized data",
     templatesButton: "Download templates",
     steps: [
@@ -145,9 +145,9 @@ const copy = {
     navPrivacy: "数据安全",
     language: "语言",
     badge: "免费诊断",
-    title: "免费诊断你的手游广告收益为什么低。",
+    title: "免费人工诊断你的移动广告收入为什么下降。",
     lede:
-      "如果你的手游广告收入偏低、eCPM 弱、填充率不稳，或者激励视频收益不如预期，可以发送脱敏范围或 CSV 风格数据行。我会帮你判断更像是 eCPM、ARPDAU、展示频次、填充率、GEO 结构、广告形式、广告位、聚合或广告源导致。",
+      "大约 2-3 分钟填写。不需要后台权限，不需要账号 ID，CSV 风格数据行就够。我会帮你判断更像是 eCPM、ARPDAU、展示频次、填充率、GEO 结构、广告形式、广告位、聚合或广告源导致。",
     emailButton: "发送脱敏数据邮件",
     templatesButton: "下载模板",
     steps: [

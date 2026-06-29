@@ -28,18 +28,40 @@ const copy = {
     navDemo: "演示",
     navTemplates: "模板",
     navCases: "案例",
+    navMethod: "方法",
     navFree: "免费诊断",
     navContact: "联系",
     contact: "联系我",
     languageLabel: "语言",
     eyebrow: "手游广告收益诊断工具",
-    title: "诊断手游广告收入为什么下降。",
+    title: "先找出 AdMob / AppLovin 收入下降的真正原因，再改底价或聚合配置。",
     lede:
-      "判断变化来自 eCPM、展示量、填充率、国家结构、广告位还是广告源。把一堆报表数字变成一张可行动的诊断卡。",
-    primary: "试用诊断报告",
+      "上传或粘贴脱敏 CSV 行。eCPM Bazaar 会把 eCPM、展示量、填充率、国家结构、广告位和广告源变化整理成一张诊断卡。无需 SDK、无需登录，公开 Demo 只在浏览器本地运行。",
+    primary: "用样例数据试 Demo",
     secondary: "申请免费诊断",
     tertiary: "查看 CSV 模板",
     trustItems: ["无需注册", "无需 SDK", "只看脱敏报表", "可复制诊断结果"],
+    sampleLink: "先看 CSV 模板",
+    positioningNote:
+      "不是广告平台，也不是 eCPM 报价市场。eCPM Bazaar 是一个基于 CSV 的广告变现问题诊断助手。",
+    useCaseLabel: "典型问题",
+    useCaseTitle: "当你不知道收入为什么掉了，先把问题拆开。",
+    useCases: [
+      "AdMob 收入下降，但展示量看起来正常",
+      "AppLovin MAX 调整底价或聚合后 eCPM 变化",
+      "某个 GEO 的激励视频收入突然下滑",
+      "eCPM 稳定，但 fill rate / match rate 下降",
+      "国家流量结构变化导致整体 eCPM 被拉低",
+      "需要一段可贴到 Reddit、邮件或团队讨论里的短诊断"
+    ],
+    safetyLabel: "数据安全",
+    safetyTitle: "先用脱敏数据验证，不要交出账号权限。",
+    safetyItems: [
+      "公开 Demo 在浏览器本地解析 CSV",
+      "不需要 AdMob、AppLovin、LevelPlay、TopOn 登录",
+      "不接 SDK，不要发送 API key 或密码",
+      "请移除 App 名、广告位 ID、包名、账号 ID 和付款信息"
+    ],
     driverChips: ["Low eCPM?", "Poor fill rate?", "Rewarded ads not performing?", "Low ARPDAU?", "Mediation not working?"],
     fitLabel: "Best fit",
     fitTitle: "专注有广告收入的移动游戏，不服务所有游戏项目。",
@@ -137,6 +159,7 @@ const copy = {
       { title: "公开 Demo", text: "上传 CSV 或使用样例数据，直接生成一段诊断结果。", href: "demo/" },
       { title: "CSV 模板", text: "下载 AdMob、AppLovin MAX、LevelPlay / TopOn 模板。", href: "templates/" },
       { title: "脱敏案例", text: "查看 eCPM、填充率、国家结构三类常见变化案例。", href: "cases/" },
+      { title: "诊断方法", text: "了解收入变化如何拆成展示量、eCPM、填充、国家和广告源信号。", href: "method/" },
       { title: "免费诊断", text: "用匿名数据发邮件，不需要账号密码或 API key。", href: "free-diagnosis/" },
       { title: "常见问题", text: "解释浏览器本地 CSV、字段要求、数据脱敏和适用团队。", href: "faq/" },
       { title: "数据安全", text: "说明哪些字段可以分享，哪些账号和隐私信息不要发送。", href: "privacy/" }
@@ -158,18 +181,40 @@ const copy = {
     navDemo: "Demo",
     navTemplates: "Templates",
     navCases: "Cases",
+    navMethod: "Method",
     navFree: "Free diagnosis",
     navContact: "Contact",
     contact: "Contact",
     languageLabel: "Language",
     eyebrow: "Mobile game ad revenue diagnostic tool",
-    title: "Diagnose mobile ad revenue drops.",
+    title: "Find the real reason your AdMob / AppLovin revenue dropped before changing floors or mediation.",
     lede:
-      "Find whether the change came from eCPM, impressions, fill rate, country mix, placement, or ad source. Turn ad dashboards into one clear diagnosis card.",
-    primary: "Try demo report",
+      "Upload or paste anonymized CSV rows. eCPM Bazaar separates eCPM, impressions, fill rate, country mix, placement, and ad source changes into one diagnosis card. No SDK. No login. Browser-only demo.",
+    primary: "Try demo with sample data",
     secondary: "Get free diagnosis",
     tertiary: "See sample CSV",
     trustItems: ["No signup", "No SDK", "Anonymized rows only", "Copy-ready diagnosis"],
+    sampleLink: "See sample CSV",
+    positioningNote:
+      "Not an ad network. Not a benchmark marketplace. eCPM Bazaar is a CSV-based diagnosis assistant for mobile app ad monetization problems.",
+    useCaseLabel: "Use cases",
+    useCaseTitle: "Use eCPM Bazaar when the revenue drop is real, but the cause is unclear.",
+    useCases: [
+      "AdMob revenue dropped but impressions look normal",
+      "AppLovin MAX eCPM changed after a mediation or floor update",
+      "Rewarded video revenue fell in one GEO",
+      "Fill rate dropped while eCPM stayed stable",
+      "Total eCPM dropped because traffic shifted to lower-value countries",
+      "You need a short report for Reddit, email, or team discussion"
+    ],
+    safetyLabel: "Data safety",
+    safetyTitle: "Validate with anonymized rows before sharing any account access.",
+    safetyItems: [
+      "The public demo parses CSV in your browser",
+      "No AdMob, AppLovin, LevelPlay, or TopOn login required",
+      "No SDK, API key, password, or payment detail needed",
+      "Remove app names, ad unit IDs, package names, account IDs, and private identifiers"
+    ],
     driverChips: ["Low eCPM?", "Poor fill rate?", "Rewarded ads not performing?", "Low ARPDAU?", "Mediation not working?"],
     fitLabel: "Best fit",
     fitTitle: "Built for mobile games with ad revenue, not every game project.",
@@ -267,6 +312,7 @@ const copy = {
       { title: "Public demo", text: "Upload a CSV or use sample data to copy a diagnosis result.", href: "demo/" },
       { title: "CSV templates", text: "Download AdMob, AppLovin MAX, and LevelPlay / TopOn templates.", href: "templates/" },
       { title: "Anonymized cases", text: "Review eCPM, fill-rate, and country-mix diagnosis examples.", href: "cases/" },
+      { title: "Method", text: "See how revenue changes are separated into traffic, pricing, fill, GEO, and ad-source signals.", href: "method/" },
       { title: "Free diagnosis", text: "Send anonymized rows by email. No login or API key needed.", href: "free-diagnosis/" },
       { title: "FAQ", text: "Understand browser-only CSV parsing, required fields, anonymization, and fit.", href: "faq/" },
       { title: "Data safety", text: "See what is safe to share and what account data should stay private.", href: "privacy/" }
@@ -303,6 +349,7 @@ export default function Home() {
           <a href="demo/">{t.navDemo}</a>
           <a href="templates/">{t.navTemplates}</a>
           <a href="cases/">{t.navCases}</a>
+          <a href="method/">{t.navMethod}</a>
           <a href="free-diagnosis/">{t.navFree}</a>
           <a href="#contact">{t.navContact}</a>
           <div className="language-switch" aria-label={t.languageLabel}>
@@ -346,10 +393,11 @@ export default function Home() {
             <a className="secondary-action" href="free-diagnosis/">
               {t.secondary}
             </a>
-            <a className="secondary-action" href="templates/">
-              {t.tertiary}
-            </a>
           </div>
+          <a className="inline-resource-link" href="templates/">
+            {t.sampleLink}
+            <ArrowUpRight size={15} aria-hidden="true" />
+          </a>
           <div className="hero-trust-list" aria-label="Safe testing notes">
             {t.trustItems.map((item) => (
               <span key={item}>
@@ -358,6 +406,7 @@ export default function Home() {
               </span>
             ))}
           </div>
+          <p className="positioning-note">{t.positioningNote}</p>
         </div>
 
         <div className="hero-side">
@@ -402,6 +451,39 @@ export default function Home() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="use-case-section" aria-label={t.useCaseLabel}>
+        <div className="use-case-heading">
+          <p className="section-label">{t.useCaseLabel}</p>
+          <h2>{t.useCaseTitle}</h2>
+        </div>
+        <div className="use-case-grid">
+          {t.useCases.map((item) => (
+            <article className="use-case-card" key={item}>
+              <CheckCircle2 size={18} aria-hidden="true" />
+              <p>{item}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="safety-section" aria-label={t.safetyLabel}>
+        <div>
+          <p className="section-label">
+            <ShieldCheck size={16} aria-hidden="true" />
+            {t.safetyLabel}
+          </p>
+          <h2>{t.safetyTitle}</h2>
+        </div>
+        <div className="safety-grid">
+          {t.safetyItems.map((item) => (
+            <span key={item}>
+              <ShieldCheck size={17} aria-hidden="true" />
+              {item}
+            </span>
+          ))}
         </div>
       </section>
 
