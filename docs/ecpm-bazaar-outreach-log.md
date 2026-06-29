@@ -916,6 +916,229 @@ Notes:
 - itch.io continues to look healthier for normal no-link community comments.
 - Next action: open the notification link, read the reply, then respond with a short natural no-link comment if appropriate.
 
+Follow-up:
+
+- User played the demo briefly and replied with feedback about the manageable difficulty curve, gradual rule introduction, and asked whether later levels add usable items/tools or mainly combine jump mechanics.
+- xalezar replied that the jumping mechanic is the main hook, the game is still being designed/built out, and items/tools are possible.
+- This is a healthy two-way interaction. Keep the next reply short and do not mention eCPM Bazaar.
+
+Suggested next reply:
+
+```text
+That makes sense. Keeping the jump mechanic as the main hook is probably the right foundation.
+
+If you do add items or tools later, I’d introduce them slowly and make sure they support the jump puzzles rather than compete with them. The strongest part so far is that the rules feel easy to follow while still leaving room for more complex combinations.
+```
+
+## 2026-06-29 GameDev.net Draft - Actionable Metrics Discussion
+
+Status: Submitted; pending moderator review.
+
+Recommended forum:
+
+- Game Design and Theory
+
+Draft title:
+
+```text
+How do you decide whether a metric should change your game design?
+```
+
+Draft body:
+
+```text
+I’ve been thinking about the difference between a metric that is interesting to look at and a metric that actually changes what a small game team does next.
+
+For example, a team might track things like:
+
+- retention
+- session length
+- level completion
+- fail points
+- tutorial drop-off
+- ad impressions or ad revenue
+- wishlists or conversion rate
+
+But a number by itself does not always lead to a decision.
+
+If retention drops, the next question is where players are leaving.
+If a level has a high fail rate, the next question is whether it is frustrating, unclear, or intentionally difficult.
+If revenue drops, the next question is whether traffic, pricing, country mix, placement exposure, or something else changed.
+
+So I’m curious how other developers think about this:
+
+When does a metric become actionable for you?
+
+Do you only trust it after seeing the same pattern for several days?
+Do you need player feedback or recordings before changing the design?
+Do you prefer a few simple metrics that map directly to decisions?
+Or do you mostly use metrics as a warning signal and then investigate manually?
+
+For small teams without a dedicated analyst, I feel like the real challenge is not collecting more numbers. It is turning one change in the data into a clear next question.
+
+What is one metric you actually use to make development or business decisions?
+And what would make you ignore a metric even if it looks important?
+```
+
+Posting notes:
+
+- No eCPM Bazaar name.
+- No URL.
+- This avoids repeating the previous two topics while still reinforcing the product's diagnosis positioning.
+- If approved, monitor for replies but do not bump unless someone responds.
+
+Submission notes:
+
+- User selected Games Business and Law.
+- Tags used: game-design, business, production, analytics, IndieGameDev.
+- GameDev.net moderation email/screen confirmed the topic is pending moderator review and says not to repost it.
+- Next action: wait for approval email or visible topic. Do not repost or edit aggressively while pending.
+
+## 2026-06-29 Candidate Comment - itch.io Under Heaven Or Hell Devlog
+
+Status: Candidate selected; waiting for user to comment.
+
+Platform:
+
+- itch.io
+
+Account:
+
+- Ad Revenue Notes
+
+Candidate:
+
+```text
+Devlog #12 - New Trailer + Small Update
+```
+
+Project:
+
+```text
+Under Heaven Or Hell [DEMO]
+```
+
+Reason:
+
+- Visible on itch.io Developer Logs page.
+- Trailer/update devlog is suitable for normal feedback.
+- Better than commenting on a sale-only post.
+- No eCPM Bazaar mention and no link.
+
+Suggested no-link comment:
+
+```text
+Nice update. A new trailer is a good moment to make the core hook as clear as possible in the first few seconds.
+
+One thing I’d watch is whether a new viewer can understand the main tension quickly: who the player is, what kind of choice or conflict drives the story, and what makes this project different from other narrative demos.
+
+If the trailer already gives a strong emotional tone and one clear reason to try the demo, that is usually more useful than showing too many disconnected moments.
+```
+
+Next action:
+
+- User can open the devlog, watch/read briefly, then post the comment if it fits.
+
+## 2026-06-29 Candidate Comment - Reddit Mobile Monetization Strategy
+
+Status: Candidate selected; waiting for user to comment.
+
+Platform:
+
+- Reddit
+
+Subreddit:
+
+- r/IndieDev
+
+Thread:
+
+```text
+Mobile game devs: one-time purchase vs subscription vs ad-based, what revenue strategy did you choose?
+```
+
+URL:
+
+```text
+https://www.reddit.com/r/IndieDev/comments/1txhrl3/mobile_game_devs_onetime_purchase_vs_subscription/
+```
+
+Reason:
+
+- Directly relevant to mobile/F2P/ad monetization.
+- Safer than r/admob for the current Reddit account trust level.
+- No eCPM Bazaar mention and no link.
+
+Suggested no-link reply:
+
+```text
+For small mobile games, I’d usually start by matching monetization to session length and player intent, not by picking the model first.
+
+Short-session arcade/puzzle games often fit rewarded ads + optional remove-ads IAP because the ad can be tied to a clear moment: retry, revive, extra reward, daily bonus, etc.
+
+One-time purchase is cleaner for players, but on mobile it can be hard unless the game already has a strong hook, brand, or audience before launch. Subscription feels like the hardest fit unless there is ongoing content or a service layer.
+
+The main thing I’d watch with ad-based monetization is not just revenue, but whether the ad moments hurt retention. If retention drops after adding ads, the revenue model may look better in the short term but worse over time.
+```
+
+Next action:
+
+- User can post the reply, then monitor whether it remains visible.
+
+## 2026-06-29 Candidate Comment - Reddit r/SideProject PromptEval
+
+Status: Candidate selected; waiting for user to comment.
+
+Platform:
+
+- Reddit
+
+Subreddit:
+
+- r/SideProject
+
+Thread:
+
+```text
+Got my first paying user today and I genuinely couldn't believe it at first. Thank you all.
+```
+
+Product:
+
+```text
+PromptEval
+```
+
+URL:
+
+```text
+https://prompt-eval.com/en
+```
+
+Reason:
+
+- Recent post shown by user: 5 hours old.
+- SaaS/product-founder audience is relevant for learning landing page positioning and launch copy.
+- Not directly eCPM Bazaar target, but useful for account-building and product-page pattern research.
+- No eCPM Bazaar mention and no link.
+
+Suggested no-link reply:
+
+```text
+Congrats, that first paid user is a huge validation signal.
+
+I checked the product page and the positioning feels very clear. What stood out to me is that the page explains the outcome first, not just the features: evaluate prompts, compare versions, and catch regressions before shipping.
+
+That makes it much easier to understand why someone would pay.
+
+Curious: do you know where the first paying user came from? Reddit, search, direct outreach, or somewhere else?
+```
+
+Next action:
+
+- User can post the reply on the r/SideProject thread.
+- If the author replies with acquisition channel, record it as a useful launch signal.
+
 ## 2026-06-28 Candidate Comment - GameDev.net Prototype Milestone Thread
 
 Status: Candidate selected; waiting for user to post.
