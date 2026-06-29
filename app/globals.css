@@ -1,15 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@700;800&display=swap");
+
 :root {
-  --bg: #f7f8f4;
-  --ink: #172026;
-  --muted: #65727d;
-  --soft: #e7ece8;
-  --line: #dbe2dd;
+  --bg: #f7f9ff;
+  --ink: #101828;
+  --muted: #667085;
+  --soft: #eef4ff;
+  --line: #d8e0ee;
   --paper: #ffffff;
-  --deep: #10251f;
-  --teal: #0f766e;
-  --green: #22c55e;
-  --amber: #d97706;
+  --deep: #111827;
+  --teal: #2563eb;
+  --green: #10b981;
+  --amber: #f59e0b;
   --blue: #2563eb;
+  --cyan: #06b6d4;
 }
 
 * {
@@ -25,7 +28,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    "Inter", "Manrope", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 a {
@@ -50,10 +53,22 @@ p {
   margin: 0;
 }
 
+h1,
+h2,
+h3,
+.primary-action,
+.secondary-action,
+.nav-links,
+.identity strong {
+  font-family:
+    "Manrope", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 .site-page {
   min-height: 100vh;
   overflow: hidden;
-  background: #fbfcf8;
+  background:
+    linear-gradient(180deg, #fbfcff 0%, #f6f9ff 46%, #ffffff 100%);
 }
 
 .nav-shell {
@@ -78,8 +93,8 @@ p {
   height: 42px;
   place-items: center;
   border-radius: 8px;
-  background: var(--deep);
-  color: #b9f6dc;
+  background: #0f172a;
+  color: #a5f3fc;
   font-weight: 800;
 }
 
@@ -110,7 +125,7 @@ p {
   padding: 0 13px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgb(255 255 255 / 76%);
+  background: rgb(255 255 255 / 84%);
 }
 
 .language-switch {
@@ -137,7 +152,7 @@ p {
 
 .language-switch button.active {
   background: var(--deep);
-  color: #effff7;
+  color: #eff6ff;
 }
 
 .hero {
@@ -167,7 +182,7 @@ p {
 
 .hero h1 {
   max-width: 620px;
-  font-size: clamp(44px, 5vw, 64px);
+  font-size: 68px;
   line-height: 1.04;
   letter-spacing: 0;
 }
@@ -207,7 +222,7 @@ p {
   border: 1px solid var(--line);
   border-radius: 999px;
   background: #ffffff;
-  color: #30443d;
+  color: #243348;
   font-size: 13px;
   font-weight: 750;
   line-height: 1.25;
@@ -215,7 +230,7 @@ p {
 
 .hero-trust-list svg {
   flex: 0 0 auto;
-  color: var(--teal);
+  color: var(--cyan);
 }
 
 .driver-chip-row span {
@@ -299,14 +314,15 @@ p {
 }
 
 .primary-action {
-  background: var(--deep);
-  color: #effff7;
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgb(37 99 235 / 18%);
 }
 
 .secondary-action {
   border: 1px solid var(--line);
-  background: rgb(255 255 255 / 74%);
-  color: #26342f;
+  background: rgb(255 255 255 / 86%);
+  color: #182336;
 }
 
 .diagnosis-preview {
@@ -315,7 +331,7 @@ p {
   padding: 22px;
   background: #ffffff;
   color: var(--deep);
-  box-shadow: 0 22px 70px rgb(16 37 31 / 9%);
+  box-shadow: 0 24px 80px rgb(30 64 175 / 12%);
 }
 
 .hero-side {
@@ -354,10 +370,10 @@ p {
   gap: 7px;
   min-height: 32px;
   padding: 0 11px;
-  border: 1px solid #bbf7d0;
+  border: 1px solid #bfdbfe;
   border-radius: 999px;
-  background: #f0fdf4;
-  color: #166534;
+  background: #eff6ff;
+  color: #1d4ed8;
   font-size: 13px;
 }
 
@@ -372,7 +388,7 @@ p {
   padding: 15px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fbfdfb;
+  background: #fbfdff;
 }
 
 .signal-card span,
@@ -405,8 +421,8 @@ p {
   margin: 14px 0;
   padding: 16px;
   border-radius: 8px;
-  border: 1px solid #bbf7d0;
-  background: #f0fdf4;
+  border: 1px solid #bae6fd;
+  background: #f0f9ff;
   color: #10251f;
 }
 
@@ -416,8 +432,8 @@ p {
   height: 42px;
   place-items: center;
   border-radius: 8px;
-  background: #fff3cf;
-  color: #b45309;
+  background: #fff7ed;
+  color: #ea580c;
 }
 
 .diagnosis-box h3 {
@@ -452,7 +468,7 @@ p {
   display: block;
   height: 7px;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--teal), #22c55e);
+  background: linear-gradient(90deg, #2563eb, #06b6d4, #10b981);
 }
 
 .home-card-section {
