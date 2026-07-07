@@ -1490,7 +1490,8 @@ h3,
 .diagnosis-card-panel,
 .paste-panel,
 .field-check-panel,
-.quality-panel {
+.quality-panel,
+.comparison-panel {
   padding: 22px;
 }
 
