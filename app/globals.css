@@ -1595,6 +1595,7 @@ h3,
 .report-panel,
 .diagnosis-card-panel,
 .paste-panel,
+.scenario-panel,
 .field-check-panel,
 .quality-panel,
 .comparison-panel {
@@ -1674,8 +1675,9 @@ h3,
 
 .scenario-panel {
   display: grid;
-  gap: 14px;
+  gap: 0;
   margin-bottom: 16px;
+  padding: 24px;
 }
 
 .scenario-panel .demo-panel-header {
@@ -1684,6 +1686,7 @@ h3,
 
 .scenario-help {
   max-width: 780px;
+  margin-top: 12px;
   color: #4e5b56;
   font-size: 15px;
   line-height: 1.65;
@@ -1693,6 +1696,7 @@ h3,
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
+  margin-top: 24px;
 }
 
 .scenario-card {
@@ -2450,6 +2454,10 @@ h3,
 @media (max-width: 560px) {
   .demo-page {
     padding-top: 18px;
+  }
+
+  .scenario-panel {
+    padding: 20px;
   }
 
   .demo-nav {
