@@ -157,6 +157,12 @@ const copy = {
     ],
     resourceLabel: "Validation Resources",
     resourceTitle: "先用真实报表验证诊断是否有用。",
+    resourceText:
+      "先从公开 Demo 开始，对照 CSV 模板整理字段，再看脱敏案例和诊断方法，判断收入下降更可能来自流量、eCPM、填充率、国家结构还是广告源变化。",
+    resourceOrderTitle: "建议使用顺序",
+    resourceOrder: ["试用公开 Demo", "下载 CSV 模板", "查看脱敏案例", "阅读诊断方法和 FAQ"],
+    resourceSafetyTitle: "安全设计",
+    resourceSafety: ["无需 SDK", "无需后台登录", "浏览器本地解析 CSV", "脱敏数据行就够"],
     resources: [
       { title: "公开 Demo", text: "上传 CSV 或使用样例数据，直接生成一段诊断结果。", href: "demo/" },
       { title: "CSV 模板", text: "下载 AdMob、AppLovin MAX、LevelPlay / TopOn 模板。", href: "templates/" },
@@ -313,6 +319,12 @@ const copy = {
     ],
     resourceLabel: "Validation Resources",
     resourceTitle: "Validate the diagnosis with real report data first.",
+    resourceText:
+      "Start with the public demo, compare your CSV structure with templates, then review anonymized cases and the method page before sending a diagnosis request.",
+    resourceOrderTitle: "Suggested order",
+    resourceOrder: ["Try the public demo", "Download CSV templates", "Review anonymized cases", "Read the method and FAQ"],
+    resourceSafetyTitle: "Safe by design",
+    resourceSafety: ["No SDK required", "No dashboard login", "Browser-only CSV parsing", "Anonymized rows are enough"],
     resources: [
       { title: "Public demo", text: "Upload a CSV or use sample data to copy a diagnosis result.", href: "demo/" },
       { title: "CSV templates", text: "Download AdMob, AppLovin MAX, and LevelPlay / TopOn templates.", href: "templates/" },
@@ -619,8 +631,33 @@ export default function Home() {
 
       <section className="resource-link-section" aria-label="eCPM Bazaar resources">
         <div className="resource-link-heading">
-          <p className="section-label">{t.resourceLabel}</p>
-          <h2>{t.resourceTitle}</h2>
+          <div>
+            <p className="section-label">{t.resourceLabel}</p>
+            <h2>{t.resourceTitle}</h2>
+            <p>{t.resourceText}</p>
+          </div>
+          <div className="resource-guide-card">
+            <h3>{t.resourceOrderTitle}</h3>
+            <ol>
+              {t.resourceOrder.map((item, index) => (
+                <li key={item}>
+                  <span>{index + 1}</span>
+                  {item}
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div className="resource-safety-card">
+            <h3>{t.resourceSafetyTitle}</h3>
+            <ul>
+              {t.resourceSafety.map((item) => (
+                <li key={item}>
+                  <CheckCircle2 size={15} aria-hidden="true" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
         <div className="resource-link-grid">
           {t.resources.map((resource) => (
