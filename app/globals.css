@@ -1065,7 +1065,7 @@ h3,
 .site-footer {
   width: min(1120px, calc(100% - 40px));
   margin: 70px auto 0;
-  padding: 34px 0 0;
+  padding: 34px 0 56px;
   border-top: 1px solid var(--line);
 }
 
