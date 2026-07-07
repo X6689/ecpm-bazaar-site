@@ -223,7 +223,7 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
         }}
       >
         <div className="form-grid">
-          <label>
+          <label className="form-field">
             <span>{t.emailLabel}</span>
             <input
               autoComplete="email"
@@ -234,7 +234,7 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
               onChange={(event) => setEmail(event.target.value)}
             />
           </label>
-          <label>
+          <label className="form-field">
             <span>{t.platformLabel}</span>
             <select value={platform} onChange={(event) => setPlatform(event.target.value)}>
               {platformOptions.map((option) => (
@@ -242,7 +242,7 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
               ))}
             </select>
           </label>
-          <label>
+          <label className="form-field">
             <span>{t.mediationLabel}</span>
             <select value={mediation} onChange={(event) => setMediation(event.target.value)}>
               {mediationOptions.map((option) => (
@@ -250,7 +250,7 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
               ))}
             </select>
           </label>
-          <label>
+          <label className="form-field">
             <span>{t.adFormatLabel}</span>
             <select value={adFormat} onChange={(event) => setAdFormat(event.target.value)}>
               {adFormatOptions.map((option) => (
@@ -258,11 +258,11 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
               ))}
             </select>
           </label>
-          <label>
+          <label className="form-field">
             <span>{t.topGeoLabel}</span>
             <input placeholder="US / Tier 1 / BR / IN / mixed" value={topGeo} onChange={(event) => setTopGeo(event.target.value)} />
           </label>
-          <label>
+          <label className="form-field">
             <span>{t.dauRangeLabel}</span>
             <select value={dauRange} onChange={(event) => setDauRange(event.target.value)}>
               {dauRangeOptions.map((option) => (
@@ -270,7 +270,7 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
               ))}
             </select>
           </label>
-          <label>
+          <label className="form-field">
             <span>{t.changeLabel}</span>
             <select value={changeIndex} onChange={(event) => setChangeIndex(Number(event.target.value))}>
               {optionValues.change.map((option, index) => (
@@ -280,7 +280,7 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
               ))}
             </select>
           </label>
-          <label>
+          <label className="form-field">
             <span>{t.periodLabel}</span>
             <select value={periodIndex} onChange={(event) => setPeriodIndex(Number(event.target.value))}>
               {optionValues.period.map((option, index) => (
@@ -290,26 +290,26 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
               ))}
             </select>
           </label>
+
+          <label className="form-field form-wide">
+            <span>{t.metricLabel}</span>
+            <input placeholder={t.metricPlaceholder} value={metrics} onChange={(event) => setMetrics(event.target.value)} />
+          </label>
+
+          <label className="form-field form-wide">
+            <span>{t.changedLabel}</span>
+            <textarea placeholder={t.changedPlaceholder} value={notes} onChange={(event) => setNotes(event.target.value)} />
+          </label>
+
+          <label className="form-field form-wide">
+            <span>{t.rowsLabel}</span>
+            <textarea
+              placeholder={`date,gameName,platform,adNetwork,mediation,adFormat,placementName,country,revenue,ecpm,arpDau,dau,impressions,impressionsPerDau,requests,fills,fillRate\n2026-06-14,Game A,Android,AdMob,AppLovin MAX,Rewarded,Rewarded Home,US,128.42,18.70,0.035,3650,6868,1.88,9200,7100,77.2`}
+              value={dataSample}
+              onChange={(event) => setDataSample(event.target.value)}
+            />
+          </label>
         </div>
-
-        <label className="form-wide">
-          <span>{t.metricLabel}</span>
-          <input placeholder={t.metricPlaceholder} value={metrics} onChange={(event) => setMetrics(event.target.value)} />
-        </label>
-
-        <label className="form-wide">
-          <span>{t.changedLabel}</span>
-          <textarea placeholder={t.changedPlaceholder} value={notes} onChange={(event) => setNotes(event.target.value)} />
-        </label>
-
-        <label className="form-wide">
-          <span>{t.rowsLabel}</span>
-          <textarea
-            placeholder={`date,gameName,platform,adNetwork,mediation,adFormat,placementName,country,revenue,ecpm,arpDau,dau,impressions,impressionsPerDau,requests,fills,fillRate\n2026-06-14,Game A,Android,AdMob,AppLovin MAX,Rewarded,Rewarded Home,US,128.42,18.70,0.035,3650,6868,1.88,9200,7100,77.2`}
-            value={dataSample}
-            onChange={(event) => setDataSample(event.target.value)}
-          />
-        </label>
 
         <div className="form-footer">
           <button className="primary-action" type="submit">

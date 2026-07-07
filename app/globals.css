@@ -3548,23 +3548,28 @@ h3,
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px 16px;
 }
 
-.diagnosis-request-form label {
+.diagnosis-request-form .form-field {
   display: grid;
-  gap: 7px;
+  min-width: 0;
+  gap: 8px;
 }
 
-.diagnosis-request-form label span {
+.diagnosis-request-form .form-field span {
+  display: block;
+  width: 100%;
   color: var(--deep);
   font-size: 13px;
   font-weight: 800;
+  line-height: 1.45;
 }
 
 .diagnosis-request-form input,
 .diagnosis-request-form select,
 .diagnosis-request-form textarea {
+  display: block;
   width: 100%;
   min-height: 44px;
   padding: 11px 12px;
@@ -3588,6 +3593,7 @@ h3,
 }
 
 .form-wide {
+  grid-column: 1 / -1;
   min-width: 0;
 }
 
