@@ -41,11 +41,29 @@ const copy = {
     navPrivacy: "Privacy",
     language: "Language",
     badge: "Free diagnosis",
-    title: "Get a free manual diagnosis of your mobile ad revenue drop.",
+    title: "Generate a clean ad revenue diagnosis request.",
     lede:
-      "Takes 2-3 minutes. No dashboard access. No account ID. CSV-style rows are enough. I will help check whether the issue looks more like eCPM, ARPDAU, impressions per DAU, fill rate, GEO mix, ad format, placement, mediation, or ad source performance.",
+      "Fill in a few anonymized details and generate a paste-ready email request for a mobile ad revenue diagnosis. No dashboard login, no SDK, no account credentials.",
     emailButton: "Email anonymized data",
     templatesButton: "Download templates",
+    benefits: [
+      {
+        title: "Browser-only form",
+        text: "The form runs in your browser and prepares a structured draft locally."
+      },
+      {
+        title: "No credentials",
+        text: "Do not send AdMob, AppLovin, Unity, TopOn, Google, or payment account access."
+      },
+      {
+        title: "Anonymized rows",
+        text: "Remove app names, package names, ad unit IDs, account IDs, and user-level data."
+      },
+      {
+        title: "Paste-ready request",
+        text: "Generate a clear email with the metrics needed for the first diagnosis."
+      }
+    ],
     steps: [
       {
         title: "1. Anonymize your data",
@@ -94,7 +112,9 @@ const copy = {
     sourceValue: "Unity Ads",
     previewAction: "Check source availability, waterfall / floor settings, and platform status first.",
     builderLabel: "Request builder",
-    builderTitle: "Fill this in and generate an email diagnosis request",
+    builderTitle: "Diagnosis request details",
+    builderText:
+      "Use approximate or anonymized values. The more structured the rows are, the easier it is to identify whether the drop starts from traffic, fill, pricing, placement, country mix, or ad source performance.",
     caseLoadedLabel: "Case loaded",
     caseLoadedTitle: "This request has been prefilled from a diagnosis case.",
     caseLoadedText:
@@ -113,6 +133,10 @@ const copy = {
     safetyText:
       "eCPM Bazaar does not need your AdMob, AppLovin MAX, Unity LevelPlay, TopOn, or Google login. For early feedback, anonymized report rows are enough.",
     dataSafety: "Data safety",
+    doNotIncludeTitle: "Do not include",
+    doNotInclude: ["API keys", "account IDs", "payment details", "private screenshots", "user-level personal data"],
+    safeIncludeTitle: "Safe to include",
+    safeInclude: ["anonymized daily rows", "country-level metrics", "placement-level metrics", "ad format", "revenue, eCPM, impressions, requests, fills, fill rate"],
     requestBody: [
       "Hi eCPM Bazaar,",
       "",
@@ -146,11 +170,29 @@ const copy = {
     navPrivacy: "数据安全",
     language: "语言",
     badge: "免费诊断",
-    title: "免费人工诊断你的移动广告收入为什么下降。",
+    title: "生成一封清晰的广告收入诊断请求邮件。",
     lede:
-      "大约 2-3 分钟填写。不需要后台权限，不需要账号 ID，CSV 风格数据行就够。我会帮你判断更像是 eCPM、ARPDAU、展示频次、填充率、GEO 结构、广告形式、广告位、聚合或广告源导致。",
+      "填写少量脱敏信息，生成一封可以直接发送的移动广告收入诊断请求邮件。不需要后台登录、不需要 SDK、不需要账号凭证。",
     emailButton: "发送脱敏数据邮件",
     templatesButton: "下载模板",
+    benefits: [
+      {
+        title: "浏览器本地表单",
+        text: "表单在浏览器里运行，并在本地整理结构化邮件草稿。"
+      },
+      {
+        title: "不需要账号权限",
+        text: "不要发送 AdMob、AppLovin、Unity、TopOn、Google 或付款账号权限。"
+      },
+      {
+        title: "使用脱敏数据行",
+        text: "移除 App 名、包名、广告位 ID、账号 ID 和用户级数据。"
+      },
+      {
+        title: "可直接复制发送",
+        text: "生成包含首轮诊断所需指标的清晰邮件。"
+      }
+    ],
     steps: [
       {
         title: "1. 先做数据脱敏",
@@ -198,7 +240,9 @@ const copy = {
     sourceValue: "Unity Ads",
     previewAction: "先检查广告源可用性、瀑布流 / 底价配置和平台状态。",
     builderLabel: "请求生成器",
-    builderTitle: "填写这些信息，生成一封诊断请求邮件",
+    builderTitle: "诊断请求信息",
+    builderText:
+      "可以使用近似值或脱敏值。数据越结构化，越容易判断收入下降是从流量、填充、价格、广告位、国家结构还是广告源开始的。",
     caseLoadedLabel: "已载入案例",
     caseLoadedTitle: "这封请求已根据诊断案例预填。",
     caseLoadedText: "可以把它当成起点。发送前，把样例数据行替换成你自己的脱敏数据。",
@@ -214,6 +258,10 @@ const copy = {
     safetyText:
       "eCPM Bazaar 不需要你的 AdMob、AppLovin MAX、Unity LevelPlay、TopOn 或 Google 登录权限。早期反馈只需要脱敏报表行。",
     dataSafety: "数据安全",
+    doNotIncludeTitle: "不要包含",
+    doNotInclude: ["API key", "账号 ID", "付款信息", "私密截图", "用户级个人数据"],
+    safeIncludeTitle: "可以包含",
+    safeInclude: ["脱敏日级数据行", "国家级指标", "广告位级指标", "广告形式", "收入、eCPM、展示、请求、填充、填充率"],
     requestBody: [
       "Hi eCPM Bazaar,",
       "",
@@ -370,7 +418,7 @@ export function FreeDiagnosisContent() {
         </div>
       </nav>
 
-      <section className="resource-hero">
+      <section className="resource-hero diagnosis-intro-section">
         <p className="eyebrow">
           <Mail size={16} aria-hidden="true" />
           {t.badge}
@@ -388,16 +436,59 @@ export function FreeDiagnosisContent() {
         </div>
       </section>
 
-      <section className="template-grid" aria-label="How to prepare data">
-        {t.steps.map((step) => (
-          <article className="resource-card" key={step.title}>
+      <section className="diagnosis-benefit-grid" aria-label="Free diagnosis safeguards">
+        {t.benefits.map((benefit) => (
+          <article className="diagnosis-benefit-card" key={benefit.title}>
             <span className="resource-icon">
               <ShieldCheck size={22} aria-hidden="true" />
             </span>
-            <h2>{step.title}</h2>
-            <p>{step.text}</p>
+            <h2>{benefit.title}</h2>
+            <p>{benefit.text}</p>
           </article>
         ))}
+      </section>
+
+      <section className="diagnosis-request-section">
+        <div className="diagnosis-request-card">
+          <div className="diagnosis-request-heading">
+            <div>
+              <p className="section-label">{t.builderLabel}</p>
+              <h2>{t.builderTitle}</h2>
+              <p>{t.builderText}</p>
+            </div>
+            {prefillNote ? (
+              <div className="case-prefill-note">
+                <p className="section-label">{prefillNote.label}</p>
+                <h3>{prefillNote.title}</h3>
+                <p>{prefillNote.text}</p>
+                <a href={prefillNote.href}>
+                  <Play size={16} aria-hidden="true" />
+                  {prefillNote.linkLabel ?? t.openCaseDemo}
+                </a>
+              </div>
+            ) : null}
+          </div>
+          <CopyEmailPanel body={t.requestBody} fieldList={fieldList} lang={lang} mailto={mailto} preset={preset} />
+        </div>
+      </section>
+
+      <section className="privacy-reminder-grid" aria-label={t.safetyTitle}>
+        <article className="privacy-reminder-card privacy-reminder-card-danger">
+          <h2>{t.doNotIncludeTitle}</h2>
+          <ul>
+            {t.doNotInclude.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </article>
+        <article className="privacy-reminder-card privacy-reminder-card-safe">
+          <h2>{t.safeIncludeTitle}</h2>
+          <ul>
+            {t.safeInclude.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </article>
       </section>
 
       <section className="diagnosis-output-section" aria-label={t.outputLabel}>
@@ -451,25 +542,6 @@ export function FreeDiagnosisContent() {
           </dl>
           <p>{t.previewAction}</p>
         </div>
-      </section>
-
-      <section className="field-section">
-        <div>
-          <p className="section-label">{t.builderLabel}</p>
-          <h2>{t.builderTitle}</h2>
-          {prefillNote ? (
-            <div className="case-prefill-note">
-              <p className="section-label">{prefillNote.label}</p>
-              <h3>{prefillNote.title}</h3>
-              <p>{prefillNote.text}</p>
-              <a href={prefillNote.href}>
-                <Play size={16} aria-hidden="true" />
-                {prefillNote.linkLabel ?? t.openCaseDemo}
-              </a>
-            </div>
-          ) : null}
-        </div>
-        <CopyEmailPanel body={t.requestBody} fieldList={fieldList} lang={lang} mailto={mailto} preset={preset} />
       </section>
 
       <section className="resource-cta danger-note">
