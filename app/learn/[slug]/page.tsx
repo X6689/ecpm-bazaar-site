@@ -60,6 +60,17 @@ export default function GuidePage({ params }: GuidePageProps) {
           <p>{guide.intro}</p>
         </header>
 
+        {guide.sections ? (
+          <section className="guide-section-list" aria-label="Guide sections">
+            {guide.sections.map((section) => (
+              <article key={section.title}>
+                <h2>{section.title}</h2>
+                <p>{section.text}</p>
+              </article>
+            ))}
+          </section>
+        ) : null}
+
         <section className="guide-two-column">
           <div className="guide-checks">
             <p className="section-label">

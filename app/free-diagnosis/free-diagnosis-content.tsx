@@ -44,6 +44,8 @@ const copy = {
     title: "Generate a clean ad revenue diagnosis request.",
     lede:
       "Fill in a few anonymized details and generate a paste-ready email request for a mobile ad revenue diagnosis. No dashboard login, no SDK, no account credentials.",
+    conversionText:
+      "If your revenue dropped but you are not sure whether it is eCPM, fill rate, traffic, country mix, placement, ad source, or time-of-day behavior, send anonymized rows and get a structured diagnosis request.",
     emailButton: "Email anonymized data",
     templatesButton: "Download templates",
     benefits: [
@@ -90,7 +92,7 @@ const copy = {
       },
       {
         label: "Paste-ready report",
-        value: "A short explanation you can paste into email, Reddit, or an internal team thread."
+        value: "A short explanation you can paste into email, a community reply, or an internal team thread."
       },
       {
         label: "First checks",
@@ -115,6 +117,15 @@ const copy = {
     builderTitle: "Diagnosis request details",
     builderText:
       "Use approximate or anonymized values. The more structured the rows are, the easier it is to identify whether the drop starts from traffic, fill, pricing, placement, country mix, or ad source performance.",
+    goodForTitle: "Good for",
+    goodFor: [
+      "AdMob revenue drops",
+      "AppLovin MAX or mediation issues",
+      "Fill-rate or match-rate drops",
+      "Country mix changes",
+      "Placement-level revenue changes",
+      "Time-of-day or live event traffic drops"
+    ],
     caseLoadedLabel: "Case loaded",
     caseLoadedTitle: "This request has been prefilled from a diagnosis case.",
     caseLoadedText:
@@ -173,6 +184,8 @@ const copy = {
     title: "生成一封清晰的广告收入诊断请求邮件。",
     lede:
       "填写少量脱敏信息，生成一封可以直接发送的移动广告收入诊断请求邮件。不需要后台登录、不需要 SDK、不需要账号凭证。",
+    conversionText:
+      "如果收入下降，但你不确定原因是 eCPM、填充率、流量、国家结构、广告位、广告源，还是一天中的时间行为，请发送脱敏数据行，生成结构化诊断请求。",
     emailButton: "发送脱敏数据邮件",
     templatesButton: "下载模板",
     benefits: [
@@ -218,7 +231,7 @@ const copy = {
       },
       {
         label: "可复制短报告",
-        value: "适合粘贴到邮件、Reddit 或团队内部讨论。"
+        value: "适合粘贴到邮件、社区回复或团队内部讨论。"
       },
       {
         label: "优先检查清单",
@@ -243,6 +256,15 @@ const copy = {
     builderTitle: "诊断请求信息",
     builderText:
       "可以使用近似值或脱敏值。数据越结构化，越容易判断收入下降是从流量、填充、价格、广告位、国家结构还是广告源开始的。",
+    goodForTitle: "适合这些情况",
+    goodFor: [
+      "AdMob 收入下降",
+      "AppLovin MAX 或聚合问题",
+      "填充率或匹配率下降",
+      "国家结构变化",
+      "广告位级收入变化",
+      "一天中的时间或现场事件导致流量下降"
+    ],
     caseLoadedLabel: "已载入案例",
     caseLoadedTitle: "这封请求已根据诊断案例预填。",
     caseLoadedText: "可以把它当成起点。发送前，把样例数据行替换成你自己的脱敏数据。",
@@ -425,6 +447,7 @@ export function FreeDiagnosisContent() {
         </p>
         <h1>{t.title}</h1>
         <p>{t.lede}</p>
+        <p className="diagnosis-conversion-note">{t.conversionText}</p>
         <div className="hero-actions">
           <a className="primary-action" href={mailto}>
             <Mail size={18} aria-hidden="true" />
@@ -456,17 +479,30 @@ export function FreeDiagnosisContent() {
               <h2>{t.builderTitle}</h2>
               <p>{t.builderText}</p>
             </div>
-            {prefillNote ? (
-              <div className="case-prefill-note">
-                <p className="section-label">{prefillNote.label}</p>
-                <h3>{prefillNote.title}</h3>
-                <p>{prefillNote.text}</p>
-                <a href={prefillNote.href}>
-                  <Play size={16} aria-hidden="true" />
-                  {prefillNote.linkLabel ?? t.openCaseDemo}
-                </a>
+            <div className="diagnosis-heading-aside">
+              {prefillNote ? (
+                <div className="case-prefill-note">
+                  <p className="section-label">{prefillNote.label}</p>
+                  <h3>{prefillNote.title}</h3>
+                  <p>{prefillNote.text}</p>
+                  <a href={prefillNote.href}>
+                    <Play size={16} aria-hidden="true" />
+                    {prefillNote.linkLabel ?? t.openCaseDemo}
+                  </a>
+                </div>
+              ) : null}
+              <div className="diagnosis-good-fit-card">
+                <h3>{t.goodForTitle}</h3>
+                <ul>
+                  {t.goodFor.map((item) => (
+                    <li key={item}>
+                      <CheckCircle2 size={15} aria-hidden="true" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ) : null}
+            </div>
           </div>
           <CopyEmailPanel body={t.requestBody} fieldList={fieldList} lang={lang} mailto={mailto} preset={preset} />
         </div>

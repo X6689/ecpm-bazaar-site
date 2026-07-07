@@ -73,6 +73,18 @@ const faqs = [
   },
   {
     en: {
+      question: "Can live events or time of day affect AdMob revenue?",
+      answer:
+        "Yes. A revenue drop is not always caused by ad demand, eCPM, or mediation changes. In some apps, user activity changes during specific hours because of sports events, holidays, exams, work schedules, or local events. If revenue drops during the app's normal peak window, compare hourly impressions, impressions per user, match rate, and eCPM before changing floors or mediation settings. A useful check is event days vs normal days, and peak hours vs nearby non-event hours. If eCPM and match rate stay stable while impressions drop, the likely driver is audience behavior rather than ad demand."
+    },
+    zh: {
+      question: "大型活动或一天中的时间会影响 AdMob 收入吗？",
+      answer:
+        "会。收入下降不一定来自广告需求、eCPM 或聚合配置变化。有些 App 的用户活跃会在特定时段受到体育赛事、节假日、考试、工作节奏或本地事件影响。如果收入在 App 正常高峰窗口下降，先比较小时级展示、每用户展示、匹配率和 eCPM，再决定是否调整底价或聚合设置。一个有用检查是比较事件日与正常日、高峰时段与相邻非事件时段。如果 eCPM 和匹配率稳定但展示下降，更可能是用户行为变化，而不是广告需求问题。"
+    }
+  },
+  {
+    en: {
       question: "What is the best first test?",
       answer:
         "Use two comparable periods, such as latest day vs previous day or last 7 days vs previous 7 days. Then upload a CSV in the demo and copy the diagnosis result."
@@ -100,6 +112,7 @@ const copy = {
     navDemo: "Demo",
     navTemplates: "Templates",
     navCases: "Cases",
+    navMethod: "Method",
     navPrivacy: "Privacy",
     language: "Language",
     badge: "FAQ",
@@ -114,6 +127,7 @@ const copy = {
     navDemo: "演示",
     navTemplates: "模板",
     navCases: "案例",
+    navMethod: "方法",
     navPrivacy: "数据安全",
     language: "语言",
     badge: "常见问题",
@@ -140,6 +154,7 @@ export function FaqContent() {
           <a href="../demo/">{t.navDemo}</a>
           <a href="../templates/">{t.navTemplates}</a>
           <a href="../cases/">{t.navCases}</a>
+          <a href="../method/">{t.navMethod}</a>
           <a href="../privacy/">{t.navPrivacy}</a>
           <div className="language-switch" aria-label={t.language}>
             <button aria-pressed={lang === "zh"} className={lang === "zh" ? "active" : ""} type="button" onClick={() => setLang("zh")}>

@@ -53,7 +53,7 @@ const copy = {
       "某个 GEO 的激励视频收入突然下滑",
       "eCPM 稳定，但 fill rate / match rate 下降",
       "国家流量结构变化导致整体 eCPM 被拉低",
-      "需要一段可贴到 Reddit、邮件或团队讨论里的短诊断"
+      "需要一段可贴到社区回复、邮件或团队讨论里的短诊断"
     ],
     safetyLabel: "数据安全",
     safetyTitle: "先用脱敏数据验证，不要交出账号权限。",
@@ -80,7 +80,7 @@ const copy = {
     cardSectionTitle: "把广告收入下降，变成一张看得懂、能分享、能行动的诊断卡。",
     cardSectionText:
       "Demo 不只是展示图表，还会把 CSV 里的变化整理成一张短诊断卡：问题是什么、主要原因是什么、影响哪个国家/广告位/广告源、下一步该先查哪里。",
-    cardSectionPoints: ["适合发到团队群、邮件或 Reddit", "比一屏指标更容易让别人理解", "后续免费诊断也会按这个格式返回"],
+    cardSectionPoints: ["适合发到团队群、邮件或社区回复", "比一屏指标更容易让别人理解", "后续免费诊断也会按这个格式返回"],
     cardAssetLink: "打开诊断卡图",
     homeCardHeadline: "收入下降诊断卡",
     homeCardProblem: "收入下降 31%，但 eCPM 基本稳定。",
@@ -107,7 +107,7 @@ const copy = {
       },
       {
         title: "输出可粘贴结论",
-        text: "返回适合贴到 Reddit、邮件或团队讨论里的短诊断结果。"
+        text: "返回适合贴到社区回复、邮件或团队讨论里的短诊断结果。"
       }
     ],
     productLabel: "Product Direction",
@@ -215,7 +215,7 @@ const copy = {
       "Rewarded video revenue fell in one GEO",
       "Fill rate dropped while eCPM stayed stable",
       "Total eCPM dropped because traffic shifted to lower-value countries",
-      "You need a short report for Reddit, email, or team discussion"
+      "You need a short report for community replies, email, or team discussion"
     ],
     safetyLabel: "Data safety",
     safetyTitle: "Validate with anonymized rows before sharing any account access.",
@@ -242,7 +242,7 @@ const copy = {
     cardSectionTitle: "Turn an ad revenue drop into a card your team can understand and act on.",
     cardSectionText:
       "The demo does more than show metrics. It turns CSV changes into a short diagnosis card: what happened, the likely driver, which country / placement / ad source was affected, and what to check first.",
-    cardSectionPoints: ["Useful for team chat, email, or Reddit replies", "Easier to understand than a wall of metrics", "Free diagnosis requests will use the same output shape"],
+    cardSectionPoints: ["Useful for team chat, email, or community replies", "Easier to understand than a wall of metrics", "Free diagnosis requests will use the same output shape"],
     cardAssetLink: "Open diagnosis card image",
     homeCardHeadline: "Revenue drop diagnosis card",
     homeCardProblem: "Revenue dropped 31%, while eCPM stayed close to normal.",
@@ -269,7 +269,7 @@ const copy = {
       },
       {
         title: "Get a paste-ready answer",
-        text: "Use the result in Reddit threads, support emails, or internal team discussions."
+        text: "Use the result in community threads, support emails, or internal team discussions."
       }
     ],
     productLabel: "Product Direction",

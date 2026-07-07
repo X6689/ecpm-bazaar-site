@@ -270,12 +270,12 @@ const copy = {
     shareReport: "Shareable report",
     shareReportTitle: "Copy a diagnosis report",
     shareReportHelp:
-      "Use this version in Reddit replies, support emails, or internal notes. It includes driver ranking, suggested checks, and caveats.",
+      "Use this version in community replies, support emails, or internal notes. It includes driver ranking, suggested checks, and caveats.",
     reportPreview: "Report preview",
     diagnosisCard: "Diagnosis card",
     diagnosisCardTitle: "Share the result as a diagnosis card",
     diagnosisCardHelp:
-      "A short card for Reddit replies, X posts, support emails, or a team chat. It keeps the result easy to scan and easy to act on.",
+      "A short card for community replies, X posts, support emails, or a team chat. It keeps the result easy to scan and easy to act on.",
     copyCard: "Copy card text",
     downloadCard: "Download card PNG",
     cardCopied: "Card copied",
@@ -400,12 +400,12 @@ const copy = {
     shareReport: "可分享报告",
     shareReportTitle: "复制一段诊断报告",
     shareReportHelp:
-      "这版适合发到 Reddit、邮件或团队沟通里，包含原因排序、建议检查项和注意事项。",
+      "这版适合发到社区回复、邮件或团队沟通里，包含原因排序、建议检查项和注意事项。",
     reportPreview: "报告预览",
     diagnosisCard: "诊断卡",
     diagnosisCardTitle: "把结果变成一张诊断卡",
     diagnosisCardHelp:
-      "适合发到 Reddit、X、邮件或团队群里。让别人一眼看懂问题、原因和下一步检查项。",
+      "适合发到社区回复、X、邮件或团队群里。让别人一眼看懂问题、原因和下一步检查项。",
     copyCard: "复制卡片文本",
     downloadCard: "下载卡片 PNG",
     cardCopied: "卡片已复制",

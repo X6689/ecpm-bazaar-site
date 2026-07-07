@@ -16,8 +16,19 @@ const copy = {
     badge: "Method",
     title: "How eCPM Bazaar diagnoses mobile ad revenue drops.",
     lede:
-      "Revenue is the final symptom. eCPM Bazaar first separates the movement into traffic, pricing, fill, country, placement, and ad-source signals so a small team knows what to check before changing floors or mediation settings.",
+      "Revenue is the final symptom. eCPM Bazaar first separates the movement into traffic, pricing, fill, country, placement, ad-source, and audience-timing signals so a small team knows what to check before changing floors or mediation settings.",
     logicTitle: "Revenue change is decomposed by",
+    orderLabel: "Diagnosis order",
+    orderTitle: "Check upstream signals before trusting blended eCPM.",
+    order: [
+      "Check impressions first",
+      "Compare match rate / fill rate",
+      "Split by country",
+      "Split by placement or ad unit",
+      "Check ad source / mediation source",
+      "Check time-of-day and external events",
+      "Only then look at blended eCPM"
+    ],
     logic: [
       {
         title: "Impressions",
@@ -42,9 +53,17 @@ const copy = {
       {
         title: "Ad source / mediation",
         text: "Did one source or mediation setup contribute most of the change?"
+      },
+      {
+        title: "Audience timing / live events",
+        text: "Did sports matches, holidays, seasonality, or time-of-day behavior reduce impressions and distort daily averages?"
       }
     ],
     exampleLabel: "Example",
+    timingLabel: "Time-of-day and external events",
+    timingTitle: "Audience behavior can look like an ad stack problem.",
+    timingText:
+      "Revenue changes can be caused by audience behavior, not only ad demand. If the app normally monetizes most strongly during a specific time window, live sports, holidays, exams, work schedules, or local events can reduce impressions during the hours that matter most. This is why daily averages can be misleading. eCPM Bazaar encourages checking hourly or period-level patterns before assuming eCPM, floors, or mediation failed.",
     exampleTitle: "A clear diagnosis is more useful than one more dashboard.",
     beforeLabel: "Before",
     before: "Revenue dropped 31%. eCPM looks normal. Not sure what changed.",
@@ -72,8 +91,19 @@ const copy = {
     badge: "诊断方法",
     title: "eCPM Bazaar 如何诊断手游广告收入下降。",
     lede:
-      "收入是最终症状。eCPM Bazaar 会先把变化拆成流量、价格、填充、国家结构、广告位和广告源信号，让小团队在改底价或聚合配置前知道先查哪里。",
+      "收入是最终症状。eCPM Bazaar 会先把变化拆成流量、价格、填充、国家结构、广告位、广告源和用户时间行为信号，让小团队在改底价或聚合配置前知道先查哪里。",
     logicTitle: "收入变化会按这些因素拆解",
+    orderLabel: "诊断顺序",
+    orderTitle: "先检查上游信号，再相信混合 eCPM。",
+    order: [
+      "先检查展示量",
+      "比较匹配率 / 填充率",
+      "按国家拆分",
+      "按广告位或广告单元拆分",
+      "检查广告源 / 聚合广告源",
+      "检查一天中的时间和外部事件",
+      "最后再看混合 eCPM"
+    ],
     logic: [
       {
         title: "展示量",
@@ -98,9 +128,17 @@ const copy = {
       {
         title: "广告源 / 聚合",
         text: "是否某个广告源或聚合设置贡献了大部分变化？"
+      },
+      {
+        title: "用户时间行为 / 现实事件",
+        text: "体育比赛、节假日、季节性或一天中的使用时间变化，是否减少了展示量并扭曲了日均数据？"
       }
     ],
     exampleLabel: "示例",
+    timingLabel: "一天中的时间和外部事件",
+    timingTitle: "用户行为变化可能看起来像广告栈问题。",
+    timingText:
+      "收入变化不一定只来自广告需求。如果 App 通常在特定时段变现最强，体育赛事、节假日、考试、工作节奏或本地事件都可能减少最重要时段的展示量。这也是日均值容易误导的原因。eCPM Bazaar 会鼓励先检查小时级或周期级模式，再判断 eCPM、底价或聚合是否失效。",
     exampleTitle: "清楚的诊断，比再多一个报表更有用。",
     beforeLabel: "Before",
     before: "收入下降 31%。eCPM 看起来正常。不确定到底发生了什么。",
@@ -181,6 +219,27 @@ export function MethodContent() {
         </div>
       </section>
 
+      <section className="method-order-section">
+        <div className="resource-link-heading">
+          <p className="section-label">{t.orderLabel}</p>
+          <h2>{t.orderTitle}</h2>
+        </div>
+        <ol className="method-order-list">
+          {t.order.map((item, index) => (
+            <li key={item}>
+              <span>{index + 1}</span>
+              {item}
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="guide-explanation method-timing-section">
+        <p className="section-label">{t.timingLabel}</p>
+        <h2>{t.timingTitle}</h2>
+        <p>{t.timingText}</p>
+      </section>
+
       <section className="diagnosis-output-section" aria-label={t.exampleLabel}>
         <div className="diagnosis-output-copy">
           <p className="section-label">{t.exampleLabel}</p>
@@ -211,6 +270,9 @@ export function MethodContent() {
         </div>
         <a className="primary-action" href="../demo/">
           {t.demo}
+        </a>
+        <a className="secondary-action" href="../cases/">
+          {t.navCases}
         </a>
       </section>
 

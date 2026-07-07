@@ -199,7 +199,7 @@ const cases: DiagnosisCase[] = [
     en: {
       title: "Case 4: live events reduced peak-hour impressions",
       signal:
-        "Revenue looked weaker during the week, but eCPM and match rate stayed mostly stable. The real drop came from fewer impressions during the app's normal 5pm-10pm peak window.",
+        "Revenue looked weaker during the week, but eCPM and match rate stayed mostly stable. The real drop came from fewer impressions during the app's normal evening peak window.",
       diagnosis:
         "This looks less like an ad demand problem and more like an audience behavior shift. Daily averages can make the revenue trend look worse than the ad stack really is.",
       meaning:
@@ -211,8 +211,8 @@ const cases: DiagnosisCase[] = [
         "If eCPM and match rate stay stable while peak-hour impressions fall, the likely driver is audience behavior rather than ad demand.",
       checks: [
         "Compare event days vs normal days",
-        "Check 5pm-10pm separately",
-        "Compare match hours vs nearby non-match hours",
+        "Check the normal peak window separately",
+        "Compare event hours vs nearby non-event hours",
         "Check impressions per user",
         "Confirm eCPM and match rate stayed stable"
       ],
@@ -221,7 +221,7 @@ const cases: DiagnosisCase[] = [
         healthScore: "74 / 100",
         cause: "Peak-hour impressions dropped",
         severity: "Medium",
-        country: "Portugal / sports-heavy audience",
+        country: "Sports-heavy GEO",
         placement: "Native + interstitial",
         source: "All sources",
         action: "Compare hourly impressions and impressions per user before changing mediation settings."
@@ -230,20 +230,20 @@ const cases: DiagnosisCase[] = [
     zh: {
       title: "案例 4：现场赛事减少了高峰时段展示",
       signal:
-        "这一周收入看起来变弱，但 eCPM 和匹配率基本稳定。真正下降来自 App 正常 5pm-10pm 高峰窗口内展示减少。",
+        "这一周收入看起来变弱，但 eCPM 和匹配率基本稳定。真正下降来自 App 正常晚间高峰窗口内展示减少。",
       diagnosis:
         "这不像广告需求问题，更像用户行为变化。日均值会让收入趋势看起来比广告栈真实情况更糟。",
       meaning: "体育赛事、节假日、考试、工作节奏或本地事件，都可能减少 App 正常变现高峰期的用户活跃。",
       takeaway: "如果收入在正常高峰时段下降，先按小时拆分，再判断 eCPM、需求或聚合是否出问题。",
       whatToAvoid: "如果每用户展示只在事件时段或正常高峰窗口下降，不要先假设广告栈失效。",
       diagnosisLogic: "如果 eCPM 和匹配率稳定，但高峰时段展示下降，更可能是用户行为变化，而不是广告需求问题。",
-      checks: ["比较事件日和正常日", "单独检查 5pm-10pm", "比较比赛时段和相邻非比赛时段", "检查每用户展示次数", "确认 eCPM 和匹配率是否稳定"],
+      checks: ["比较事件日和正常日", "单独检查正常高峰窗口", "比较事件时段和相邻非事件时段", "检查每用户展示次数", "确认 eCPM 和匹配率是否稳定"],
       card: {
         problem: "收入下降 19%",
         healthScore: "74 / 100",
         cause: "高峰时段展示下降",
         severity: "中",
-        country: "葡萄牙 / 体育受众",
+        country: "体育受众 GEO",
         placement: "原生 + 插屏",
         source: "全部广告源",
         action: "调整聚合配置前，先比较小时级展示和每用户展示次数。"
