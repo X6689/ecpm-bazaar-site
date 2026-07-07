@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, CheckCircle2, Mail, Play, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, CheckCircle2, Mail, Play, ShieldCheck } from "lucide-react";
 import { demoScenarios, fourteenDaySampleRows, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
 import { demoReviewDraftStorageKey, parseDemoReviewDraft, type DemoReviewDraft } from "@/lib/review-draft";
@@ -64,6 +64,7 @@ const copy = {
     outputTitle: "A diagnosis card and a short report, not a sales call.",
     outputText:
       "The first version is intentionally lightweight. I will look at the anonymized rows and return a clear diagnosis you can act on or discuss with your team.",
+    cardAssetLink: "Open sample diagnosis card",
     outputs: [
       {
         label: "Diagnosis card",
@@ -167,6 +168,7 @@ const copy = {
     outputLabel: "你会拿到什么",
     outputTitle: "返回诊断卡和短报告，不是销售沟通。",
     outputText: "第一版会刻意保持轻量。我会查看脱敏数据行，返回一段你能行动、也能拿去和团队讨论的清晰诊断。",
+    cardAssetLink: "打开诊断卡样图",
     outputs: [
       {
         label: "诊断卡",
@@ -412,6 +414,10 @@ export function FreeDiagnosisContent() {
               </span>
             ))}
           </div>
+          <a className="inline-resource-link" href="../revenue-drop-diagnosis-card.svg">
+            {t.cardAssetLink}
+            <ArrowUpRight size={15} aria-hidden="true" />
+          </a>
         </div>
 
         <div className="mini-diagnosis-card free-diagnosis-preview-card">

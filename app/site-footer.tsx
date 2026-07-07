@@ -25,6 +25,7 @@ const copy = {
       { label: "CSV templates", href: "/templates/" },
       { label: "Cases", href: "/cases/" },
       { label: "Method", href: "/method/" },
+      { label: "Guides", href: "/learn/" },
       { label: "Free diagnosis", href: "/free-diagnosis/" },
       { label: "FAQ", href: "/faq/" },
       { label: "Privacy", href: "/privacy/" }
@@ -46,6 +47,7 @@ const copy = {
       { label: "CSV 模板", href: "/templates/" },
       { label: "案例", href: "/cases/" },
       { label: "诊断方法", href: "/method/" },
+      { label: "诊断指南", href: "/learn/" },
       { label: "免费诊断", href: "/free-diagnosis/" },
       { label: "常见问题", href: "/faq/" },
       { label: "数据安全", href: "/privacy/" }

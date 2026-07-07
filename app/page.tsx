@@ -29,6 +29,7 @@ const copy = {
     navTemplates: "模板",
     navCases: "案例",
     navMethod: "方法",
+    navGuides: "指南",
     navFree: "免费诊断",
     navContact: "联系",
     contact: "联系我",
@@ -37,8 +38,8 @@ const copy = {
     title: "先找出 AdMob / AppLovin 收入下降的真正原因，再改底价或聚合配置。",
     lede:
       "上传或粘贴脱敏 CSV 行。eCPM Bazaar 会把 eCPM、展示量、填充率、国家结构、广告位和广告源变化整理成一张诊断卡。无需 SDK、无需登录，公开 Demo 只在浏览器本地运行。",
-    primary: "用样例数据试 Demo",
-    secondary: "申请免费诊断",
+    primary: "申请免费诊断",
+    secondary: "用样例数据试 Demo",
     tertiary: "查看 CSV 模板",
     trustItems: ["无需注册", "无需 SDK", "只看脱敏报表", "可复制诊断结果"],
     sampleLink: "先看 CSV 模板",
@@ -80,6 +81,7 @@ const copy = {
     cardSectionText:
       "Demo 不只是展示图表，还会把 CSV 里的变化整理成一张短诊断卡：问题是什么、主要原因是什么、影响哪个国家/广告位/广告源、下一步该先查哪里。",
     cardSectionPoints: ["适合发到团队群、邮件或 Reddit", "比一屏指标更容易让别人理解", "后续免费诊断也会按这个格式返回"],
+    cardAssetLink: "打开诊断卡图",
     homeCardHeadline: "收入下降诊断卡",
     homeCardProblem: "收入下降 31%，但 eCPM 基本稳定。",
     homeCardDetails: [
@@ -160,6 +162,7 @@ const copy = {
       { title: "CSV 模板", text: "下载 AdMob、AppLovin MAX、LevelPlay / TopOn 模板。", href: "templates/" },
       { title: "脱敏案例", text: "查看 eCPM、填充率、国家结构三类常见变化案例。", href: "cases/" },
       { title: "诊断方法", text: "了解收入变化如何拆成展示量、eCPM、填充、国家和广告源信号。", href: "method/" },
+      { title: "诊断指南", text: "阅读 AdMob 收入下降、match rate、eCPM 和 fill rate 长尾诊断指南。", href: "learn/" },
       { title: "免费诊断", text: "用匿名数据发邮件，不需要账号密码或 API key。", href: "free-diagnosis/" },
       { title: "常见问题", text: "解释浏览器本地 CSV、字段要求、数据脱敏和适用团队。", href: "faq/" },
       { title: "数据安全", text: "说明哪些字段可以分享，哪些账号和隐私信息不要发送。", href: "privacy/" }
@@ -182,6 +185,7 @@ const copy = {
     navTemplates: "Templates",
     navCases: "Cases",
     navMethod: "Method",
+    navGuides: "Guides",
     navFree: "Free diagnosis",
     navContact: "Contact",
     contact: "Contact",
@@ -190,8 +194,8 @@ const copy = {
     title: "Find the real reason your AdMob / AppLovin revenue dropped before changing floors or mediation.",
     lede:
       "Upload or paste anonymized CSV rows. eCPM Bazaar separates eCPM, impressions, fill rate, country mix, placement, and ad source changes into one diagnosis card. No SDK. No login. Browser-only demo.",
-    primary: "Try demo with sample data",
-    secondary: "Get free diagnosis",
+    primary: "Get free diagnosis",
+    secondary: "Try demo with sample data",
     tertiary: "See sample CSV",
     trustItems: ["No signup", "No SDK", "Anonymized rows only", "Copy-ready diagnosis"],
     sampleLink: "See sample CSV",
@@ -233,6 +237,7 @@ const copy = {
     cardSectionText:
       "The demo does more than show metrics. It turns CSV changes into a short diagnosis card: what happened, the likely driver, which country / placement / ad source was affected, and what to check first.",
     cardSectionPoints: ["Useful for team chat, email, or Reddit replies", "Easier to understand than a wall of metrics", "Free diagnosis requests will use the same output shape"],
+    cardAssetLink: "Open diagnosis card image",
     homeCardHeadline: "Revenue drop diagnosis card",
     homeCardProblem: "Revenue dropped 31%, while eCPM stayed close to normal.",
     homeCardDetails: [
@@ -313,6 +318,7 @@ const copy = {
       { title: "CSV templates", text: "Download AdMob, AppLovin MAX, and LevelPlay / TopOn templates.", href: "templates/" },
       { title: "Anonymized cases", text: "Review eCPM, fill-rate, and country-mix diagnosis examples.", href: "cases/" },
       { title: "Method", text: "See how revenue changes are separated into traffic, pricing, fill, GEO, and ad-source signals.", href: "method/" },
+      { title: "Diagnosis guides", text: "Read long-tail guides for AdMob revenue drops, match rate, eCPM, and fill-rate issues.", href: "learn/" },
       { title: "Free diagnosis", text: "Send anonymized rows by email. No login or API key needed.", href: "free-diagnosis/" },
       { title: "FAQ", text: "Understand browser-only CSV parsing, required fields, anonymization, and fit.", href: "faq/" },
       { title: "Data safety", text: "See what is safe to share and what account data should stay private.", href: "privacy/" }
@@ -350,6 +356,7 @@ export default function Home() {
           <a href="templates/">{t.navTemplates}</a>
           <a href="cases/">{t.navCases}</a>
           <a href="method/">{t.navMethod}</a>
+          <a href="learn/">{t.navGuides}</a>
           <a href="free-diagnosis/">{t.navFree}</a>
           <a href="#contact">{t.navContact}</a>
           <div className="language-switch" aria-label={t.languageLabel}>
@@ -386,11 +393,11 @@ export default function Home() {
           <h1>{t.title}</h1>
           <p className="hero-lede">{t.lede}</p>
           <div className="hero-actions">
-            <a className="primary-action" href="demo/">
+            <a className="primary-action" href="free-diagnosis/">
               {t.primary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
-            <a className="secondary-action" href="free-diagnosis/">
+            <a className="secondary-action" href="demo/">
               {t.secondary}
             </a>
           </div>
@@ -504,14 +511,18 @@ export default function Home() {
             ))}
           </div>
           <div className="validation-actions">
-            <a className="primary-action" href="demo/">
+            <a className="primary-action" href="free-diagnosis/">
               {t.primary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
-            <a className="secondary-action" href="free-diagnosis/">
+            <a className="secondary-action" href="demo/">
               {t.secondary}
             </a>
           </div>
+          <a className="inline-resource-link" href="revenue-drop-diagnosis-card.svg">
+            {t.cardAssetLink}
+            <ArrowUpRight size={15} aria-hidden="true" />
+          </a>
         </div>
 
         <div className="home-diagnosis-card" aria-label={t.homeCardHeadline}>
@@ -543,7 +554,7 @@ export default function Home() {
           <p>{t.validationText}</p>
           <div className="validation-actions">
             <a className="primary-action" href="free-diagnosis/">
-              {t.secondary}
+              {t.primary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
             <a className="secondary-action" href="templates/">
