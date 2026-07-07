@@ -134,6 +134,45 @@ const copy = {
     recommendedTitle: "Better fields for finding the real driver",
     aliasesLabel: "Accepted aliases",
     aliasesTitle: "You do not have to rename every export column",
+    dataRequirementsLabel: "Data requirements",
+    dataRequirementsTitle: "Prepare the minimum fields needed for a reliable revenue-drop diagnosis.",
+    dataRequirementsText:
+      "Use this page to check which CSV columns are required, which fields improve diagnosis quality, and which export column names can be recognized automatically.",
+    quickChecklistTitle: "Quick checklist",
+    quickChecklist: [
+      "At least 2 report dates for latest-day comparison",
+      "At least 14 report dates for 7-day comparison",
+      "Keep segment names consistent across periods",
+      "Include revenue and impressions at minimum"
+    ],
+    bestFieldsTitle: "Best fields to include",
+    bestFields: ["date", "app or game name", "placement / ad unit", "country", "ad source / network", "revenue", "impressions", "requests and fills if available"],
+    safeAnonymizeTitle: "Safe to anonymize",
+    safeAnonymize: ["appName", "placementName", "ad unit names", "package names", "account IDs"],
+    safeAnonymizeNote: "Keep metric values and segment consistency intact.",
+    sectionNotes: {
+      comparison: {
+        text: "Use enough report dates to compare the selected period against a matching previous period.",
+        why:
+          "One-day drops can be noisy. Matching comparison windows reduce false positives from weekday patterns, holidays, or traffic timing changes."
+      },
+      required: {
+        text: "These fields are the minimum needed to produce a useful diagnosis card.",
+        why:
+          "Without date, country, network, revenue, and impressions, the diagnosis cannot reliably separate traffic drops from pricing or source-level changes."
+      },
+      recommended: {
+        text: "These fields make the diagnosis more precise and help identify the real driver.",
+        why:
+          "Requests and fills are especially useful for detecting fill-rate or match-rate problems. Clicks can help sanity-check CTR changes."
+      },
+      aliases: {
+        text: "You do not need to manually rename every export column before testing.",
+        why:
+          "The parser can recognize common column names from AdMob, AppLovin MAX, LevelPlay, TopOn, and custom reports as long as the meaning is clear."
+      }
+    },
+    whyItMatters: "Why it matters",
     privacyTitle: "Privacy first",
     privacyText:
       "The public demo parses CSV files in your browser. Nothing is uploaded or stored. For manual review, remove app IDs, exact app names, and any private account identifiers before sending data.",
@@ -162,6 +201,35 @@ const copy = {
     recommendedTitle: "更容易找到真实原因的字段",
     aliasesLabel: "可识别别名",
     aliasesTitle: "不一定要手动重命名所有导出列",
+    dataRequirementsLabel: "数据要求",
+    dataRequirementsTitle: "准备可靠收入下降诊断所需的最少字段。",
+    dataRequirementsText: "用这个页面确认哪些 CSV 列是必需的，哪些字段能提升诊断质量，以及哪些导出列名可以被自动识别。",
+    quickChecklistTitle: "快速检查清单",
+    quickChecklist: ["最近一天对比至少需要 2 个报表日期", "7 天对比至少需要 14 个报表日期", "两个周期内分组名称保持一致", "至少包含收入和展示量"],
+    bestFieldsTitle: "最好包含的字段",
+    bestFields: ["date", "app 或 game name", "placement / ad unit", "country", "ad source / network", "revenue", "impressions", "requests 和 fills（如果有）"],
+    safeAnonymizeTitle: "可以脱敏的内容",
+    safeAnonymize: ["appName", "placementName", "广告单元名称", "包名", "账号 ID"],
+    safeAnonymizeNote: "保留指标数值和分组一致性，不要打乱对比关系。",
+    sectionNotes: {
+      comparison: {
+        text: "准备足够的报表日期，用所选周期对比一个匹配的上一周期。",
+        why: "单日下降可能有噪音。匹配的对比窗口可以减少工作日规律、节假日或流量时段变化带来的误判。"
+      },
+      required: {
+        text: "这些字段是生成有用诊断卡所需的最低数据。",
+        why: "如果没有日期、国家、广告源、收入和展示量，就很难可靠地区分流量下降、价格变化或广告源级变化。"
+      },
+      recommended: {
+        text: "这些字段会让诊断更精确，更容易找到真实原因。",
+        why: "requests 和 fills 对发现填充率或匹配率问题特别有用。clicks 可以帮助检查 CTR 变化是否合理。"
+      },
+      aliases: {
+        text: "测试前不需要手动重命名每一个导出列。",
+        why: "只要含义清楚，解析器可以识别 AdMob、AppLovin MAX、LevelPlay、TopOn 和自定义报表里的常见列名。"
+      }
+    },
+    whyItMatters: "为什么重要",
     privacyTitle: "隐私优先",
     privacyText:
       "公开 Demo 只在浏览器本地解析 CSV，不上传、不保存。申请人工诊断前，请移除 App ID、精确 App 名称和任何私密账号标识。",
@@ -233,10 +301,50 @@ export function TemplatesContent() {
         ))}
       </section>
 
-      <section className="field-section">
-        <div>
+      <section className="data-requirements-overview" aria-label={t.dataRequirementsLabel}>
+        <aside className="data-requirements-copy">
+          <p className="section-label">{t.dataRequirementsLabel}</p>
+          <h2>{t.dataRequirementsTitle}</h2>
+          <p>{t.dataRequirementsText}</p>
+        </aside>
+        <div className="data-requirements-cards">
+          <article className="data-requirements-card">
+            <h3>{t.quickChecklistTitle}</h3>
+            <ul>
+              {t.quickChecklist.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+          <article className="data-requirements-card">
+            <h3>{t.bestFieldsTitle}</h3>
+            <ul>
+              {t.bestFields.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+          <article className="data-requirements-card data-requirements-safe-card">
+            <h3>{t.safeAnonymizeTitle}</h3>
+            <ul>
+              {t.safeAnonymize.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <p>{t.safeAnonymizeNote}</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="field-section template-field-section">
+        <div className="field-section-copy">
           <p className="section-label">{t.comparisonLabel}</p>
           <h2>{t.comparisonTitle}</h2>
+          <p>{t.sectionNotes.comparison.text}</p>
+          <div className="field-note-card">
+            <h3>{t.whyItMatters}</h3>
+            <p>{t.sectionNotes.comparison.why}</p>
+          </div>
         </div>
         <div className="field-table-wrap">
           <table className="field-table">
@@ -252,10 +360,15 @@ export function TemplatesContent() {
         </div>
       </section>
 
-      <section className="field-section">
-        <div>
+      <section className="field-section template-field-section">
+        <div className="field-section-copy">
           <p className="section-label">{t.requiredLabel}</p>
           <h2>{t.requiredTitle}</h2>
+          <p>{t.sectionNotes.required.text}</p>
+          <div className="field-note-card">
+            <h3>{t.whyItMatters}</h3>
+            <p>{t.sectionNotes.required.why}</p>
+          </div>
         </div>
         <div className="field-table-wrap">
           <table className="field-table">
@@ -271,10 +384,15 @@ export function TemplatesContent() {
         </div>
       </section>
 
-      <section className="field-section">
-        <div>
+      <section className="field-section template-field-section">
+        <div className="field-section-copy">
           <p className="section-label">{t.recommendedLabel}</p>
           <h2>{t.recommendedTitle}</h2>
+          <p>{t.sectionNotes.recommended.text}</p>
+          <div className="field-note-card">
+            <h3>{t.whyItMatters}</h3>
+            <p>{t.sectionNotes.recommended.why}</p>
+          </div>
         </div>
         <div className="field-table-wrap">
           <table className="field-table">
@@ -290,10 +408,15 @@ export function TemplatesContent() {
         </div>
       </section>
 
-      <section className="field-section">
-        <div>
+      <section className="field-section template-field-section">
+        <div className="field-section-copy">
           <p className="section-label">{t.aliasesLabel}</p>
           <h2>{t.aliasesTitle}</h2>
+          <p>{t.sectionNotes.aliases.text}</p>
+          <div className="field-note-card">
+            <h3>{t.whyItMatters}</h3>
+            <p>{t.sectionNotes.aliases.why}</p>
+          </div>
         </div>
         <div className="field-table-wrap">
           <table className="field-table alias-table">
