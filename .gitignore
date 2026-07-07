@@ -15,6 +15,20 @@ dashboard-smoke.png
 .playwright-mcp/
 .reddit-posting-chrome/
 
+# Local outreach operations and private research notes.
+AGENTS.md
+logs/
+outputs/
+_knowledge_base/
+docs/01_项目总指令.md
+docs/02_每日客户扫描与判断工作流.md
+docs/02_Reddit搜索与评价工作流.md
+docs/03_Reddit社区与关键词地图.md
+docs/04_帖子评分规则.md
+docs/04_推广话术与输出规则.md
+docs/05_人工回复与合规规则.md
+scripts/reddit_search_keywords.md
+
 # Keep generated outreach/marketing assets for reuse.
 !eCPM Bazaar Outreach Assets/
 !eCPM Bazaar Outreach Assets/*.png
