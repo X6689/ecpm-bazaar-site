@@ -15,6 +15,8 @@ type DiagnosisCase = {
     diagnosis: string;
     meaning: string;
     takeaway: string;
+    whatToAvoid: string;
+    diagnosisLogic: string;
     checks: string[];
     card: {
       problem: string;
@@ -33,6 +35,8 @@ type DiagnosisCase = {
     diagnosis: string;
     meaning: string;
     takeaway: string;
+    whatToAvoid: string;
+    diagnosisLogic: string;
     checks: string[];
     card: {
       problem: string;
@@ -58,6 +62,10 @@ const cases: DiagnosisCase[] = [
       meaning:
         "Traffic volume stayed stable, so the likely driver is pricing, demand, source performance, floor settings, or country-level eCPM changes.",
       takeaway: "Do not change traffic or placement logic before checking whether pricing changed.",
+      whatToAvoid:
+        "Avoid treating a pricing drop as a traffic-quality problem before checking country-level eCPM and source performance.",
+      diagnosisLogic:
+        "When impressions stay stable but revenue falls, the first suspect is weighted eCPM, source demand, floor settings, or country-level pricing.",
       checks: ["Compare eCPM by country", "Check top ad sources", "Review floor or waterfall changes", "Look for platform status or demand changes"],
       card: {
         problem: "Revenue dropped 24%",
@@ -77,6 +85,8 @@ const cases: DiagnosisCase[] = [
         "这更像是价格或需求问题，而不是流量问题。优先检查国家结构、竞价/广告源表现、eCPM 底价、季节性和近期聚合配置变化。",
       meaning: "流量体量基本稳定，所以更可能是价格、需求、广告源表现、底价设置或国家级 eCPM 变化导致。",
       takeaway: "在确认价格或需求是否变化之前，不要先改流量或广告位逻辑。",
+      whatToAvoid: "在检查国家级 eCPM 和广告源表现之前，不要先把价格下降误判成流量质量问题。",
+      diagnosisLogic: "当展示量稳定但收入下降时，优先怀疑加权 eCPM、广告源需求、底价设置或国家级价格变化。",
       checks: ["按国家比较 eCPM", "检查头部广告源", "复查底价或瀑布流变化", "查看平台状态或需求变化"],
       card: {
         problem: "收入下降 24%",
@@ -99,6 +109,10 @@ const cases: DiagnosisCase[] = [
         "The eCPM number alone is misleading here. The likely driver is fill or match pressure, so changing price floors blindly could make the diagnosis worse.",
       meaning: "Demand price may still be normal, but fewer requests are turning into filled impressions.",
       takeaway: "If fill rate drops while eCPM stays stable, blindly adjusting price floors can make the diagnosis worse.",
+      whatToAvoid:
+        "Avoid changing eCPM floors first when the real issue may be fewer requests turning into filled impressions.",
+      diagnosisLogic:
+        "Stable eCPM with lower fill rate usually points to source availability, timeout, SDK, mediation, or request logic issues.",
       checks: ["Split requests and fills by country", "Check timeout and request logic", "Review source availability", "Inspect recent SDK or mediation releases"],
       card: {
         problem: "Revenue dropped 31%",
@@ -118,6 +132,8 @@ const cases: DiagnosisCase[] = [
         "这里只看 eCPM 会误导判断。更可能是填充或匹配压力，盲目改底价可能让问题更严重。",
       meaning: "广告价格可能仍然正常，但更少请求变成了有效填充和展示。",
       takeaway: "如果填充率下降而 eCPM 稳定，盲目调底价可能会让诊断更糟。",
+      whatToAvoid: "当真实问题可能是更少请求转化为填充展示时，不要先调整 eCPM 底价。",
+      diagnosisLogic: "eCPM 稳定但填充率下降，通常指向广告源可用性、超时、SDK、聚合或请求逻辑问题。",
       checks: ["按国家拆 requests 和 fills", "检查超时和请求逻辑", "复查广告源可用性", "检查近期 SDK 或聚合版本变更"],
       card: {
         problem: "收入下降 31%",
@@ -141,6 +157,10 @@ const cases: DiagnosisCase[] = [
       meaning:
         "Blended eCPM can fall even when top-country eCPM stays stable, if more impressions come from lower-eCPM countries.",
       takeaway: "Do not treat a traffic mix shift as a global demand collapse.",
+      whatToAvoid:
+        "Avoid changing global mediation settings before separating Tier 1 trends from blended traffic mix changes.",
+      diagnosisLogic:
+        "Blended eCPM can fall even when top-country eCPM stays stable if more impressions shift toward lower-eCPM regions.",
       checks: ["Compare impressions share by country", "Check UA campaigns and organic traffic sources", "Review placement exposure by region", "Separate country mix from source performance"],
       card: {
         problem: "Total eCPM dropped 18%",
@@ -160,6 +180,8 @@ const cases: DiagnosisCase[] = [
         "这更可能是流量结构变化，而不是全球价格崩了。团队应先按国家比较收入贡献，再决定是否改全局聚合配置。",
       meaning: "即使头部国家 eCPM 稳定，只要更多展示来自低 eCPM 国家，混合 eCPM 也会下降。",
       takeaway: "不要把流量结构变化误判成全球广告需求崩塌。",
+      whatToAvoid: "在分离 Tier 1 趋势和混合流量结构变化之前，不要先改全局聚合设置。",
+      diagnosisLogic: "即使头部国家 eCPM 稳定，只要更多展示转向低 eCPM 地区，混合 eCPM 也会下降。",
       checks: ["比较各国家展示占比", "检查买量和自然流量来源", "按地区复查广告位曝光", "把国家结构和广告源表现分开看"],
       card: {
         problem: "总 eCPM 下降 18%",
@@ -183,6 +205,10 @@ const cases: DiagnosisCase[] = [
       meaning:
         "Sports events, holidays, exams, work schedules, or local events can reduce user activity during the app's normal peak monetization window.",
       takeaway: "If revenue drops during the app's normal peak hours, split by hour before assuming eCPM, demand, or mediation failed.",
+      whatToAvoid:
+        "Avoid assuming the ad stack failed when impressions per user drops only during event hours or normal peak windows.",
+      diagnosisLogic:
+        "If eCPM and match rate stay stable while peak-hour impressions fall, the likely driver is audience behavior rather than ad demand.",
       checks: [
         "Compare event days vs normal days",
         "Check 5pm-10pm separately",
@@ -209,6 +235,8 @@ const cases: DiagnosisCase[] = [
         "这不像广告需求问题，更像用户行为变化。日均值会让收入趋势看起来比广告栈真实情况更糟。",
       meaning: "体育赛事、节假日、考试、工作节奏或本地事件，都可能减少 App 正常变现高峰期的用户活跃。",
       takeaway: "如果收入在正常高峰时段下降，先按小时拆分，再判断 eCPM、需求或聚合是否出问题。",
+      whatToAvoid: "如果每用户展示只在事件时段或正常高峰窗口下降，不要先假设广告栈失效。",
+      diagnosisLogic: "如果 eCPM 和匹配率稳定，但高峰时段展示下降，更可能是用户行为变化，而不是广告需求问题。",
       checks: ["比较事件日和正常日", "单独检查 5pm-10pm", "比较比赛时段和相邻非比赛时段", "检查每用户展示次数", "确认 eCPM 和匹配率是否稳定"],
       card: {
         problem: "收入下降 19%",
@@ -247,6 +275,8 @@ const copy = {
     whatThisMeans: "What this means",
     firstChecks: "First checks",
     takeaway: "Takeaway",
+    whatToAvoid: "What to avoid",
+    diagnosisLogic: "Diagnosis logic",
     recommendedChecks: "Recommended checks",
     actionsTitle: "Next action",
     ctaTitle: "Want to test your own data?",
@@ -281,6 +311,8 @@ const copy = {
     whatThisMeans: "这说明什么",
     firstChecks: "优先检查",
     takeaway: "关键提醒",
+    whatToAvoid: "避免误判",
+    diagnosisLogic: "诊断逻辑",
     recommendedChecks: "推荐检查项",
     actionsTitle: "下一步动作",
     ctaTitle: "想测试自己的数据？",
@@ -348,62 +380,77 @@ export function CasesContent() {
           const hasDemoScenario = scenarioId !== undefined;
           return (
             <article className="case-card" key={current.title}>
-              <div className="case-explanation-panel">
-                <p className="section-label">{t.example}</p>
-                <h2>{current.title}</h2>
-                <p className="case-signal">{current.signal}</p>
-                <p>{current.diagnosis}</p>
-                <div className="case-insight-grid">
-                  <div className="case-insight-card">
-                    <h3>{t.whatThisMeans}</h3>
-                    <p>{current.meaning}</p>
-                  </div>
-                  <div className="case-insight-card">
-                    <h3>{t.firstChecks}</h3>
-                    <ul>
-                      {current.checks.slice(0, 4).map((check) => (
-                        <li key={check}>{check}</li>
-                      ))}
-                    </ul>
+              <div className="case-top-grid">
+                <div className="case-explanation-panel">
+                  <p className="section-label">{t.example}</p>
+                  <h2>{current.title}</h2>
+                  <p className="case-signal">{current.signal}</p>
+                  <p>{current.diagnosis}</p>
+                  <div className="case-insight-grid">
+                    <div className="case-insight-card">
+                      <h3>{t.whatThisMeans}</h3>
+                      <p>{current.meaning}</p>
+                    </div>
+                    <div className="case-insight-card">
+                      <h3>{t.firstChecks}</h3>
+                      <ul>
+                        {current.checks.slice(0, 4).map((check) => (
+                          <li key={check}>{check}</li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
-                <div className="case-takeaway">
-                  <h3>{t.takeaway}</h3>
-                  <p>{current.takeaway}</p>
+                <div className="case-card-output">
+                  <div className="mini-diagnosis-card">
+                    <span className="share-card-brand">eCPM Bazaar</span>
+                    <h3>{current.card.problem}</h3>
+                    <div className="mini-score">
+                      <span>{t.healthScore}</span>
+                      <strong>{current.card.healthScore}</strong>
+                    </div>
+                    <div className="mini-cause">
+                      <span>{t.mainCause}</span>
+                      <strong>{current.card.cause}</strong>
+                    </div>
+                    <dl>
+                      <div>
+                        <dt>{t.severity}</dt>
+                        <dd>{current.card.severity}</dd>
+                      </div>
+                      <div>
+                        <dt>{t.country}</dt>
+                        <dd>{current.card.country}</dd>
+                      </div>
+                      <div>
+                        <dt>{t.placement}</dt>
+                        <dd>{current.card.placement}</dd>
+                      </div>
+                      <div>
+                        <dt>{t.source}</dt>
+                        <dd>{current.card.source}</dd>
+                      </div>
+                    </dl>
+                    <p>{current.card.action}</p>
+                  </div>
                 </div>
               </div>
-              <div className="case-card-output case-right-stack">
-                <div className="mini-diagnosis-card">
-                  <span className="share-card-brand">eCPM Bazaar</span>
-                  <h3>{current.card.problem}</h3>
-                  <div className="mini-score">
-                    <span>{t.healthScore}</span>
-                    <strong>{current.card.healthScore}</strong>
+              <div className="case-action-grid">
+                <div className="case-action-left-stack">
+                  <div className="case-takeaway">
+                    <h3>{t.takeaway}</h3>
+                    <p>{current.takeaway}</p>
                   </div>
-                  <div className="mini-cause">
-                    <span>{t.mainCause}</span>
-                    <strong>{current.card.cause}</strong>
+                  <div className="case-guidance-card">
+                    <h3>{t.whatToAvoid}</h3>
+                    <p>{current.whatToAvoid}</p>
                   </div>
-                  <dl>
-                    <div>
-                      <dt>{t.severity}</dt>
-                      <dd>{current.card.severity}</dd>
-                    </div>
-                    <div>
-                      <dt>{t.country}</dt>
-                      <dd>{current.card.country}</dd>
-                    </div>
-                    <div>
-                      <dt>{t.placement}</dt>
-                      <dd>{current.card.placement}</dd>
-                    </div>
-                    <div>
-                      <dt>{t.source}</dt>
-                      <dd>{current.card.source}</dd>
-                    </div>
-                  </dl>
-                  <p>{current.card.action}</p>
+                  <div className="case-guidance-card">
+                    <h3>{t.diagnosisLogic}</h3>
+                    <p>{current.diagnosisLogic}</p>
+                  </div>
                 </div>
+                <div className="case-action-right-stack">
                 <div className="recommended-checks-panel">
                   <h3>{t.recommendedChecks}</h3>
                   <div className="check-list">
@@ -435,6 +482,7 @@ export function CasesContent() {
                       </button>
                     ) : null}
                   </div>
+                </div>
                 </div>
               </div>
             </article>

@@ -2894,9 +2894,7 @@ h3,
 
 .case-card {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
-  align-items: start;
-  gap: 40px;
+  gap: 28px;
   padding: 28px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -2926,6 +2924,14 @@ h3,
   font-weight: 750;
 }
 
+.case-top-grid,
+.case-action-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+  align-items: start;
+  gap: 40px;
+}
+
 .case-explanation-panel {
   display: grid;
   align-content: start;
@@ -2940,6 +2946,7 @@ h3,
 }
 
 .case-insight-card,
+.case-guidance-card,
 .recommended-checks-panel,
 .case-actions-panel {
   min-width: 0;
@@ -2950,6 +2957,7 @@ h3,
 }
 
 .case-insight-card h3,
+.case-guidance-card h3,
 .recommended-checks-panel h3,
 .case-actions-panel h3,
 .case-takeaway h3 {
@@ -2961,6 +2969,7 @@ h3,
 }
 
 .case-insight-card p,
+.case-guidance-card p,
 .case-takeaway p {
   color: #4e5b56;
   font-size: 14px;
@@ -2992,6 +3001,18 @@ h3,
 .case-takeaway h3,
 .case-takeaway p {
   color: #3f2e18;
+}
+
+.case-action-left-stack,
+.case-action-right-stack {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-width: 0;
+}
+
+.case-action-right-stack {
+  gap: 18px;
 }
 
 .case-card-output {
@@ -3812,7 +3833,9 @@ h3,
   .guide-two-column,
   .guide-related > div,
   .faq-list,
-  .case-card {
+  .case-card,
+  .case-top-grid,
+  .case-action-grid {
     grid-template-columns: 1fr;
   }
 
