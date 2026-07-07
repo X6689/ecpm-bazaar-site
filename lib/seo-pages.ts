@@ -2,6 +2,8 @@ export type SeoGuide = {
   slug: string;
   title: string;
   description: string;
+  metaTitle?: string;
+  metaDescription?: string;
   eyebrow: string;
   intro: string;
   sections?: {
@@ -22,6 +24,9 @@ export const seoGuides: SeoGuide[] = [
     title: "Why did my AdMob revenue drop?",
     description:
       "A practical checklist for diagnosing AdMob revenue drops by separating impressions, eCPM, match rate, country mix, placements, and ad sources.",
+    metaTitle: "Why did my AdMob revenue drop?",
+    metaDescription:
+      "Diagnose AdMob revenue drops by checking impressions, match rate, fill rate, country mix, placements, ad sources, and eCPM in the right order.",
     eyebrow: "AdMob revenue drop",
     intro:
       "A revenue drop is only the final symptom. Before changing floors, SDKs, or mediation settings, split the drop into traffic, fill, pricing, and mix changes.",
@@ -46,6 +51,9 @@ export const seoGuides: SeoGuide[] = [
     title: "AdMob match rate dropped: what should you check?",
     description:
       "Diagnose an AdMob match rate drop by checking account status, ad serving limits, consent, country mix, ad format, placement, and request quality.",
+    metaTitle: "AdMob match rate dropped: what to check",
+    metaDescription:
+      "Check AdMob match rate drops across ad serving limits, consent, country mix, ad format, placement, request quality, and mediation changes.",
     eyebrow: "Match rate diagnosis",
     intro:
       "A match rate drop usually means requests are still happening, but fewer requests are turning into matched ads. That can crush revenue even when eCPM looks normal.",
@@ -69,6 +77,9 @@ export const seoGuides: SeoGuide[] = [
     title: "AdMob eCPM dropped but impressions are stable",
     description:
       "What to check when AdMob eCPM drops while impressions remain stable, including country mix, format mix, placement, advertiser demand, and seasonality.",
+    metaTitle: "AdMob eCPM dropped but impressions stayed stable",
+    metaDescription:
+      "Diagnose AdMob eCPM drops when impressions are stable by separating country mix, ad format, placement exposure, seasonality, and demand changes.",
     eyebrow: "Stable impressions, lower eCPM",
     intro:
       "When impressions are stable but eCPM drops, the problem may be pricing, demand, traffic mix, or format mix. The goal is to avoid treating blended eCPM as one clean signal.",
@@ -92,6 +103,9 @@ export const seoGuides: SeoGuide[] = [
     title: "Why AdMob revenue can drop during live events even when eCPM is normal",
     description:
       "Learn why sports events, holidays, exams, work schedules, and time-of-day behavior can reduce AdMob impressions during peak hours even when eCPM and match rate look stable.",
+    metaTitle: "AdMob revenue drops during live events",
+    metaDescription:
+      "Diagnose AdMob revenue drops caused by peak-hour traffic changes, live events, holidays, or time-of-day behavior before changing eCPM floors or mediation.",
     eyebrow: "Time-of-day diagnosis",
     intro:
       "A revenue drop can look like a monetization problem at first. But if impressions fall during the app's normal peak hours while eCPM and match rate stay stable, the issue may be user behavior, not ad demand.",
@@ -148,6 +162,9 @@ export const seoGuides: SeoGuide[] = [
     title: "Why country mix can make blended eCPM look worse",
     description:
       "Understand how blended eCPM can drop when impressions shift toward lower-eCPM countries, even if top-country eCPM and ad demand remain stable.",
+    metaTitle: "Country mix and blended eCPM drops",
+    metaDescription:
+      "See how traffic shifts toward lower-eCPM countries can pull down blended eCPM, and what to check before changing mediation or ad source settings.",
     eyebrow: "Country mix diagnosis",
     intro:
       "Blended eCPM can drop even when your top-country eCPM is stable. If more impressions shift toward lower-eCPM countries, the average can look worse without a global demand collapse.",
@@ -198,6 +215,9 @@ export const seoGuides: SeoGuide[] = [
     title: "Rewarded ads fill rate dropped",
     description:
       "A practical diagnosis flow for rewarded ad fill-rate drops across requests, fills, show rate, placement exposure, mediation, countries, and ad sources.",
+    metaTitle: "Rewarded ads fill rate dropped",
+    metaDescription:
+      "Diagnose rewarded ad fill-rate drops by comparing requests, fills, show rate, placement exposure, country mix, mediation, and ad source performance.",
     eyebrow: "Rewarded ads",
     intro:
       "Rewarded ads often drive a large share of mobile game ad revenue. When fill rate drops, revenue can fall even if player activity and eCPM do not look terrible.",
@@ -221,6 +241,9 @@ export const seoGuides: SeoGuide[] = [
     title: "Mobile game ad revenue diagnosis checklist",
     description:
       "A concise checklist for diagnosing mobile game ad revenue drops across impressions, eCPM, fill rate, country mix, placement, ad source, timing, and releases.",
+    metaTitle: "Mobile game ad revenue diagnosis checklist",
+    metaDescription:
+      "Use a practical checklist to diagnose mobile game ad revenue drops across impressions, eCPM, fill rate, country mix, placements, ad sources, and timing.",
     eyebrow: "Diagnosis checklist",
     intro:
       "Small teams do not need another wall of metrics first. They need to know what changed first, which segment changed most, and what to inspect before making risky monetization changes.",

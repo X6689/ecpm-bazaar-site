@@ -22,7 +22,7 @@ export function generateMetadata({ params }: GuidePageProps): Metadata {
     return {};
   }
 
-  return pageMetadata(guide.title, guide.description, `/learn/${guide.slug}/`);
+  return pageMetadata(guide.metaTitle ?? guide.title, guide.metaDescription ?? guide.description, `/learn/${guide.slug}/`);
 }
 
 export default function GuidePage({ params }: GuidePageProps) {
