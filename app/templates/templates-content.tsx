@@ -74,18 +74,18 @@ const recommendedFields = [
 ] as const;
 
 const acceptedAliases = [
-  ["date", "date, day, report date"],
-  ["appName", "app name, app, application"],
-  ["placementName", "placement, ad unit, ad unit name, ad format, format"],
-  ["country", "country, country code, geo, region"],
-  ["network", "network, ad source, demand source, mediation, platform"],
-  ["revenue", "revenue, estimated revenue, estimated earnings, earnings, income, ad revenue"],
-  ["ecpm", "ecpm, eCPM, observed eCPM, average eCPM"],
-  ["impressions", "impressions, ad impressions, shows"],
-  ["requests", "requests, ad requests, attempts"],
-  ["fills", "fills, matched requests, filled requests, responses, matches"],
-  ["fillRate", "fill rate, fillRate, match rate, matchRate, matched rate"],
-  ["clicks", "clicks, ad clicks"]
+  ["date", ["date", "day", "report date"]],
+  ["appName", ["app name", "app", "application"]],
+  ["placementName", ["placement", "ad unit", "ad unit name", "ad format", "format"]],
+  ["country", ["country", "country code", "geo", "region"]],
+  ["network", ["network", "ad source", "demand source", "mediation", "platform"]],
+  ["revenue", ["revenue", "estimated revenue", "estimated earnings", "earnings", "income", "ad revenue"]],
+  ["ecpm", ["ecpm", "eCPM", "observed eCPM", "average eCPM"]],
+  ["impressions", ["impressions", "ad impressions", "shows"]],
+  ["requests", ["requests", "ad requests", "attempts"]],
+  ["fills", ["fills", "matched requests", "filled requests", "responses", "matches"]],
+  ["fillRate", ["fill rate", "fillRate", "match rate", "matchRate", "matched rate"]],
+  ["clicks", ["clicks", "ad clicks"]]
 ] as const;
 
 const comparisonWindows = [
@@ -172,6 +172,20 @@ const copy = {
           "The parser can recognize common column names from AdMob, AppLovin MAX, LevelPlay, TopOn, and custom reports as long as the meaning is clear."
       }
     },
+    aliasInfoCards: [
+      {
+        title: "Recognized automatically",
+        text: "Common aliases like date, day, report date, eCPM, match rate, and ad source can be mapped without manual renaming."
+      },
+      {
+        title: "Keep meaning consistent",
+        text: "The same app, country, placement, and source names should stay consistent across comparison periods."
+      },
+      {
+        title: "Still anonymized",
+        text: "You can anonymize app names, placements, and account identifiers. Keep metric values and segment structure intact."
+      }
+    ],
     whyItMatters: "Why it matters",
     privacyTitle: "Privacy first",
     privacyText:
@@ -229,6 +243,20 @@ const copy = {
         why: "只要含义清楚，解析器可以识别 AdMob、AppLovin MAX、LevelPlay、TopOn 和自定义报表里的常见列名。"
       }
     },
+    aliasInfoCards: [
+      {
+        title: "自动识别常见列名",
+        text: "date、day、report date、eCPM、match rate、ad source 等常见别名可以自动映射，不必手动重命名。"
+      },
+      {
+        title: "保持含义一致",
+        text: "两个对比周期里的 app、country、placement 和 source 名称应保持一致，方便正确匹配下降来源。"
+      },
+      {
+        title: "仍然可以脱敏",
+        text: "App 名称、广告位和账号标识都可以脱敏，但要保留指标数值和分组结构。"
+      }
+    ],
     whyItMatters: "为什么重要",
     privacyTitle: "隐私优先",
     privacyText:
@@ -408,27 +436,35 @@ export function TemplatesContent() {
         </div>
       </section>
 
-      <section className="field-section template-field-section">
-        <div className="field-section-copy">
-          <p className="section-label">{t.aliasesLabel}</p>
-          <h2>{t.aliasesTitle}</h2>
-          <p>{t.sectionNotes.aliases.text}</p>
-          <div className="field-note-card">
-            <h3>{t.whyItMatters}</h3>
+      <section className="accepted-aliases-section" aria-label={t.aliasesLabel}>
+        <div className="accepted-aliases-card">
+          <div className="accepted-aliases-header">
+            <p className="section-label">{t.aliasesLabel}</p>
+            <h2>{t.aliasesTitle}</h2>
             <p>{t.sectionNotes.aliases.why}</p>
           </div>
-        </div>
-        <div className="field-table-wrap">
-          <table className="field-table alias-table">
-            <tbody>
-              {acceptedAliases.map(([field, aliases]) => (
-                <tr key={field}>
-                  <th>{field}</th>
-                  <td>{aliases}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+          <div className="alias-info-grid">
+            {t.aliasInfoCards.map((card) => (
+              <article className="alias-info-card" key={card.title}>
+                <h3>{card.title}</h3>
+                <p>{card.text}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="alias-card-grid">
+            {acceptedAliases.map(([field, aliases]) => (
+              <article className="alias-card" key={field}>
+                <h3>{field}</h3>
+                <div className="alias-chip-list">
+                  {aliases.map((alias) => (
+                    <span key={alias}>{alias}</span>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
