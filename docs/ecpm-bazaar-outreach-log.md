@@ -1335,3 +1335,47 @@ Next action:
 
 - Check after a few minutes/hours whether the comment remains visible.
 - If the author replies, respond naturally to their specific point.
+
+## 2026-07-10 Reddit Post - Mediation Source Match Rate Discussion
+
+Status: Posted by user; public URL not yet provided.
+
+Platform:
+
+- Reddit
+
+Community:
+
+- r/admob
+
+Flair:
+
+- Question
+
+Title:
+
+```text
+How do you interpret low match rate for one bidding source when app-level fill is healthy?
+```
+
+Post angle:
+
+- A focused discussion of app/ad-unit level fill versus mediation or bidding-source match rates.
+- Asked how developers distinguish requests -> matched -> impressions -> show rate from source-level bidding, wins, serving, and revenue contribution.
+- Mentioned eCPM Bazaar transparently as a browser-based CSV diagnosis workflow for small mobile teams.
+
+Promotion:
+
+- No external link.
+- No claim of revenue improvement.
+- No request for sensitive data.
+
+Current status:
+
+- Posted.
+- Public URL / screenshot status: not yet supplied.
+
+Next action:
+
+- Monitor replies and answer only questions that add useful technical context.
+- Do not bump the thread; add the public URL here when available.

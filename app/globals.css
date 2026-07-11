@@ -830,6 +830,21 @@ h3,
   background: rgb(255 255 255 / 76%);
 }
 
+.method-visual {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 0 0 70px;
+}
+
+.method-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #0f3d36;
+  border-radius: 8px;
+  background: var(--deep);
+}
+
 .step-row {
   display: grid;
   grid-template-columns: 54px minmax(0, 1fr);
@@ -1312,6 +1327,7 @@ h3,
   .intro-band,
   .function-section,
   .about-section,
+  .method-visual,
   .resource-link-section,
   .focus-grid,
   .launch-badge-section,

@@ -614,6 +614,18 @@ export default function Home() {
         </div>
       </section>
 
+      <figure className="method-visual">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="og-image.png"
+          alt={
+            lang === "zh"
+              ? "广告收入下降后按 eCPM、展示量、填充率、国家结构、广告位和广告源拆解原因的示意图"
+              : "An illustration of diagnosing an ad revenue drop through eCPM, impressions, fill rate, country mix, placement, and ad source"
+          }
+        />
+      </figure>
+
       <section className="focus-grid">
         {t.cards.map((card) => {
           const Icon = card.icon;
