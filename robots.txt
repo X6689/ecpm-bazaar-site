@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: http://ecpmbazaar.com/sitemap.xml
+Sitemap: https://ecpmbazaar.com/sitemap.xml
