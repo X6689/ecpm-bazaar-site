@@ -4,15 +4,20 @@ export type MetricRow = {
   appName: string;
   placementId: string;
   placementName: string;
+  adUnit?: string;
+  adFormat?: string;
   country: string;
   network: string;
+  mediation?: string;
   revenue: number;
   ecpm: number;
   impressions: number;
   requests: number;
+  matchedRequests?: number;
   fills: number;
   clicks: number;
   fillRate: number;
+  matchRate?: number;
   ctr: number;
 };
 

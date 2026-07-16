@@ -3,8 +3,8 @@ import { pageMetadata } from "@/lib/site-metadata";
 import { CasesContent } from "./cases-content";
 
 export const metadata: Metadata = pageMetadata(
-  "Sample Diagnosis Reports",
-  "Sample mobile game ad revenue diagnosis reports for eCPM drops, fill-rate drops, ARPDAU issues, and country mix changes.",
+  "Mobile Ad Revenue Diagnosis Examples",
+  "Directional mobile ad revenue diagnosis examples for eCPM drops, fill-rate drops, country mix shifts, and peak-hour impression changes.",
   "/cases/"
 );
 

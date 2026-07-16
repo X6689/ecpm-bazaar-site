@@ -30,18 +30,18 @@ export default function LearnPage() {
           <BookOpenCheck size={16} aria-hidden="true" />
           Diagnosis guides
         </p>
-        <h1>Find the first metric that moved before changing ad settings.</h1>
+        <h1>Find what most likely caused your mobile ad revenue drop.</h1>
         <p>
           These short guides are built for mobile app and game teams diagnosing AdMob, AppLovin,
           Unity Ads, LevelPlay, or mediation revenue changes from anonymized report rows.
         </p>
         <div className="hero-actions">
-          <a className="primary-action" href="../free-diagnosis/">
-            Get free diagnosis
+          <a className="primary-action" href="../demo/">
+            Try demo with sample data
             <ArrowUpRight size={18} aria-hidden="true" />
           </a>
-          <a className="secondary-action" href="../demo/">
-            Try sample demo
+          <a className="secondary-action" href="../free-diagnosis/">
+            Request free diagnosis
           </a>
         </div>
       </section>
@@ -64,10 +64,10 @@ export default function LearnPage() {
         <Mail size={24} aria-hidden="true" />
         <div>
           <h2>Have anonymized before/after rows?</h2>
-          <p>Send the rows for a free manual diagnosis. No dashboard login, SDK, or API key needed.</p>
+          <p>Use anonymized before/after rows for a directional diagnosis. No dashboard login, SDK, or API key needed.</p>
         </div>
         <a className="primary-action" href="../free-diagnosis/">
-          Start request
+          Request free diagnosis
         </a>
       </section>
 

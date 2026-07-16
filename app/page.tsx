@@ -34,17 +34,17 @@ const copy = {
     navContact: "联系",
     contact: "联系我",
     languageLabel: "语言",
-    eyebrow: "手游广告收益诊断工具",
-    title: "先找出 AdMob / AppLovin 收入下降的真正原因，再改底价或聚合配置。",
+    eyebrow: "移动广告收入下降诊断",
+    title: "先找出移动广告收入下降最可能的原因。",
     lede:
-      "上传或粘贴脱敏 CSV 行。eCPM Bazaar 会把 eCPM、展示量、填充率、国家结构、广告位和广告源变化整理成一张诊断卡。无需 SDK、无需登录，公开 Demo 只在浏览器本地运行。",
-    primary: "申请免费诊断",
-    secondary: "用样例数据试 Demo",
+      "使用脱敏 CSV 行，分离展示量、填充率、国家结构、广告位、广告源、一天中的时间和加权 eCPM 变化，再决定是否调整底价或聚合设置。",
+    primary: "用样例数据试 Demo",
+    secondary: "申请免费诊断",
     tertiary: "查看 CSV 模板",
-    trustItems: ["无需注册", "无需 SDK", "只看脱敏报表", "可复制诊断结果"],
+    trustItems: ["无需 SDK", "无需后台登录", "浏览器本地诊断"],
     sampleLink: "先看 CSV 模板",
-    positioningNote:
-      "不是广告平台，也不是 eCPM 报价市场。eCPM Bazaar 是一个基于 CSV 的广告变现问题诊断助手。",
+    positioningNote: "适合第一轮排查，在修改广告栈或寻求变现顾问帮助之前先整理证据。",
+    flowNote: "先试样例 Demo，再查看诊断结果；需要时再申请免费诊断。",
     useCaseLabel: "典型问题",
     useCaseTitle: "当你不知道收入为什么掉了，先把问题拆开。",
     useCases: [
@@ -64,18 +64,19 @@ const copy = {
       "请移除 App 名、广告位 ID、包名、账号 ID 和付款信息"
     ],
     driverChips: ["Low eCPM?", "Poor fill rate?", "Rewarded ads not performing?", "Low ARPDAU?", "Mediation not working?"],
-    fitLabel: "Best fit",
-    fitTitle: "专注有广告收入的移动游戏，不服务所有游戏项目。",
-    fitText:
-      "第一批目标客户是已经接入 AdMob、Unity Ads、AppLovin MAX、Unity LevelPlay / ironSource 或 TopOn 的移动游戏和 App 团队。",
+    fitLabel: "适合谁",
+    fitTitle: "Best for",
+    fitText: "适合已有广告收入、并能提供两个可比报告周期的移动 App 或游戏团队。",
     fitItems: [
-      "独立手游开发者",
-      "Casual / hybrid-casual 小团队",
-      "使用广告聚合的 App 团队",
-      "没有专职变现经理的小型工作室"
+      "已有广告收入的线上移动 App 或游戏",
+      "AdMob、AppLovin MAX、Unity LevelPlay、TopOn 或自定义聚合报表",
+      "至少有两个可比较的报表周期",
+      "可以提供脱敏 CSV 数据行",
+      "涉及流量、填充、GEO、广告位、广告源、时段或 eCPM 的收入下降"
     ],
-    notFitLabel: "Not first",
-    notFitItems: ["PC / Steam 付费游戏", "主机游戏", "尚未上线的游戏", "完全没有广告数据的项目"],
+    notFitLabel: "不适合处理的情况",
+    notFitTitle: "Not designed for",
+    notFitItems: ["AdMob 账号审核或政策申诉", "尚无有效广告流量的 App", "用户级跟踪或个人数据分析", "保证追回收入", "自动修改聚合或价格底线"],
     cardSectionLabel: "Diagnosis Card",
     cardSectionTitle: "把广告收入下降，变成一张看得懂、能分享、能行动的诊断卡。",
     cardSectionText:
@@ -85,29 +86,29 @@ const copy = {
     homeCardHeadline: "收入下降诊断卡",
     homeCardProblem: "收入下降 31%，但 eCPM 基本稳定。",
     homeCardDetails: [
-      { label: "主要原因", value: "填充率下降" },
+      { label: "最可能驱动因素", value: "填充率下降" },
       { label: "国家地区", value: "美国" },
       { label: "广告位", value: "激励视频" },
       { label: "广告源", value: "Unity Ads" }
     ],
     homeCardActionLabel: "建议动作",
     homeCardAction: "先检查该广告源可用性、瀑布流/底价配置和平台状态。",
-    validationLabel: "Free Test Diagnosis",
-    validationTitle: "正在寻找首批 10 个小型游戏/App 团队测试诊断流程。",
+    validationLabel: "产品边界",
+    validationTitle: "先诊断。需要时再升级处理。",
     validationText:
-      "如果你的 AdMob、AppLovin MAX、Unity Ads、Unity LevelPlay 或 TopOn 收入最近有波动，可以发送两段可对比的匿名报表字段。我会返回一段简单诊断，说明最可能的变化驱动因素。",
+      "eCPM Bazaar 用于第一轮排查：在调整聚合设置、联系广告平台或聘请变现顾问前，先把现有报表中的证据整理清楚。",
     validationItems: [
       {
-        title: "匿名数据即可",
-        text: "替换 App 名、广告位 ID 和账号标识，不需要发送用户级数据。"
+        title: "从样例开始",
+        text: "先用公开 Demo 了解诊断结构，再决定是否导入自己的脱敏数据。"
       },
       {
-        title: "先诊断原因",
-        text: "优先判断是 eCPM、展示量、填充率、国家结构、广告位还是广告源导致。"
+        title: "把证据拆开",
+        text: "用可比周期分离流量、填充、国家结构、广告位、广告源、时段和价格信号。"
       },
       {
-        title: "输出可粘贴结论",
-        text: "返回适合贴到社区回复、邮件或团队讨论里的短诊断结果。"
+        title: "有需要再升级",
+        text: "当报表无法解释变化时，再带着结构化证据联系平台或更深入的变现支持。"
       }
     ],
     productLabel: "Product Direction",
@@ -196,17 +197,17 @@ const copy = {
     navContact: "Contact",
     contact: "Contact",
     languageLabel: "Language",
-    eyebrow: "Mobile game ad revenue diagnostic tool",
-    title: "Find the real reason your AdMob / AppLovin revenue dropped before changing floors or mediation.",
+    eyebrow: "Mobile ad revenue drop diagnosis",
+    title: "Find what most likely caused your mobile ad revenue drop.",
     lede:
-      "Upload or paste anonymized CSV rows. eCPM Bazaar separates eCPM, impressions, fill rate, country mix, placement, and ad source changes into one diagnosis card. No SDK. No login. Browser-only demo.",
-    primary: "Get free diagnosis",
-    secondary: "Try demo with sample data",
+      "Use anonymized CSV rows to separate changes in impressions, fill rate, country mix, placement, ad source, time of day, and weighted eCPM before changing floors or mediation settings.",
+    primary: "Try demo with sample data",
+    secondary: "Request free diagnosis",
     tertiary: "See sample CSV",
-    trustItems: ["No signup", "No SDK", "Anonymized rows only", "Copy-ready diagnosis"],
+    trustItems: ["No SDK required", "No dashboard login", "Browser-only diagnosis"],
     sampleLink: "See sample CSV",
-    positioningNote:
-      "Not an ad network. Not a benchmark marketplace. eCPM Bazaar is a CSV-based diagnosis assistant for mobile app ad monetization problems.",
+    positioningNote: "Built for the first investigation, before you change your ad stack or hire a monetization consultant.",
+    flowNote: "Try the sample demo, see the diagnosis result, then request a free diagnosis only when you need it.",
     useCaseLabel: "Use cases",
     useCaseTitle: "Use eCPM Bazaar when the revenue drop is real, but the cause is unclear.",
     useCases: [
@@ -226,60 +227,61 @@ const copy = {
       "Remove app names, ad unit IDs, package names, account IDs, and private identifiers"
     ],
     driverChips: ["Low eCPM?", "Poor fill rate?", "Rewarded ads not performing?", "Low ARPDAU?", "Mediation not working?"],
-    fitLabel: "Best fit",
-    fitTitle: "Built for mobile games with ad revenue, not every game project.",
-    fitText:
-      "The first users are teams already using AdMob, Unity Ads, AppLovin MAX, Unity LevelPlay / ironSource, TopOn, or similar ad monetization setups.",
+    fitLabel: "Fit",
+    fitTitle: "Best for",
+    fitText: "Live mobile apps or games already earning ad revenue with at least two comparable reporting periods.",
     fitItems: [
-      "Indie mobile game developers",
-      "Casual / hybrid-casual teams",
-      "Small app teams using ads",
-      "Studios without a monetization manager"
+      "Live mobile apps or games already earning ad revenue",
+      "AdMob, AppLovin MAX, Unity LevelPlay, TopOn, or custom mediation reports",
+      "Teams with at least two comparable reporting periods",
+      "Developers who can provide anonymized CSV rows",
+      "Revenue drops involving traffic, fill, GEO, placement, ad source, timing, or eCPM changes"
     ],
-    notFitLabel: "Not first",
-    notFitItems: ["PC / premium Steam games", "Console games", "Pre-launch games", "Projects with no ad data"],
+    notFitLabel: "Boundary",
+    notFitTitle: "Not designed for",
+    notFitItems: ["AdMob account approval or policy appeals", "Apps with no meaningful ad traffic yet", "User-level tracking or personal data analysis", "Guaranteed revenue recovery", "Automatic mediation or price-floor changes"],
     cardSectionLabel: "Diagnosis Card",
     cardSectionTitle: "Turn an ad revenue drop into a card your team can understand and act on.",
     cardSectionText:
-      "The demo does more than show metrics. It turns CSV changes into a short diagnosis card: what happened, the likely driver, which country / placement / ad source was affected, and what to check first.",
+      "The demo does more than show metrics. It turns CSV changes into a short diagnosis card: what happened, the most likely driver, which country / placement / ad source was affected, and what to check first.",
     cardSectionPoints: ["Useful for team chat, email, or community replies", "Easier to understand than a wall of metrics", "Free diagnosis requests will use the same output shape"],
     cardAssetLink: "Open diagnosis card image",
     homeCardHeadline: "Revenue drop diagnosis card",
     homeCardProblem: "Revenue dropped 31%, while eCPM stayed close to normal.",
     homeCardDetails: [
-      { label: "Main cause", value: "Fill rate dropped" },
+      { label: "Most likely driver", value: "Fill rate dropped" },
       { label: "Country", value: "United States" },
       { label: "Placement", value: "Rewarded Video" },
       { label: "Ad source", value: "Unity Ads" }
     ],
     homeCardActionLabel: "Suggested action",
     homeCardAction: "Check source availability, waterfall / floor settings, and platform status first.",
-    validationLabel: "Free Test Diagnosis",
-    validationTitle: "Looking for the first 10 small game/app teams to test the workflow.",
+    validationLabel: "Product boundary",
+    validationTitle: "Start with the diagnosis. Escalate only when needed.",
     validationText:
-      "If your AdMob, AppLovin MAX, Unity Ads, Unity LevelPlay, or TopOn revenue recently moved, send two comparable anonymized report periods. I will return a simple diagnosis explaining the most likely driver.",
+      "eCPM Bazaar is designed for the first investigation. It helps organize the evidence before you change mediation, contact an ad platform, or hire a monetization consultant.",
     validationItems: [
       {
-        title: "Anonymized rows are enough",
-        text: "Replace app names, ad unit IDs, and account identifiers. No user-level data needed."
+        title: "Start with a sample",
+        text: "Use the public demo to see the diagnosis structure before importing your own anonymized rows."
       },
       {
-        title: "Find the likely driver first",
-        text: "Separate eCPM, impressions, fill rate, country mix, placement exposure, and ad source issues."
+        title: "Separate the evidence",
+        text: "Use comparable periods to separate traffic, fill, country mix, placement, source, timing, and pricing signals."
       },
       {
-        title: "Get a paste-ready answer",
-        text: "Use the result in community threads, support emails, or internal team discussions."
+        title: "Escalate with context",
+        text: "When the report is not enough, bring a structured evidence trail to your platform or deeper monetization support."
       }
     ],
     productLabel: "Product Direction",
     productTitle: "eCPM Bazaar",
     productText:
-      "A diagnosis assistant for overseas mobile game and app teams. It does not promise to magically increase revenue; it helps developers understand whether low performance came from eCPM, ARPDAU, impressions, fill, country mix, ad format, placement, mediation, or ad source performance.",
+      "A diagnosis assistant for overseas mobile game and app teams. It does not promise a revenue outcome; it helps developers understand whether low performance came from eCPM, ARPDAU, impressions, fill, country mix, ad format, placement, mediation, or ad source performance.",
     functionLabel: "Core Function",
     functionTitle: "Ad revenue anomaly diagnosis",
     functionText:
-      "When ad revenue is low or changes, eCPM Bazaar identifies whether the main driver is eCPM, ARPDAU, fill rate, impressions per DAU, country, ad format, placement, or a specific ad platform/source, then suggests where to check first.",
+      "When ad revenue is low or changes, eCPM Bazaar identifies the most likely driver across eCPM, ARPDAU, fill rate, impressions per DAU, country, ad format, placement, or a specific ad platform/source, then suggests where to check first.",
     diagnosisTitle: "Diagnosis Example",
     diagnosisText:
       "US rewarded video revenue fell mainly because fill rate dropped from 78% to 54%, while eCPM stayed stable. Prioritize checking ad source fill, floor settings, and platform status for this placement.",
@@ -298,7 +300,7 @@ const copy = {
     steps: [
       { title: "Import data", note: "CSV / Excel / API" },
       { title: "Detect anomaly", note: "Revenue, eCPM, fill rate" },
-      { title: "Explain next step", note: "Check the likely cause first" }
+      { title: "Explain next step", note: "Check the most likely driver first" }
     ],
     cards: [
       {
@@ -314,7 +316,7 @@ const copy = {
       {
         icon: Radar,
         title: "Suggest Checks",
-        text: "Turn anomalies into a practical checklist so developers can inspect the most likely cause first."
+        text: "Turn anomalies into a practical checklist so developers can inspect the most likely driver first."
       }
     ],
     resourceLabel: "Validation Resources",
@@ -405,14 +407,15 @@ export default function Home() {
           <h1>{t.title}</h1>
           <p className="hero-lede">{t.lede}</p>
           <div className="hero-actions">
-            <a className="primary-action" href="free-diagnosis/">
+            <a className="primary-action" href="demo/">
               {t.primary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
-            <a className="secondary-action" href="demo/">
+            <a className="secondary-action" href="free-diagnosis/">
               {t.secondary}
             </a>
           </div>
+          <p className="hero-flow-note">{t.flowNote}</p>
           <a className="inline-resource-link" href="templates/">
             {t.sampleLink}
             <ArrowUpRight size={15} aria-hidden="true" />
@@ -488,6 +491,34 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="fit-boundary-section" aria-label={t.fitTitle}>
+        <article className="fit-boundary-card fit-boundary-card-positive">
+          <p className="section-label">{t.fitLabel}</p>
+          <h2>{t.fitTitle}</h2>
+          <p>{t.fitText}</p>
+          <ul>
+            {t.fitItems.map((item) => (
+              <li key={item}>
+                <CheckCircle2 size={16} aria-hidden="true" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </article>
+        <article className="fit-boundary-card fit-boundary-card-neutral">
+          <p className="section-label">{t.notFitLabel}</p>
+          <h2>{t.notFitTitle}</h2>
+          <ul>
+            {t.notFitItems.map((item) => (
+              <li key={item}>
+                <CheckCircle2 size={16} aria-hidden="true" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </article>
+      </section>
+
       <section className="safety-section" aria-label={t.safetyLabel}>
         <div>
           <p className="section-label">
@@ -523,11 +554,11 @@ export default function Home() {
             ))}
           </div>
           <div className="validation-actions">
-            <a className="primary-action" href="free-diagnosis/">
+            <a className="primary-action" href="demo/">
               {t.primary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
-            <a className="secondary-action" href="demo/">
+            <a className="secondary-action" href="free-diagnosis/">
               {t.secondary}
             </a>
           </div>
@@ -565,12 +596,12 @@ export default function Home() {
           <h2>{t.validationTitle}</h2>
           <p>{t.validationText}</p>
           <div className="validation-actions">
-            <a className="primary-action" href="free-diagnosis/">
+            <a className="primary-action" href="demo/">
               {t.primary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
-            <a className="secondary-action" href="templates/">
-              {t.tertiary}
+            <a className="secondary-action" href="free-diagnosis/">
+              {t.secondary}
             </a>
           </div>
         </div>

@@ -16,6 +16,8 @@ import {
   Table2
 } from "lucide-react";
 import { writeClipboardText } from "@/lib/clipboard";
+import { acceptedAliasGroups } from "@/lib/content/monetization-terms";
+import { aggregateDiagnosisRows } from "@/lib/diagnosis-math";
 import { demoRows, demoScenarios, fourteenDaySampleRows, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
 import { demoReviewDraftStorageKey, type DemoReviewDraft } from "@/lib/review-draft";
@@ -43,15 +45,20 @@ type CsvField =
   | "date"
   | "appName"
   | "placementName"
+  | "adUnit"
+  | "adFormat"
   | "country"
   | "network"
+  | "mediation"
   | "revenue"
   | "ecpm"
   | "impressions"
   | "requests"
+  | "matchedRequests"
   | "fills"
   | "clicks"
-  | "fillRate";
+  | "fillRate"
+  | "matchRate";
 
 type FieldStatus = {
   field: CsvField;
@@ -66,6 +73,7 @@ type IssueKey =
   | "sevenDayIssue"
   | "fillIssue"
   | "ecpmIssue"
+  | "matchRateDefinitionNote"
   | "rowMatchIssue"
   | "lowVolumeIssue";
 
@@ -79,89 +87,45 @@ const fieldLabels: Record<CsvField, string> = {
   date: "date",
   appName: "appName",
   placementName: "placementName",
+  adUnit: "adUnit",
+  adFormat: "adFormat",
   country: "country",
   network: "network",
+  mediation: "mediation",
   revenue: "revenue",
   ecpm: "ecpm",
   impressions: "impressions",
   requests: "requests",
+  matchedRequests: "matchedRequests",
   fills: "fills",
   clicks: "clicks",
-  fillRate: "fillRate"
+  fillRate: "fillRate",
+  matchRate: "matchRate"
 };
 
-const fieldAliases: Record<CsvField, string[]> = {
-  date: ["date", "day", "report date", "report_date", "reportdate"],
-  appName: ["appName", "app name", "app_name", "app", "application", "application name"],
-  placementName: [
-    "placementName",
-    "placement name",
-    "placement",
-    "ad unit",
-    "ad_unit",
-    "ad unit name",
-    "adUnit",
-    "adUnitName",
-    "unit name",
-    "unit_name",
-    "format",
-    "ad format"
-  ],
-  country: ["country", "country code", "country_code", "geo", "region", "location"],
-  network: [
-    "network",
-    "adSource",
-    "ad source",
-    "ad_source",
-    "adsource",
-    "demand source",
-    "demand_source",
-    "mediation",
-    "platform"
-  ],
-  revenue: [
-    "revenue",
-    "estimated revenue",
-    "estimated_revenue",
-    "estimatedRevenue",
-    "estimated earnings",
-    "estimated_earnings",
-    "earnings",
-    "income",
-    "ad revenue"
-  ],
-  ecpm: ["ecpm", "eCPM", "observed eCPM", "observed_ecpm", "observedEcpm", "avg eCPM", "average eCPM"],
-  impressions: ["impressions", "impression", "ad impressions", "ad_impressions", "adImpressions", "shows"],
-  requests: ["requests", "request", "ad requests", "ad_requests", "adRequests", "attempts"],
-  fills: [
-    "fills",
-    "fill",
-    "matched requests",
-    "matched_requests",
-    "matchedRequests",
-    "filled requests",
-    "filled_requests",
-    "responses",
-    "matches"
-  ],
-  clicks: ["clicks", "click", "ad clicks", "ad_clicks", "adClicks"],
-  fillRate: ["fillRate", "fill rate", "fill_rate", "matchRate", "match rate", "match_rate", "matched rate"]
-};
+const fieldAliases = Object.fromEntries(
+  acceptedAliasGroups.map(({ field, aliases }) => [field, [...aliases]])
+) as Record<CsvField, string[]>;
 
 const requiredFields: CsvField[] = ["date", "revenue", "impressions"];
 const displayFields: CsvField[] = [
   "date",
   "appName",
   "placementName",
+  "adUnit",
+  "adFormat",
   "country",
   "network",
+  "mediation",
   "revenue",
   "ecpm",
   "impressions",
   "requests",
+  "matchedRequests",
   "fills",
   "clicks",
-  "fillRate"
+  "fillRate",
+  "matchRate"
 ];
 
 function normalizeScenarioId(value: string | null): DemoScenarioId | null {
@@ -213,7 +177,7 @@ const copy = {
     scenarioLabel: "Diagnosis cases",
     scenarioTitle: "Try three common ad revenue drop scenarios",
     scenarioHelp:
-      "Switch between anonymized cases to see how the diagnosis changes when the main driver is pricing, fill, or traffic mix.",
+      "Switch between anonymized cases to see how the diagnosis changes when the most likely driver is pricing, fill, or traffic mix.",
     comparisonLabel: "Comparison period",
     comparisonTitle: "Choose how to compare the report",
     latestDay: "Latest day",
@@ -226,7 +190,7 @@ const copy = {
     copied: "Copied",
     reset: "Reset demo",
     upload: "Upload CSV",
-    uploadHelp: "CSV columns: date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks.",
+    uploadHelp: "CSV columns: date, appName, placementName, country, network, revenue, ecpm, impressions, requests, matchedRequests, fills, clicks.",
     pasteCsv: "Paste CSV",
     pasteCsvTitle: "Paste CSV or copied report rows",
     pasteCsvHelp: "Paste comma-separated CSV or tab-separated rows copied from a spreadsheet export.",
@@ -234,7 +198,8 @@ const copy = {
       "date,appName,placementName,country,network,revenue,ecpm,impressions,requests,fills,clicks\n2026-06-14,Game A,Rewarded Home,US,AdMob,128.42,18.70,6868,9200,7100,318",
     analyzePastedCsv: "Analyze pasted data",
     clearPaste: "Clear",
-    privacy: "CSV files are parsed in your browser for this public demo. Nothing is uploaded or stored.",
+    privacy:
+      "CSV files are parsed locally in this public demo and are not uploaded. If you choose Request free diagnosis, a compact draft can be kept in this browser session to prefill the next page.",
     fieldCheck: "CSV field check",
     dataQuality: "Data quality notes",
     matched: "Matched",
@@ -245,7 +210,7 @@ const copy = {
     needsWork: "Needs field mapping",
     templates: "CSV templates",
     contact: "Free diagnosis",
-    requestReview: "Request review",
+    requestReview: "Request diagnosis",
     sourceSample: "Sample CSV loaded",
     sourceFourteenDaySample: "14-day sample loaded",
     sourceScenario: "Diagnosis case loaded",
@@ -255,7 +220,13 @@ const copy = {
     diagnosis: "Diagnosis",
     headlineStable: "No major revenue drop detected",
     headlineDrop: "Revenue drop detected",
-    likelyDriver: "Likely driver",
+    likelyDriver: "Most likely driver",
+    supportingSignals: "Supporting signals",
+    recommendedChecks: "Recommended checks",
+    whatToAvoid: "What to avoid",
+    diagnosisLogic: "Diagnosis logic",
+    dataLimitations: "Data limitations",
+    nextAction: "Next action",
     driverBreakdown: "Driver breakdown",
     driverBreakdownTitle: "Top segment drops",
     driverBreakdownNote:
@@ -265,7 +236,7 @@ const copy = {
     ecpmChange: "eCPM",
     impressionChange: "Impressions",
     fillChange: "Fill",
-    reason: "Likely reason",
+    reason: "Most likely driver",
     noBreakdown: "No comparable segment drop found for the selected comparison window.",
     shareReport: "Shareable report",
     shareReportTitle: "Copy a diagnosis report",
@@ -281,7 +252,7 @@ const copy = {
     cardCopied: "Card copied",
     cardDownloaded: "Card downloaded",
     cardProblem: "Problem",
-    cardMainCause: "Main cause",
+    cardMainCause: "Most likely driver",
     cardSeverity: "Severity",
     cardCountry: "Country",
     cardPlacement: "Placement",
@@ -294,8 +265,8 @@ const copy = {
       low: "Low"
     },
     driverRanking: "Driver ranking",
-    checklist: "Suggested checks",
-    caveats: "Caveats",
+    checklist: "Recommended checks",
+    caveats: "Data limitations",
     copyReport: "Copy report",
     manualCopyTitle: "Copy manually",
     manualCopyHelp: "Automatic clipboard access was blocked. Select this text and copy it manually.",
@@ -313,6 +284,8 @@ const copy = {
     sevenDayIssue: "Add at least 14 dates for a 7-day comparison. The current diagnosis falls back to latest day vs previous day.",
     fillIssue: "Requests and fills are missing or zero, so fill-rate diagnosis is limited.",
     ecpmIssue: "eCPM was missing for some rows and was calculated from revenue and impressions.",
+    matchRateDefinitionNote:
+      "Match rate is kept separate from fill rate because platform definitions can differ. Include requests and fills for a fill-rate diagnosis.",
     rowMatchIssue: "No matching app / placement / country / source rows were found across the selected comparison window.",
     lowVolumeIssue: "Some rows have low impressions. Treat row-level eCPM changes carefully.",
     driverLabels: {
@@ -329,6 +302,21 @@ const copy = {
       countryMix: "The weighted eCPM moved because impression share shifted between countries. Compare country-level share and eCPM before changing global settings.",
       revenue: "The drop is broad. Start with the largest country, placement, and ad source contributors before changing settings."
     },
+    whatToAvoidText: {
+      impressions: "Avoid changing floors or mediation before confirming whether user activity, ad requests, or placement exposure moved first.",
+      ecpm: "Avoid treating blended eCPM as proof of a global pricing issue before splitting by country, placement, and ad source.",
+      fillRate: "Avoid changing price floors first when fewer requests may be turning into filled impressions.",
+      countryMix: "Avoid changing global mediation settings before separating a country-share shift from country-level pricing changes.",
+      revenue: "Avoid changing multiple settings at once before the largest affected segment is identified."
+    },
+    diagnosisLogicText: {
+      impressions: "Revenue can fall when fewer ads are shown. Impressions, requests, and placement exposure are upstream signals to inspect before pricing.",
+      ecpm: "When impressions and fill are comparatively stable while revenue falls, weighted eCPM, demand, source performance, and traffic composition become stronger explanations.",
+      fillRate: "When eCPM is comparatively stable but fills fall relative to requests, availability, source behavior, timeout, or mediation conditions may be the stronger explanation.",
+      countryMix: "A blended eCPM can fall even when segment-level pricing is stable if lower-eCPM countries gain impression share.",
+      revenue: "The supplied rows do not isolate one upstream movement strongly enough, so the next step is to inspect the largest country, placement, and source segment first."
+    },
+    nextActionText: "Use the recommended checks first. If the report still cannot explain the change, prepare anonymized before/after rows for a directional diagnosis request.",
     summaryPrefix: "The largest drop is concentrated in",
     summarySuffix: "compared with the previous period."
   },
@@ -356,7 +344,7 @@ const copy = {
     copied: "已复制",
     reset: "重置演示",
     upload: "上传 CSV",
-    uploadHelp: "CSV 字段：date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks。",
+    uploadHelp: "CSV 字段：date, appName, placementName, country, network, revenue, ecpm, impressions, requests, matchedRequests, fills, clicks。",
     pasteCsv: "粘贴 CSV",
     pasteCsvTitle: "粘贴 CSV 或报表行",
     pasteCsvHelp: "可粘贴英文逗号分隔 CSV，也可粘贴从表格导出的制表符分隔行。",
@@ -364,7 +352,8 @@ const copy = {
       "date,appName,placementName,country,network,revenue,ecpm,impressions,requests,fills,clicks\n2026-06-14,Game A,Rewarded Home,US,AdMob,128.42,18.70,6868,9200,7100,318",
     analyzePastedCsv: "分析粘贴数据",
     clearPaste: "清空",
-    privacy: "这个公开演示只在浏览器本地解析 CSV，不上传、不保存你的文件。",
+    privacy:
+      "这个公开演示只在浏览器本地解析 CSV，不上传文件。如果选择申请免费诊断，浏览器会在当前会话里保留一份简短草稿，用于预填下一页。",
     fieldCheck: "CSV 字段检查",
     dataQuality: "数据质量提示",
     matched: "已识别",
@@ -375,7 +364,7 @@ const copy = {
     needsWork: "需要调整字段",
     templates: "CSV 模板",
     contact: "免费诊断",
-    requestReview: "申请复查",
+    requestReview: "申请诊断",
     sourceSample: "已载入样例 CSV",
     sourceFourteenDaySample: "已载入 14 天样例",
     sourceScenario: "已载入诊断案例",
@@ -385,7 +374,13 @@ const copy = {
     diagnosis: "诊断结论",
     headlineStable: "没有发现明显收入下滑",
     headlineDrop: "发现收入下滑",
-    likelyDriver: "最可能原因",
+    likelyDriver: "最可能驱动因素",
+    supportingSignals: "支持信号",
+    recommendedChecks: "推荐检查项",
+    whatToAvoid: "避免误判",
+    diagnosisLogic: "诊断逻辑",
+    dataLimitations: "数据限制",
+    nextAction: "下一步动作",
     driverBreakdown: "驱动明细",
     driverBreakdownTitle: "主要下滑分组",
     driverBreakdownNote:
@@ -395,7 +390,7 @@ const copy = {
     ecpmChange: "eCPM",
     impressionChange: "展示量",
     fillChange: "填充",
-    reason: "可能原因",
+    reason: "最可能驱动因素",
     noBreakdown: "当前对比周期内没有找到可比较的下滑分组。",
     shareReport: "可分享报告",
     shareReportTitle: "复制一段诊断报告",
@@ -411,7 +406,7 @@ const copy = {
     cardCopied: "卡片已复制",
     cardDownloaded: "卡片已下载",
     cardProblem: "问题",
-    cardMainCause: "主要原因",
+    cardMainCause: "最可能驱动因素",
     cardSeverity: "严重程度",
     cardCountry: "国家地区",
     cardPlacement: "广告位",
@@ -424,8 +419,8 @@ const copy = {
       low: "低"
     },
     driverRanking: "原因排序",
-    checklist: "建议检查项",
-    caveats: "注意事项",
+    checklist: "推荐检查项",
+    caveats: "数据限制",
     copyReport: "复制报告",
     manualCopyTitle: "手动复制",
     manualCopyHelp: "浏览器阻止了自动复制。选中下面这段文本手动复制即可。",
@@ -443,6 +438,8 @@ const copy = {
     sevenDayIssue: "7 天对比至少需要 14 个日期。当前诊断会退回到最近一天 vs 前一天。",
     fillIssue: "requests 和 fills 缺失或为 0，填充率诊断会受限。",
     ecpmIssue: "部分行缺少 eCPM，已用收入和展示量自动计算。",
+    matchRateDefinitionNote:
+      "match rate 会与 fill rate 分开保留，因为各平台定义可能不同。诊断填充率时请提供 requests 和 fills。",
     rowMatchIssue: "当前对比周期之间没有找到相同 App / 广告位 / 国家 / 广告源的行。",
     lowVolumeIssue: "部分行展示量较低，行级 eCPM 变化需要谨慎判断。",
     driverLabels: {
@@ -459,6 +456,21 @@ const copy = {
       countryMix: "加权 eCPM 变化主要来自国家展示占比变化。先比较各国家展示占比和国家级 eCPM，再改全局配置。",
       revenue: "下滑比较分散。先从贡献最大的国家、广告位和广告来源开始拆解，不急着改配置。"
     },
+    whatToAvoidText: {
+      impressions: "在确认用户活跃、广告请求或广告位曝光是否先变化前，不要急着改底价或聚合配置。",
+      ecpm: "在按国家、广告位和广告源拆分前，不要把混合 eCPM 当作全局价格问题的证据。",
+      fillRate: "当更少请求可能转成填充展示时，不要先调整价格底线。",
+      countryMix: "在分离国家占比变化和国家级价格变化前，不要改全局聚合设置。",
+      revenue: "在定位到最大受影响分组前，不要一次修改多个配置。"
+    },
+    diagnosisLogicText: {
+      impressions: "展示减少会让收入下降。展示量、请求量和广告位曝光都是比价格更上游的信号。",
+      ecpm: "当展示和填充相对稳定但收入下降时，加权 eCPM、需求、广告源表现和流量结构更值得优先解释。",
+      fillRate: "当 eCPM 相对稳定但 fills 相对 requests 下降时，可用性、广告源行为、超时或聚合条件更可能是原因。",
+      countryMix: "即使国家分组价格稳定，只要低 eCPM 国家占比上升，混合 eCPM 也可能下降。",
+      revenue: "现有数据不足以明确分离单一上游变化，下一步应先检查损失最大的国家、广告位和广告源分组。"
+    },
+    nextActionText: "先执行推荐检查项。如果报表仍无法解释变化，再准备前后两个周期的脱敏数据行申请一次方向性诊断。",
     summaryPrefix: "最大下滑集中在",
     summarySuffix: "相较上一周期。"
   }
@@ -485,7 +497,7 @@ function createFieldStatuses(fieldMap?: Map<CsvField, string>): FieldStatus[] {
     field,
     label: fieldLabels[field],
     required: requiredFields.includes(field),
-    matchedHeader: fieldMap?.get(field) ?? fieldLabels[field]
+    matchedHeader: fieldMap === undefined ? fieldLabels[field] : fieldMap.get(field)
   }));
 }
 
@@ -560,6 +572,7 @@ function parseCsv(text: string): ParseCsvResult {
     });
 
     const requests = numberValue(valueFrom(record, "requests"));
+    const matchedRequests = numberValue(valueFrom(record, "matchedRequests"));
     const fills = numberValue(valueFrom(record, "fills"));
     const impressions = numberValue(valueFrom(record, "impressions"));
     const revenue = numberValue(valueFrom(record, "revenue"));
@@ -567,23 +580,31 @@ function parseCsv(text: string): ParseCsvResult {
     const ecpm = providedEcpm || (impressions ? (revenue / impressions) * 1000 : 0);
     const providedFillRate = numberValue(valueFrom(record, "fillRate"));
     const fillRate = providedFillRate || (requests ? (fills / requests) * 100 : 0);
+    const matchRate = numberValue(valueFrom(record, "matchRate"));
     const clicks = numberValue(valueFrom(record, "clicks"));
 
     return {
       date: String(valueFrom(record, "date") || `row-${index + 1}`),
       appId: String(valueFrom(record, "appName") || "app").toLowerCase().replace(/\s+/g, "_"),
       appName: String(valueFrom(record, "appName") || "Uploaded App"),
-      placementId: String(valueFrom(record, "placementName") || "placement").toLowerCase().replace(/\s+/g, "_"),
-      placementName: String(valueFrom(record, "placementName") || "All Placements"),
+      placementId: String(valueFrom(record, "placementName") || valueFrom(record, "adUnit") || valueFrom(record, "adFormat") || "placement")
+        .toLowerCase()
+        .replace(/\s+/g, "_"),
+      placementName: String(valueFrom(record, "placementName") || valueFrom(record, "adUnit") || valueFrom(record, "adFormat") || "All Placements"),
+      adUnit: String(valueFrom(record, "adUnit") || "") || undefined,
+      adFormat: String(valueFrom(record, "adFormat") || "") || undefined,
       country: String(valueFrom(record, "country") || "ALL"),
       network: String(valueFrom(record, "network") || "Uploaded Source"),
+      mediation: String(valueFrom(record, "mediation") || "") || undefined,
       revenue,
       ecpm,
       impressions,
       requests,
+      matchedRequests: fieldMap.has("matchedRequests") ? matchedRequests : undefined,
       fills,
       clicks,
       fillRate,
+      matchRate: fieldMap.has("matchRate") ? matchRate : undefined,
       ctr: impressions ? (clicks / impressions) * 100 : 0
     };
   });
@@ -616,15 +637,15 @@ function analyzeCsvIssues(rows: MetricRow[], fieldMap: Map<CsvField, string>): I
     issues.add("ecpmIssue");
   }
 
+  if (fieldMap.has("matchRate") || fieldMap.has("matchedRequests")) {
+    issues.add("matchRateDefinitionNote");
+  }
+
   if (rows.some((row) => row.impressions > 0 && row.impressions < 1000)) {
     issues.add("lowVolumeIssue");
   }
 
   return [...issues];
-}
-
-function sum(rows: MetricRow[], field: "revenue" | "impressions" | "requests" | "fills") {
-  return rows.reduce((total, row) => total + row[field], 0);
 }
 
 function percentChange(current: number, previous: number) {
@@ -707,16 +728,7 @@ function drawRoundRect(
 }
 
 function totals(rows: MetricRow[]) {
-  const requests = sum(rows, "requests");
-  const fills = sum(rows, "fills");
-  const impressions = sum(rows, "impressions");
-  const revenue = sum(rows, "revenue");
-  return {
-    revenue,
-    impressions,
-    ecpm: impressions ? (revenue / impressions) * 1000 : 0,
-    fillRate: requests ? (fills / requests) * 100 : 0
-  };
+  return aggregateDiagnosisRows(rows);
 }
 
 function countryMixChange(currentRows: MetricRow[], previousRows: MetricRow[]) {
@@ -933,11 +945,8 @@ export default function DemoPage() {
     const linkedSampleId = normalizeSampleId(params.get("sample"));
     const linkedScenarioId = normalizeScenarioId(params.get("case"));
 
-    if (linkedComparisonMode || linkedSampleId === "14-day") {
-      setComparisonMode(linkedComparisonMode ?? "last-7-days");
-    }
-
     if (linkedSampleId === "14-day") {
+      setComparisonMode(linkedComparisonMode ?? "last-7-days");
       const csv = metricRowsToCsv(fourteenDaySampleRows);
       const parsed = parseCsv(csv);
       setRows(parsed.rows);
@@ -949,6 +958,7 @@ export default function DemoPage() {
     }
 
     if (linkedScenarioId) {
+      setComparisonMode("latest-day");
       const scenario = demoScenarios.find((item) => item.id === linkedScenarioId) ?? demoScenarios[0];
       const parsed = parseCsv(metricRowsToCsv(scenario.rows));
       setRows(parsed.rows);
@@ -957,6 +967,11 @@ export default function DemoPage() {
       setSource("scenario");
       setActiveScenarioId(scenario.id);
       setPastedCsv(metricRowsToCsv(scenario.rows));
+      return;
+    }
+
+    if (linkedComparisonMode) {
+      setComparisonMode(linkedComparisonMode);
     }
   }, []);
 
@@ -1080,6 +1095,24 @@ export default function DemoPage() {
 
     return checks[report.driver];
   }, [lang, report.driver]);
+  const supportingSignals = useMemo(() => {
+    const labels =
+      lang === "zh"
+        ? { revenue: "收入", impressions: "展示量", ecpm: "加权 eCPM", fillRate: "填充率", largest: "最大下滑分组" }
+        : { revenue: "Revenue", impressions: "Impressions", ecpm: "Weighted eCPM", fillRate: "Fill rate", largest: "Largest segment drop" };
+    const signals = [
+      `${labels.revenue}: ${money(report.previous.revenue)} -> ${money(report.current.revenue)} (${pct(report.changes.revenue)})`,
+      `${labels.impressions}: ${Math.round(report.previous.impressions).toLocaleString("en-US")} -> ${Math.round(report.current.impressions).toLocaleString("en-US")} (${pct(report.changes.impressions)})`,
+      `${labels.ecpm}: ${money(report.previous.ecpm)} -> ${money(report.current.ecpm)} (${pct(report.changes.ecpm)})`,
+      `${labels.fillRate}: ${report.previous.fillRate.toFixed(1)}% -> ${report.current.fillRate.toFixed(1)}% (${pct(report.changes.fillRate)})`
+    ];
+
+    if (report.largestDrop) {
+      signals.push(`${labels.largest}: ${report.largestDrop.label}`);
+    }
+
+    return signals;
+  }, [lang, report]);
   const caveats = useMemo(() => {
     const base =
       lang === "zh"
@@ -1167,20 +1200,32 @@ export default function DemoPage() {
         `加权 eCPM：${money(report.previous.ecpm)} -> ${money(report.current.ecpm)} (${pct(report.changes.ecpm)})`,
         `展示量：${Math.round(report.previous.impressions).toLocaleString("en-US")} -> ${Math.round(report.current.impressions).toLocaleString("en-US")} (${pct(report.changes.impressions)})`,
         `填充率：${report.previous.fillRate.toFixed(1)}% -> ${report.current.fillRate.toFixed(1)}% (${pct(report.changes.fillRate)})`,
-        `最可能原因：${t.driverLabels[report.driver]}`,
+        `最可能驱动因素：${t.driverLabels[report.driver]}`,
         `最大下滑：${largestDrop}`,
         "",
-        "原因排序：",
+        "支持信号：",
+        ...supportingSignals.map((item) => `- ${item}`),
+        "",
+        "驱动因素排序：",
         ...driverRankingLines,
         "",
         topBreakdowns.length ? "主要下滑分组：" : "",
         ...topBreakdowns,
         "",
-        "建议检查项：",
+        "推荐检查项：",
         ...suggestedCheckLines,
         "",
-        "注意事项：",
+        "避免误判：",
+        `- ${t.whatToAvoidText[report.driver]}`,
+        "",
+        "诊断逻辑：",
+        `- ${t.diagnosisLogicText[report.driver]}`,
+        "",
+        "数据限制：",
         ...caveatLines,
+        "",
+        "下一步动作：",
+        `- ${t.nextActionText}`,
         "Demo: http://ecpmbazaar.com/demo/"
       ].filter(Boolean).join("\n");
     }
@@ -1192,8 +1237,11 @@ export default function DemoPage() {
       `Weighted eCPM: ${money(report.previous.ecpm)} -> ${money(report.current.ecpm)} (${pct(report.changes.ecpm)})`,
       `Impressions: ${Math.round(report.previous.impressions).toLocaleString("en-US")} -> ${Math.round(report.current.impressions).toLocaleString("en-US")} (${pct(report.changes.impressions)})`,
       `Fill rate: ${report.previous.fillRate.toFixed(1)}% -> ${report.current.fillRate.toFixed(1)}% (${pct(report.changes.fillRate)})`,
-      `Likely driver: ${t.driverLabels[report.driver]}`,
+      `Most likely driver: ${t.driverLabels[report.driver]}`,
       `Largest segment drop: ${largestDrop}`,
+      "",
+      "Supporting signals:",
+      ...supportingSignals.map((item) => `- ${item}`),
       "",
       "Driver ranking:",
       ...driverRankingLines,
@@ -1201,14 +1249,23 @@ export default function DemoPage() {
       topBreakdowns.length ? "Top segment drops:" : "",
       ...topBreakdowns,
       "",
-      "Suggested checks:",
+      "Recommended checks:",
       ...suggestedCheckLines,
       "",
-      "Caveats:",
+      "What to avoid:",
+      `- ${t.whatToAvoidText[report.driver]}`,
+      "",
+      "Diagnosis logic:",
+      `- ${t.diagnosisLogicText[report.driver]}`,
+      "",
+      "Data limitations:",
       ...caveatLines,
+      "",
+      "Next action:",
+      `- ${t.nextActionText}`,
       "Demo: http://ecpmbazaar.com/demo/"
     ].filter(Boolean).join("\n");
-  }, [caveats, lang, rankedDrivers, report, suggestedChecks, t.driverLabels]);
+  }, [caveats, lang, rankedDrivers, report, suggestedChecks, supportingSignals, t]);
 
   async function onUpload(file?: File) {
     if (!file) return;
@@ -1242,6 +1299,7 @@ export default function DemoPage() {
   }
 
   function loadSample() {
+    const mode: ComparisonMode = "latest-day";
     const csv = metricRowsToCsv(demoRows);
     const parsed = parseCsv(csv);
     setRows(parsed.rows);
@@ -1250,9 +1308,10 @@ export default function DemoPage() {
     setSource("sample");
     setError("");
     setActiveScenarioId(demoScenarios[0].id);
+    setComparisonMode(mode);
     setPastedCsv(csv);
     setManualCopyText("");
-    replaceDemoUrl(demoScenarios[0].id, comparisonMode);
+    replaceDemoUrl(demoScenarios[0].id, mode);
   }
 
   function loadFourteenDaySample() {
@@ -1271,6 +1330,7 @@ export default function DemoPage() {
   }
 
   function loadScenario(scenarioId: DemoScenarioId) {
+    const mode: ComparisonMode = "latest-day";
     const scenario = demoScenarios.find((item) => item.id === scenarioId) ?? demoScenarios[0];
     const csv = metricRowsToCsv(scenario.rows);
     const parsed = parseCsv(csv);
@@ -1279,10 +1339,11 @@ export default function DemoPage() {
     setCsvIssues(parsed.issues);
     setSource("scenario");
     setActiveScenarioId(scenario.id);
+    setComparisonMode(mode);
     setError("");
     setPastedCsv(csv);
     setManualCopyText("");
-    replaceDemoUrl(scenario.id, comparisonMode);
+    replaceDemoUrl(scenario.id, mode);
   }
 
   function resetDemo() {
@@ -1710,6 +1771,49 @@ export default function DemoPage() {
             <span>{t.likelyDriver}</span>
             <strong>{t.driverLabels[report.driver]}</strong>
             <p>{t.advice[report.driver]}</p>
+          </div>
+
+          <div className="diagnosis-guidance-grid">
+            <section>
+              <h3>{t.supportingSignals}</h3>
+              <ul>
+                {supportingSignals.map((signal) => (
+                  <li key={signal}>{signal}</li>
+                ))}
+              </ul>
+            </section>
+            <section>
+              <h3>{t.recommendedChecks}</h3>
+              <ol>
+                {suggestedChecks.map((check) => (
+                  <li key={check}>{check}</li>
+                ))}
+              </ol>
+            </section>
+            <section>
+              <h3>{t.whatToAvoid}</h3>
+              <p>{t.whatToAvoidText[report.driver]}</p>
+            </section>
+            <section>
+              <h3>{t.diagnosisLogic}</h3>
+              <p>{t.diagnosisLogicText[report.driver]}</p>
+            </section>
+            <section>
+              <h3>{t.dataLimitations}</h3>
+              <ul>
+                {caveats.slice(0, 3).map((caveat) => (
+                  <li key={caveat}>{caveat}</li>
+                ))}
+              </ul>
+            </section>
+            <section>
+              <h3>{t.nextAction}</h3>
+              <p>{t.nextActionText}</p>
+              <a className="next-action-link" href={freeDiagnosisHref} onClick={saveDemoReviewDraft}>
+                <Mail size={16} aria-hidden="true" />
+                {t.requestReview}
+              </a>
+            </section>
           </div>
 
           {manualCopyText ? (

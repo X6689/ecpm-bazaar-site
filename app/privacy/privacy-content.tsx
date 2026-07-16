@@ -8,11 +8,13 @@ const principles = [
   {
     en: {
       title: "Browser-only public demo",
-      text: "CSV files selected in the public demo are parsed in your browser. They are not uploaded or stored by eCPM Bazaar."
+      text:
+        "CSV files selected in the public demo are parsed in your browser and are not uploaded. If you choose Request free diagnosis, a compact draft may be kept in browser session storage to prefill the request page; it is not sent unless you use your email app."
     },
     zh: {
       title: "公开 Demo 只在浏览器本地运行",
-      text: "你在公开 Demo 里选择的 CSV 文件只会在浏览器里解析，不会上传，也不会由 eCPM Bazaar 保存。"
+      text:
+        "你在公开 Demo 里选择的 CSV 文件只会在浏览器里解析，不会上传。如果选择申请免费诊断，浏览器可能在当前会话存储一份简短草稿预填请求页；只有使用邮件 App 时才会由你决定发送。"
     }
   },
   {
@@ -28,11 +30,11 @@ const principles = [
   {
     en: {
       title: "Anonymize before sharing",
-      text: "Replace app names, ad unit IDs, account IDs, package names, and any private identifiers before sending rows for manual review."
+      text: "Replace app names, ad unit IDs, account IDs, package names, and any private identifiers before sending rows for a directional diagnosis."
     },
     zh: {
       title: "分享前先脱敏",
-      text: "发送人工诊断前，请替换 App 名、广告单元 ID、账号 ID、包名和任何私密标识。"
+      text: "发送方向性诊断请求前，请替换 App 名、广告单元 ID、账号 ID、包名和任何私密标识。"
     }
   },
   {
@@ -53,7 +55,7 @@ const doSend = [
   { en: "placement or ad unit name, anonymized", zh: "脱敏后的广告位或广告单元名称" },
   { en: "ad source or network, anonymized if needed", zh: "广告源或广告网络，必要时脱敏" },
   { en: "revenue, impressions, eCPM", zh: "收入、展示量、eCPM" },
-  { en: "requests, fills, fill or match rate when available", zh: "可用时提供 requests、fills、fill / match rate" }
+  { en: "requests, matched requests, fills, fill rate, and match rate when available (keep their platform definitions separate)", zh: "可用时提供 requests、matched requests、fills、fill rate 和 match rate，并保留各自的平台定义" }
 ];
 
 const doNotSend = [
@@ -76,14 +78,14 @@ const copy = {
     badge: "Data safety",
     title: "Use anonymized ad monetization data. Keep account access private.",
     lede:
-      "eCPM Bazaar is being validated with privacy-first workflows: browser-only CSV parsing, anonymized rows, and no account credentials.",
+      "eCPM Bazaar is being validated with privacy-first workflows: browser-only CSV parsing, anonymized rows, no dashboard login, and no account credentials.",
     safeLabel: "Safe to share",
     safeTitle: "Useful anonymized fields",
     privateLabel: "Do not send",
     privateTitle: "Keep these private",
     ok: "OK",
     private: "Private",
-    ctaTitle: "Need a manual diagnosis?",
+    ctaTitle: "Need a directional diagnosis?",
     ctaText: "Use the free diagnosis page to copy the field list and prepare anonymized rows.",
     freeDiagnosis: "Free diagnosis"
   },
@@ -103,7 +105,7 @@ const copy = {
     privateTitle: "这些信息请保持私密",
     ok: "可以",
     private: "私密",
-    ctaTitle: "需要人工诊断？",
+    ctaTitle: "需要方向性诊断？",
     ctaText: "到免费诊断页复制字段列表，准备脱敏数据行即可。",
     freeDiagnosis: "免费诊断"
   }

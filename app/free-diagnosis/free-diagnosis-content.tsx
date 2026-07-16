@@ -11,12 +11,12 @@ import { SiteFooter } from "../site-footer";
 const email = "xmmyy168@gmail.com";
 const subject = "Free eCPM Bazaar diagnosis";
 const fieldList =
-  "date, gameName, platform, adNetwork, mediation, adFormat, placementName, country, revenue, ecpm, arpDau, dau, impressions, impressionsPerDau, requests, fills, fillRate";
+  "date, gameName, platform, adNetwork, mediation, adFormat, placementName, adUnit, country, revenue, ecpm, arpDau, dau, impressions, impressionsPerDau, requests, matchedRequests, fills, matchRate, fillRate";
 type DemoSampleId = "14-day";
 const changeIndexByCase: Record<DemoScenarioId, number> = {
-  "ecpm-drop": 2,
-  "fill-rate-drop": 4,
-  "country-mix": 6
+  "ecpm-drop": 1,
+  "fill-rate-drop": 2,
+  "country-mix": 4
 };
 
 function normalizeScenarioId(value: string | null): DemoScenarioId | null {
@@ -41,29 +41,29 @@ const copy = {
     navPrivacy: "Privacy",
     language: "Language",
     badge: "Free diagnosis",
-    title: "Generate a clean ad revenue diagnosis request.",
+    title: "Apply for a free revenue-drop diagnosis.",
     lede:
-      "Fill in a few anonymized details and generate a paste-ready email request for a mobile ad revenue diagnosis. No dashboard login, no SDK, no account credentials.",
+      "Send anonymized report rows and separate the change into traffic, fill, country, placement, ad-source, time-of-day, and pricing signals.",
     conversionText:
-      "If your revenue dropped but you are not sure whether it is eCPM, fill rate, traffic, country mix, placement, ad source, or time-of-day behavior, send anonymized rows and get a structured diagnosis request.",
+      "No dashboard access. No SDK. No account credentials. The email builder is only the submission method; the point is a directional diagnosis of the revenue change.",
     emailButton: "Email anonymized data",
     templatesButton: "Download templates",
     benefits: [
       {
-        title: "Browser-only form",
-        text: "The form runs in your browser and prepares a structured draft locally."
+        title: "Most likely driver",
+        text: "A directional read of whether the change started with traffic, fill, country mix, placement, source, timing, or pricing."
       },
       {
-        title: "No credentials",
-        text: "Do not send AdMob, AppLovin, Unity, TopOn, Google, or payment account access."
+        title: "Supporting signals",
+        text: "The report changes that support the interpretation, plus clear caveats when the supplied data is insufficient."
       },
       {
-        title: "Anonymized rows",
-        text: "Remove app names, package names, ad unit IDs, account IDs, and user-level data."
+        title: "Three first checks",
+        text: "A short priority list to run before changing mediation, floors, or placement logic."
       },
       {
-        title: "Paste-ready request",
-        text: "Generate a clear email with the metrics needed for the first diagnosis."
+        title: "Team-ready explanation",
+        text: "A concise explanation you can share with your team, an ad platform, or a deeper monetization review."
       }
     ],
     steps: [
@@ -81,27 +81,27 @@ const copy = {
       }
     ],
     outputLabel: "What you get back",
-    outputTitle: "A diagnosis card and a short report, not a sales call.",
+    outputTitle: "A directional diagnosis format, not a guaranteed fix.",
     outputText:
-      "The first version is intentionally lightweight. I will look at the anonymized rows and return a clear diagnosis you can act on or discuss with your team.",
+      "When the supplied rows are sufficient, the response is structured around the most likely driver, supporting signals, three recommended checks, and clear data limitations.",
     cardAssetLink: "Open sample diagnosis card",
     outputs: [
       {
         label: "Diagnosis card",
-        value: "Problem, health score, main cause, severity, ad format, country, placement, ad source, and next action."
+        value: "Observed change, most likely driver, supporting signals, affected segments, and the next action."
       },
       {
-        label: "Paste-ready report",
-        value: "A short explanation you can paste into email, a community reply, or an internal team thread."
+        label: "Short team explanation",
+        value: "A concise explanation you can paste into an email, community reply, or internal team thread."
       },
       {
-        label: "First checks",
-        value: "A small priority list so you know what to inspect before changing mediation, floors, or ad placement."
+        label: "Recommended checks and caveats",
+        value: "Three first checks plus clear notes about missing fields, short history, low volume, or platform-definition differences."
       }
     ],
-    mainCause: "Main cause",
-    healthScore: "Revenue Health Score",
-    healthScoreValue: "62 / 100",
+    mostLikelyDriver: "Most likely driver",
+    diagnosisStatus: "Diagnosis status",
+    diagnosisStatusValue: "Directional example",
     previewProblem: "Revenue dropped 31%",
     previewCause: "Fill rate dropped",
     severity: "Severity",
@@ -120,11 +120,21 @@ const copy = {
     goodForTitle: "Good for",
     goodFor: [
       "AdMob revenue drops",
-      "AppLovin MAX or mediation issues",
+      "AppLovin MAX or mediation changes",
       "Fill-rate or match-rate drops",
       "Country mix changes",
       "Placement-level revenue changes",
-      "Time-of-day or live event traffic drops"
+      "One ad source suddenly losing volume",
+      "Peak-hour or live-event impression drops",
+      "Stable impressions with lower weighted eCPM"
+    ],
+    minimumDataTitle: "Minimum useful data",
+    minimumData: [
+      "At least two comparable report dates",
+      "Preferably 14 or more dates for 7-day comparisons",
+      "Revenue and impressions",
+      "Country, placement, or ad-source segments when available",
+      "Requests and fills for fill-rate diagnosis"
     ],
     caseLoadedLabel: "Case loaded",
     caseLoadedTitle: "This request has been prefilled from a diagnosis case.",
@@ -133,7 +143,7 @@ const copy = {
     sampleLoadedLabel: "Sample loaded",
     sampleLoadedTitle: "This request has been prefilled from the 14-day demo sample.",
     sampleLoadedText:
-      "Use this to test the manual diagnosis workflow. Replace the sample rows with your own anonymized export before sending.",
+      "Use this to test the directional diagnosis workflow. Replace the sample rows with your own anonymized export before sending.",
     demoDraftLoadedLabel: "Demo draft loaded",
     demoDraftLoadedTitle: "This request has been prefilled from your current demo result.",
     demoDraftLoadedText:
@@ -142,7 +152,7 @@ const copy = {
     openDemo: "Open demo",
     safetyTitle: "No credentials needed",
     safetyText:
-      "eCPM Bazaar does not need your AdMob, AppLovin MAX, Unity LevelPlay, TopOn, or Google login. For early feedback, anonymized report rows are enough.",
+      "eCPM Bazaar does not need your AdMob, AppLovin MAX, Unity LevelPlay, TopOn, or Google login. Do not include API keys, account credentials, payment details, user-level personal data, or screenshots containing private identifiers.",
     dataSafety: "Data safety",
     doNotIncludeTitle: "Do not include",
     doNotInclude: ["API keys", "account IDs", "payment details", "private screenshots", "user-level personal data"],
@@ -161,10 +171,14 @@ const copy = {
       "Main ad format: rewarded / interstitial / banner / mixed",
       "Main GEO: US / Tier 1 / Tier 3 / mixed / other",
       "DAU range: <1k / 1k-10k / 10k-100k / 100k+",
+      "Approx monthly ad revenue: Under $100 / $100–$500 / $500–$2,000 / $2,000–$10,000 / $10,000+ / Prefer not to say",
+      "Report history available: 2–6 days / 7–13 days / 14–29 days / 30+ days / Not sure",
+      "App status: Live app with active ad traffic / Soft launch / Recently launched / Testing only",
+      "Main concern: revenue dropped / eCPM dropped / fill or match rate dropped / impressions dropped / country mix changed / placement performance changed / ad source stopped filling / peak-hour traffic changed / not sure",
       "Approx metrics: eCPM, ARPDAU, fill rate, impressions per DAU",
       "What changed: revenue / eCPM / ARPDAU / impressions / fill rate / country mix / ad source",
       "Comparison period: latest day vs previous day / last 7 days vs previous 7 days",
-      "Preferred output: diagnosis card + paste-ready short report",
+      "Preferred output: most likely driver + supporting signals + recommended checks + data limitations",
       "",
       "I can share anonymized rows with these fields:",
       fieldList,
@@ -181,29 +195,29 @@ const copy = {
     navPrivacy: "数据安全",
     language: "语言",
     badge: "免费诊断",
-    title: "生成一封清晰的广告收入诊断请求邮件。",
+    title: "申请一次免费的广告收入下降诊断。",
     lede:
-      "填写少量脱敏信息，生成一封可以直接发送的移动广告收入诊断请求邮件。不需要后台登录、不需要 SDK、不需要账号凭证。",
+      "发送脱敏报表行，把变化拆成流量、填充、国家、广告位、广告源、一天中的时间和价格信号。",
     conversionText:
-      "如果收入下降，但你不确定原因是 eCPM、填充率、流量、国家结构、广告位、广告源，还是一天中的时间行为，请发送脱敏数据行，生成结构化诊断请求。",
+      "无需后台访问、无需 SDK、无需账号凭证。邮件生成器只是提交方式，核心是对收入变化做一次方向性诊断。",
     emailButton: "发送脱敏数据邮件",
     templatesButton: "下载模板",
     benefits: [
       {
-        title: "浏览器本地表单",
-        text: "表单在浏览器里运行，并在本地整理结构化邮件草稿。"
+        title: "最可能的驱动因素",
+        text: "方向性判断变化更像由流量、填充、国家结构、广告位、广告源、时段还是价格触发。"
       },
       {
-        title: "不需要账号权限",
-        text: "不要发送 AdMob、AppLovin、Unity、TopOn、Google 或付款账号权限。"
+        title: "支持信号",
+        text: "指出哪些报表变化支持这项判断，并在数据不足时明确给出限制。"
       },
       {
-        title: "使用脱敏数据行",
-        text: "移除 App 名、包名、广告位 ID、账号 ID 和用户级数据。"
+        title: "三个优先检查项",
+        text: "在调整聚合、底价或广告位逻辑前，先执行一小段有优先级的检查。"
       },
       {
-        title: "可直接复制发送",
-        text: "生成包含首轮诊断所需指标的清晰邮件。"
+        title: "可给团队解释的短结论",
+        text: "用一段简短说明和团队、广告平台或更深入的变现支持沟通。"
       }
     ],
     steps: [
@@ -221,26 +235,26 @@ const copy = {
       }
     ],
     outputLabel: "你会拿到什么",
-    outputTitle: "返回诊断卡和短报告，不是销售沟通。",
-    outputText: "第一版会刻意保持轻量。我会查看脱敏数据行，返回一段你能行动、也能拿去和团队讨论的清晰诊断。",
+    outputTitle: "方向性诊断格式，不是保证修复。",
+    outputText: "当提供的数据足够时，输出会围绕最可能驱动因素、支持信号、三个推荐检查项和清晰的数据限制组织。",
     cardAssetLink: "打开诊断卡样图",
     outputs: [
       {
         label: "诊断卡",
-        value: "包含问题、健康评分、主要原因、严重程度、广告形式、国家、广告位、广告源和下一步动作。"
+        value: "包含观察到的变化、最可能驱动因素、支持信号、受影响分组和下一步动作。"
       },
       {
-        label: "可复制短报告",
+        label: "团队可读短说明",
         value: "适合粘贴到邮件、社区回复或团队内部讨论。"
       },
       {
-        label: "优先检查清单",
-        value: "告诉你改聚合、底价或广告位前，应该先检查哪些地方。"
+        label: "推荐检查项和限制",
+        value: "给出三个优先检查项，并说明缺少字段、历史过短、样本过小或平台定义差异。"
       }
     ],
-    mainCause: "主要原因",
-    healthScore: "收益健康评分",
-    healthScoreValue: "62 / 100",
+    mostLikelyDriver: "最可能驱动因素",
+    diagnosisStatus: "诊断状态",
+    diagnosisStatusValue: "方向性示例",
     previewProblem: "收入下降 31%",
     previewCause: "填充率下降",
     severity: "严重程度",
@@ -263,14 +277,18 @@ const copy = {
       "填充率或匹配率下降",
       "国家结构变化",
       "广告位级收入变化",
-      "一天中的时间或现场事件导致流量下降"
+      "一个广告源突然失去量级",
+      "高峰时段或现场事件导致展示下降",
+      "展示稳定但加权 eCPM 下降"
     ],
+    minimumDataTitle: "最少有效数据",
+    minimumData: ["至少两个可比的报表日期", "7 天对比最好有 14 个或更多日期", "收入和展示量", "可用时提供国家、广告位或广告源分组", "诊断填充率时提供 requests 和 fills"],
     caseLoadedLabel: "已载入案例",
     caseLoadedTitle: "这封请求已根据诊断案例预填。",
     caseLoadedText: "可以把它当成起点。发送前，把样例数据行替换成你自己的脱敏数据。",
     sampleLoadedLabel: "已载入样例",
     sampleLoadedTitle: "这封请求已根据 14 天 Demo 样例预填。",
-    sampleLoadedText: "可以用它测试人工诊断流程。发送前，把样例数据替换成你自己的脱敏导出数据。",
+    sampleLoadedText: "可以用它测试方向性诊断流程。发送前，把样例数据替换成你自己的脱敏导出数据。",
     demoDraftLoadedLabel: "已载入 Demo 草稿",
     demoDraftLoadedTitle: "这封请求已根据你当前的 Demo 结果预填。",
     demoDraftLoadedText: "CSV 行和诊断摘要只保存在你的浏览器会话中。发送前请再次检查并脱敏。",
@@ -278,7 +296,7 @@ const copy = {
     openDemo: "打开 Demo",
     safetyTitle: "不需要账号权限",
     safetyText:
-      "eCPM Bazaar 不需要你的 AdMob、AppLovin MAX、Unity LevelPlay、TopOn 或 Google 登录权限。早期反馈只需要脱敏报表行。",
+      "eCPM Bazaar 不需要你的 AdMob、AppLovin MAX、Unity LevelPlay、TopOn 或 Google 登录权限。不要包含 API key、账号凭证、付款信息、用户级个人数据或带有私密标识的截图。",
     dataSafety: "数据安全",
     doNotIncludeTitle: "不要包含",
     doNotInclude: ["API key", "账号 ID", "付款信息", "私密截图", "用户级个人数据"],
@@ -297,10 +315,14 @@ const copy = {
       "主要广告形式：rewarded / interstitial / banner / mixed",
       "主要 GEO：US / Tier 1 / Tier 3 / mixed / other",
       "DAU 范围：<1k / 1k-10k / 10k-100k / 100k+",
+      "每月广告收入大致范围：Under $100 / $100–$500 / $500–$2,000 / $2,000–$10,000 / $10,000+ / Prefer not to say",
+      "可用的报表历史：2–6 days / 7–13 days / 14–29 days / 30+ days / Not sure",
+      "App 状态：Live app with active ad traffic / Soft launch / Recently launched / Testing only",
+      "主要关注的问题：revenue dropped / eCPM dropped / fill or match rate dropped / impressions dropped / country mix changed / placement performance changed / ad source stopped filling / peak-hour traffic changed / not sure",
       "大致指标：eCPM、ARPDAU、fill rate、impressions per DAU",
       "发生了什么变化：revenue / eCPM / ARPDAU / impressions / fill rate / country mix / ad source",
       "对比周期：latest day vs previous day / last 7 days vs previous 7 days",
-      "希望输出：diagnosis card + paste-ready short report",
+      "希望输出：最可能原因 + 支持信号 + 推荐检查项 + 数据限制",
       "",
       "我可以分享包含这些字段的脱敏数据行：",
       fieldList,
@@ -328,7 +350,7 @@ export function FreeDiagnosisContent() {
         notes:
           lang === "zh"
             ? "我正在参考 eCPM Bazaar 的 14 天样例。我的数据也想按最近 7 天 vs 前 7 天做对比，请帮我判断主要收入变化原因和优先检查项。"
-            : "I am using the eCPM Bazaar 14-day sample as a reference. I want to compare the latest 7 days against the previous 7 days and identify the main driver plus first checks.",
+            : "I am using the eCPM Bazaar 14-day sample as a reference. I want to compare the latest 7 days against the previous 7 days and identify the most likely driver plus first checks.",
         dataSample: metricRowsToCsv(fourteenDaySampleRows)
       };
     }
@@ -342,7 +364,7 @@ export function FreeDiagnosisContent() {
         notes:
           lang === "zh"
             ? `我正在参考 eCPM Bazaar 的「${activeScenario.title.zh}」案例。我的数据可能也有类似问题：${activeScenario.description.zh}。请帮我判断主要原因和优先检查项。`
-            : `I am using the eCPM Bazaar "${activeScenario.title.en}" case as a reference. My data may show a similar pattern: ${activeScenario.description.en}. Please help me identify the main driver and first checks.`,
+            : `I am using the eCPM Bazaar "${activeScenario.title.en}" case as a reference. My data may show a similar pattern: ${activeScenario.description.en}. Please help me identify the most likely driver and first checks.`,
         dataSample: metricRowsToCsv(activeScenario.rows)
       };
     }
@@ -502,6 +524,17 @@ export function FreeDiagnosisContent() {
                   ))}
                 </ul>
               </div>
+              <div className="diagnosis-good-fit-card">
+                <h3>{t.minimumDataTitle}</h3>
+                <ul>
+                  {t.minimumData.map((item) => (
+                    <li key={item}>
+                      <CheckCircle2 size={15} aria-hidden="true" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
           <CopyEmailPanel body={t.requestBody} fieldList={fieldList} lang={lang} mailto={mailto} preset={preset} />
@@ -551,11 +584,11 @@ export function FreeDiagnosisContent() {
           <span className="share-card-brand">eCPM Bazaar</span>
           <h3>{t.previewProblem}</h3>
           <div className="mini-score">
-            <span>{t.healthScore}</span>
-            <strong>{t.healthScoreValue}</strong>
+            <span>{t.diagnosisStatus}</span>
+            <strong>{t.diagnosisStatusValue}</strong>
           </div>
           <div className="mini-cause">
-            <span>{t.mainCause}</span>
+            <span>{t.mostLikelyDriver}</span>
             <strong>{t.previewCause}</strong>
           </div>
           <dl>

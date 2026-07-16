@@ -5,7 +5,7 @@ export const siteUrl = new URL("https://ecpmbazaar.com");
 export const siteTitle = "eCPM Bazaar | Diagnose mobile ad revenue drops";
 
 export const siteDescription =
-  "eCPM Bazaar helps small mobile game and app teams find whether ad revenue changed because of eCPM, impressions, fill rate, country mix, placement, mediation, or ad sources.";
+  "Find what most likely caused your mobile ad revenue drop with a browser-only, anonymized CSV diagnosis before changing floors or mediation.";
 
 const ogImage = {
   url: "/og-image.png",
@@ -15,23 +15,26 @@ const ogImage = {
 };
 
 export function pageMetadata(title: string, description: string, path: `/${string}`): Metadata {
+  const canonical = new URL(path, siteUrl).toString();
+  const socialTitle = title.includes("eCPM Bazaar") ? title : `${title} | eCPM Bazaar`;
+
   return {
     title,
     description,
     alternates: {
-      canonical: path
+      canonical
     },
     openGraph: {
       type: "website",
-      url: path,
+      url: canonical,
       siteName: "eCPM Bazaar",
-      title: `${title} | eCPM Bazaar`,
+      title: socialTitle,
       description,
       images: [ogImage]
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | eCPM Bazaar`,
+      title: socialTitle,
       description,
       images: [ogImage.url]
     }

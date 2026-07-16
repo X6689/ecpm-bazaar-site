@@ -20,11 +20,25 @@ const faqs = [
   {
     en: {
       question: "Does the public demo upload my CSV?",
-      answer: "No. The public demo parses CSV files in your browser. The file is not uploaded or stored by eCPM Bazaar."
+      answer:
+        "No. The public demo parses CSV files locally in your browser and does not upload them. If you choose Request free diagnosis, a compact draft can be kept in browser session storage to prefill the next page; it is not sent unless you open your email app."
     },
     zh: {
       question: "公开 Demo 会上传我的 CSV 吗？",
-      answer: "不会。公开 Demo 只在你的浏览器本地解析 CSV 文件，不会上传，也不会由 eCPM Bazaar 保存。"
+      answer:
+        "不会。公开 Demo 只在你的浏览器本地解析 CSV 文件，不会上传。如果选择申请免费诊断，浏览器会在当前会话中保留简短草稿预填下一页；只有打开邮件 App 后，才由你决定是否发送。"
+    }
+  },
+  {
+    en: {
+      question: "Are match rate and fill rate the same thing?",
+      answer:
+        "Not automatically. Match rate usually describes matched requests divided by ad requests, while fill rate describes available or served ads relative to requests or eligible opportunities. Definitions vary by platform, so eCPM Bazaar preserves them as separate fields and relies on requests and fills for a fill-rate diagnosis."
+    },
+    zh: {
+      question: "match rate 和 fill rate 是同一个指标吗？",
+      answer:
+        "不能默认视为同一个。match rate 通常指 matched requests 除以 ad requests；fill rate 则指可用或已展示广告相对请求或可用机会的比例。各平台定义不同，因此 eCPM Bazaar 会把它们保留为独立字段，并用 requests 和 fills 做填充率诊断。"
     }
   },
   {
@@ -75,7 +89,7 @@ const faqs = [
     en: {
       question: "Can live events or time of day affect AdMob revenue?",
       answer:
-        "Yes. A revenue drop is not always caused by ad demand, eCPM, or mediation changes. In some apps, user activity changes during specific hours because of sports events, holidays, exams, work schedules, or local events. If revenue drops during the app's normal peak window, compare hourly impressions, impressions per user, match rate, and eCPM before changing floors or mediation settings. A useful check is event days vs normal days, and peak hours vs nearby non-event hours. If eCPM and match rate stay stable while impressions drop, the likely driver is audience behavior rather than ad demand."
+        "Yes. A revenue drop is not always caused by ad demand, eCPM, or mediation changes. In some apps, user activity changes during specific hours because of sports events, holidays, exams, work schedules, or local events. If revenue drops during the app's normal peak window, compare hourly impressions, impressions per user, match rate, and eCPM before changing floors or mediation settings. A useful check is event days vs normal days, and peak hours vs nearby non-event hours. If eCPM and match rate stay stable while impressions drop, the most likely driver is audience behavior rather than ad demand."
     },
     zh: {
       question: "大型活动或一天中的时间会影响 AdMob 收入吗？",

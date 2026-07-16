@@ -25,11 +25,11 @@ export const metadata: Metadata = {
     "ad revenue diagnosis"
   ],
   alternates: {
-    canonical: "/"
+    canonical: new URL("/", siteUrl).toString()
   },
   openGraph: {
     type: "website",
-    url: "/",
+    url: new URL("/", siteUrl).toString(),
     siteName: "eCPM Bazaar",
     title: siteTitle,
     description: siteDescription,

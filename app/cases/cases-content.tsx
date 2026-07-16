@@ -20,7 +20,6 @@ type DiagnosisCase = {
     checks: string[];
     card: {
       problem: string;
-      healthScore: string;
       cause: string;
       severity: string;
       country: string;
@@ -40,7 +39,6 @@ type DiagnosisCase = {
     checks: string[];
     card: {
       problem: string;
-      healthScore: string;
       cause: string;
       severity: string;
       country: string;
@@ -60,7 +58,7 @@ const cases: DiagnosisCase[] = [
       diagnosis:
         "This looks more like a pricing or demand issue than a traffic issue. The first checks should be country mix, bidder/source performance, eCPM floors, seasonality, and recent mediation changes.",
       meaning:
-        "Traffic volume stayed stable, so the likely driver is pricing, demand, source performance, floor settings, or country-level eCPM changes.",
+        "Traffic volume stayed stable, so the most likely driver is pricing, demand, source performance, floor settings, or country-level eCPM changes.",
       takeaway: "Do not change traffic or placement logic before checking whether pricing changed.",
       whatToAvoid:
         "Avoid treating a pricing drop as a traffic-quality problem before checking country-level eCPM and source performance.",
@@ -69,7 +67,6 @@ const cases: DiagnosisCase[] = [
       checks: ["Compare eCPM by country", "Check top ad sources", "Review floor or waterfall changes", "Look for platform status or demand changes"],
       card: {
         problem: "Revenue dropped 24%",
-        healthScore: "71 / 100",
         cause: "eCPM dropped",
         severity: "Medium",
         country: "Mixed geos",
@@ -90,7 +87,6 @@ const cases: DiagnosisCase[] = [
       checks: ["按国家比较 eCPM", "检查头部广告源", "复查底价或瀑布流变化", "查看平台状态或需求变化"],
       card: {
         problem: "收入下降 24%",
-        healthScore: "71 / 100",
         cause: "eCPM 下降",
         severity: "中",
         country: "多国家组合",
@@ -106,7 +102,7 @@ const cases: DiagnosisCase[] = [
       title: "Case 2: fill rate dropped before revenue dropped",
       signal: "Revenue fell 31%. eCPM stayed close to normal, but fill rate moved from 78% to 54%.",
       diagnosis:
-        "The eCPM number alone is misleading here. The likely driver is fill or match pressure, so changing price floors blindly could make the diagnosis worse.",
+        "The eCPM number alone is misleading here. The most likely driver is fill or match pressure, so changing price floors blindly could make the diagnosis worse.",
       meaning: "Demand price may still be normal, but fewer requests are turning into filled impressions.",
       takeaway: "If fill rate drops while eCPM stays stable, blindly adjusting price floors can make the diagnosis worse.",
       whatToAvoid:
@@ -116,7 +112,6 @@ const cases: DiagnosisCase[] = [
       checks: ["Split requests and fills by country", "Check timeout and request logic", "Review source availability", "Inspect recent SDK or mediation releases"],
       card: {
         problem: "Revenue dropped 31%",
-        healthScore: "62 / 100",
         cause: "Fill rate dropped",
         severity: "High",
         country: "United States",
@@ -137,7 +132,6 @@ const cases: DiagnosisCase[] = [
       checks: ["按国家拆 requests 和 fills", "检查超时和请求逻辑", "复查广告源可用性", "检查近期 SDK 或聚合版本变更"],
       card: {
         problem: "收入下降 31%",
-        healthScore: "62 / 100",
         cause: "填充率下降",
         severity: "高",
         country: "美国",
@@ -164,7 +158,6 @@ const cases: DiagnosisCase[] = [
       checks: ["Compare impressions share by country", "Check UA campaigns and organic traffic sources", "Review placement exposure by region", "Separate country mix from source performance"],
       card: {
         problem: "Total eCPM dropped 18%",
-        healthScore: "78 / 100",
         cause: "Country mix changed",
         severity: "Low",
         country: "US stable, BR/IN share up",
@@ -185,7 +178,6 @@ const cases: DiagnosisCase[] = [
       checks: ["比较各国家展示占比", "检查买量和自然流量来源", "按地区复查广告位曝光", "把国家结构和广告源表现分开看"],
       card: {
         problem: "总 eCPM 下降 18%",
-        healthScore: "78 / 100",
         cause: "国家结构变化",
         severity: "低",
         country: "美国稳定，巴西/印度占比上升",
@@ -208,7 +200,7 @@ const cases: DiagnosisCase[] = [
       whatToAvoid:
         "Avoid assuming the ad stack failed when impressions per user drops only during event hours or normal peak windows.",
       diagnosisLogic:
-        "If eCPM and match rate stay stable while peak-hour impressions fall, the likely driver is audience behavior rather than ad demand.",
+        "If eCPM and match rate stay stable while peak-hour impressions fall, the most likely driver is audience behavior rather than ad demand.",
       checks: [
         "Compare event days vs normal days",
         "Check the normal peak window separately",
@@ -218,7 +210,6 @@ const cases: DiagnosisCase[] = [
       ],
       card: {
         problem: "Revenue dropped 19%",
-        healthScore: "74 / 100",
         cause: "Peak-hour impressions dropped",
         severity: "Medium",
         country: "Sports-heavy GEO",
@@ -240,7 +231,6 @@ const cases: DiagnosisCase[] = [
       checks: ["比较事件日和正常日", "单独检查正常高峰窗口", "比较事件时段和相邻非事件时段", "检查每用户展示次数", "确认 eCPM 和匹配率是否稳定"],
       card: {
         problem: "收入下降 19%",
-        healthScore: "74 / 100",
         cause: "高峰时段展示下降",
         severity: "中",
         country: "体育受众 GEO",
@@ -261,13 +251,20 @@ const copy = {
     navFaq: "FAQ",
     navPrivacy: "Privacy",
     language: "Language",
-    badge: "Sample diagnosis reports",
-    title: "View sample mobile game ad revenue diagnosis reports.",
+    badge: "Directional diagnosis examples",
+    title: "See how a mobile ad revenue change is investigated before settings change.",
     lede:
-      "Before sending your own data, review how eCPM Bazaar turns anonymized mobile ad monetization rows into a diagnosis card, likely causes, and recommended next tests.",
-    example: "Diagnosis example",
-    healthScore: "Revenue Health Score",
-    mainCause: "Main cause",
+      "Before sending your own data, review how eCPM Bazaar turns anonymized mobile ad monetization rows into a diagnosis card, most likely drivers, and recommended next tests.",
+    example: "Directional example",
+    scenario: "Scenario",
+    observedChange: "Observed change",
+    whyThisFits: "Why this interpretation fits",
+    supportingSignals: "Supporting signals",
+    dataLimitations: "Data limitations",
+    dataLimitationsText: "This is a directional example. A real diagnosis should compare the same segments across matching periods.",
+    diagnosisStatus: "Diagnosis status",
+    directionalExample: "Directional example",
+    mostLikelyDriver: "Most likely driver",
     severity: "Severity",
     country: "Country",
     placement: "Placement",
@@ -280,7 +277,7 @@ const copy = {
     recommendedChecks: "Recommended checks",
     actionsTitle: "Next action",
     ctaTitle: "Want to test your own data?",
-    ctaText: "Use the browser-only demo or send anonymized fields for a free manual diagnosis.",
+    ctaText: "Use the browser-only demo or send anonymized fields to request a free directional diagnosis.",
     tryDemo: "Try demo",
     tryThisCase: "Try this case in demo",
     requestThisCase: "Request diagnosis",
@@ -297,13 +294,20 @@ const copy = {
     navFaq: "常见问题",
     navPrivacy: "数据安全",
     language: "语言",
-    badge: "示例诊断报告",
-    title: "查看手游广告收益诊断示例报告。",
+    badge: "方向性诊断示例",
+    title: "查看移动广告收入变化在修改设置前如何被排查。",
     lede:
       "发送自己的数据前，可以先看 eCPM Bazaar 如何把脱敏手游广告变现数据整理成诊断卡、可能原因和下一步测试建议。",
-    example: "诊断案例",
-    healthScore: "收益健康评分",
-    mainCause: "主要原因",
+    example: "方向性示例",
+    scenario: "场景",
+    observedChange: "观察到的变化",
+    whyThisFits: "为什么这个判断合理",
+    supportingSignals: "支持信号",
+    dataLimitations: "数据限制",
+    dataLimitationsText: "这是方向性示例。真实诊断应在匹配的周期中比较相同分组。",
+    diagnosisStatus: "诊断状态",
+    directionalExample: "方向性示例",
+    mostLikelyDriver: "最可能驱动因素",
     severity: "严重程度",
     country: "国家地区",
     placement: "广告位",
@@ -316,7 +320,7 @@ const copy = {
     recommendedChecks: "推荐检查项",
     actionsTitle: "下一步动作",
     ctaTitle: "想测试自己的数据？",
-    ctaText: "可以使用浏览器本地 Demo，也可以发送脱敏字段申请一次免费人工诊断。",
+    ctaText: "可以使用浏览器本地 Demo，也可以发送脱敏字段申请一次免费方向性诊断。",
     tryDemo: "试用演示",
     tryThisCase: "在 Demo 中打开这个案例",
     requestThisCase: "申请诊断",
@@ -382,22 +386,18 @@ export function CasesContent() {
             <article className="case-card" key={current.title}>
               <div className="case-top-grid">
                 <div className="case-explanation-panel">
-                  <p className="section-label">{t.example}</p>
+                  <p className="section-label">{t.scenario}</p>
                   <h2>{current.title}</h2>
+                  <h3>{t.observedChange}</h3>
                   <p className="case-signal">{current.signal}</p>
-                  <p>{current.diagnosis}</p>
                   <div className="case-insight-grid">
                     <div className="case-insight-card">
-                      <h3>{t.whatThisMeans}</h3>
-                      <p>{current.meaning}</p>
+                      <h3>{t.whyThisFits}</h3>
+                      <p>{current.diagnosis}</p>
                     </div>
                     <div className="case-insight-card">
-                      <h3>{t.firstChecks}</h3>
-                      <ul>
-                        {current.checks.slice(0, 4).map((check) => (
-                          <li key={check}>{check}</li>
-                        ))}
-                      </ul>
+                      <h3>{t.supportingSignals}</h3>
+                      <p>{current.meaning}</p>
                     </div>
                   </div>
                 </div>
@@ -406,11 +406,11 @@ export function CasesContent() {
                     <span className="share-card-brand">eCPM Bazaar</span>
                     <h3>{current.card.problem}</h3>
                     <div className="mini-score">
-                      <span>{t.healthScore}</span>
-                      <strong>{current.card.healthScore}</strong>
+                    <span>{t.diagnosisStatus}</span>
+                      <strong>{t.directionalExample}</strong>
                     </div>
                     <div className="mini-cause">
-                      <span>{t.mainCause}</span>
+                      <span>{t.mostLikelyDriver}</span>
                       <strong>{current.card.cause}</strong>
                     </div>
                     <dl>
@@ -448,6 +448,10 @@ export function CasesContent() {
                   <div className="case-guidance-card">
                     <h3>{t.diagnosisLogic}</h3>
                     <p>{current.diagnosisLogic}</p>
+                  </div>
+                  <div className="case-guidance-card">
+                    <h3>{t.dataLimitations}</h3>
+                    <p>{t.dataLimitationsText}</p>
                   </div>
                 </div>
                 <div className="case-action-right-stack">

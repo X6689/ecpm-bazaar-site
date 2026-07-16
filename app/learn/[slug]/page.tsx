@@ -92,7 +92,7 @@ export default function GuidePage({ params }: GuidePageProps) {
               <strong>-32%</strong>
             </div>
             <div className="mini-cause">
-              <span>Likely driver</span>
+              <span>Most likely driver</span>
               <strong>Fill rate drop</strong>
             </div>
             <dl>
@@ -144,11 +144,14 @@ export default function GuidePage({ params }: GuidePageProps) {
       <section className="resource-cta guide-cta">
         <Mail size={24} aria-hidden="true" />
         <div>
-          <h2>Want a free diagnosis for your own rows?</h2>
+          <h2>Start with the sample diagnosis, then escalate when needed.</h2>
           <p>Use anonymized before/after data. Do not send account access, API keys, or private identifiers.</p>
         </div>
-        <a className="primary-action" href="../../free-diagnosis/">
-          Get free diagnosis
+        <a className="primary-action" href="../../demo/">
+          Try demo with sample data
+        </a>
+        <a className="secondary-action" href="../../free-diagnosis/">
+          Request free diagnosis
         </a>
       </section>
 

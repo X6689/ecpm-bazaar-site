@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, Download, FileSpreadsheet, Play, ShieldCheck } from "lucide-react";
+import { acceptedAliasGroups } from "@/lib/content/monetization-terms";
 import { useLanguagePreference } from "@/lib/language";
 import { SiteFooter } from "../site-footer";
 
@@ -59,34 +60,26 @@ const templates = [
 const requiredFields = [
   ["date", { en: "Report date. Use YYYY-MM-DD when possible.", zh: "报表日期。建议使用 YYYY-MM-DD。" }],
   ["appName", { en: "Game or app name. This can be anonymized.", zh: "游戏或 App 名称，可以脱敏。" }],
-  ["placementName", { en: "Ad unit, placement, or ad format name.", zh: "广告单元、广告位或广告形式名称。" }],
+  ["placementName", { en: "Placement name. Keep ad unit and ad format in separate columns when the export distinguishes them.", zh: "广告位名称。如果报表区分广告单元和广告形式，请保留为单独列。" }],
   ["country", { en: "Country code or country name.", zh: "国家代码或国家名称。" }],
-  ["network", { en: "Ad source, mediation platform, or aggregate source.", zh: "广告源、聚合平台或汇总来源。" }],
+  ["network", { en: "Ad source or network. Use a separate mediation column when the export identifies the mediation layer.", zh: "广告源或广告网络。如果报表识别聚合层，请单独保留 mediation 列。" }],
   ["revenue", { en: "Estimated ad revenue in USD.", zh: "预估广告收入，建议使用美元。" }],
   ["impressions", { en: "Ad impressions for the row.", zh: "这一行对应的广告展示次数。" }]
 ] as const;
 
 const recommendedFields = [
   ["ecpm", { en: "Revenue / impressions * 1000. eCPM Bazaar can calculate it if missing.", zh: "收入 / 展示量 * 1000。缺失时 eCPM Bazaar 可以自动计算。" }],
+  ["adUnit", { en: "Platform-defined ad unit. Keep it separate from placement when the export distinguishes them.", zh: "平台定义的广告单元。报表区分时，请与 placement 分开保留。" }],
+  ["adFormat", { en: "Rewarded, interstitial, banner, native, app open, or another format. Do not use it as a replacement for placement.", zh: "激励视频、插屏、横幅、原生、App open 或其他格式。不要用它替代 placement。" }],
+  ["mediation", { en: "Mediation layer, when reported separately from ad source or network.", zh: "如果报表能与广告源或网络分开提供，请保留聚合层。" }],
   ["requests", { en: "Ad requests. Needed for fill-rate diagnosis.", zh: "广告请求数，用于诊断填充率。" }],
-  ["fills", { en: "Matched or filled requests. Needed for fill-rate diagnosis.", zh: "匹配或填充请求数，用于诊断填充率。" }],
+  ["matchedRequests", { en: "Matched requests when the platform exports them. Keep this distinct from fills.", zh: "平台有导出时可提供匹配请求数，并与 fills 分开保留。" }],
+  ["fills", { en: "Filled or served opportunities. Needed for fill-rate diagnosis and kept distinct from matched requests.", zh: "已填充或已展示机会，用于诊断填充率，并与匹配请求数分开保留。" }],
+  ["matchRate", { en: "Platform-reported match rate. Keep it separate from fill rate because definitions can differ.", zh: "平台报出的匹配率。由于定义可能不同，请与 fill rate 分开保留。" }],
   ["clicks", { en: "Optional, useful for CTR sanity checks.", zh: "可选字段，可用于 CTR 合理性检查。" }]
 ] as const;
 
-const acceptedAliases = [
-  ["date", ["date", "day", "report date"]],
-  ["appName", ["app name", "app", "application"]],
-  ["placementName", ["placement", "ad unit", "ad unit name", "ad format", "format"]],
-  ["country", ["country", "country code", "geo", "region"]],
-  ["network", ["network", "ad source", "demand source", "mediation", "platform"]],
-  ["revenue", ["revenue", "estimated revenue", "estimated earnings", "earnings", "income", "ad revenue"]],
-  ["ecpm", ["ecpm", "eCPM", "observed eCPM", "average eCPM"]],
-  ["impressions", ["impressions", "ad impressions", "shows"]],
-  ["requests", ["requests", "ad requests", "attempts"]],
-  ["fills", ["fills", "matched requests", "filled requests", "responses", "matches"]],
-  ["fillRate", ["fill rate", "fillRate", "match rate", "matchRate", "matched rate"]],
-  ["clicks", ["clicks", "ad clicks"]]
-] as const;
+const acceptedAliases = acceptedAliasGroups.map(({ field, aliases }) => [field, [...aliases]] as const);
 
 const comparisonWindows = [
   [
@@ -133,7 +126,7 @@ const copy = {
     recommendedLabel: "Recommended fields",
     recommendedTitle: "Better fields for finding the real driver",
     aliasesLabel: "Accepted aliases",
-    aliasesTitle: "You do not have to rename every export column",
+    aliasesTitle: "Recognize common columns without changing their meaning",
     dataRequirementsLabel: "Data requirements",
     dataRequirementsTitle: "Prepare the minimum fields needed for a reliable revenue-drop diagnosis.",
     dataRequirementsText:
@@ -146,7 +139,7 @@ const copy = {
       "Include revenue and impressions at minimum"
     ],
     bestFieldsTitle: "Best fields to include",
-    bestFields: ["date", "app or game name", "placement / ad unit", "country", "ad source / network", "revenue", "impressions", "requests and fills if available"],
+    bestFields: ["date", "app or game name", "placement, ad unit, and format", "country", "ad source / network and mediation", "revenue", "impressions", "requests, matched requests, fills, and separate rates if available"],
     safeAnonymizeTitle: "Safe to anonymize",
     safeAnonymize: ["appName", "placementName", "ad unit names", "package names", "account IDs"],
     safeAnonymizeNote: "Keep metric values and segment consistency intact.",
@@ -167,19 +160,19 @@ const copy = {
           "Requests and fills are especially useful for detecting fill-rate or match-rate problems. Clicks can help sanity-check CTR changes."
       },
       aliases: {
-        text: "You do not need to manually rename every export column before testing.",
+        text: "You do not need to manually rename every export column before testing. Match rate, fill rate, placement, ad unit, ad format, ad source, and mediation remain separate concepts.",
         why:
-          "The parser can recognize common column names from AdMob, AppLovin MAX, LevelPlay, TopOn, and custom reports as long as the meaning is clear."
+          "Accepted aliases help map common export columns. They do not make metrics with different platform definitions identical."
       }
     },
     aliasInfoCards: [
       {
         title: "Recognized automatically",
-        text: "Common aliases like date, day, report date, eCPM, match rate, and ad source can be mapped without manual renaming."
+        text: "Common aliases can be mapped without manual renaming, while match rate and fill rate remain distinct fields."
       },
       {
         title: "Keep meaning consistent",
-        text: "The same app, country, placement, and source names should stay consistent across comparison periods."
+        text: "Keep app, country, placement, ad unit, format, and source names consistent across comparison periods."
       },
       {
         title: "Still anonymized",
@@ -189,7 +182,7 @@ const copy = {
     whyItMatters: "Why it matters",
     privacyTitle: "Privacy first",
     privacyText:
-      "The public demo parses CSV files in your browser. Nothing is uploaded or stored. For manual review, remove app IDs, exact app names, and any private account identifiers before sending data.",
+      "The public demo parses CSV locally in your browser and does not upload it. If you choose Request free diagnosis, a compact draft may stay in browser session storage to prefill that page. Remove app IDs, exact app names, and private identifiers before sending data yourself.",
     tryDemo: "Try the demo",
     tryThisSample: "Try 14-day demo",
     dataSafety: "Data safety"
@@ -214,14 +207,14 @@ const copy = {
     recommendedLabel: "建议字段",
     recommendedTitle: "更容易找到真实原因的字段",
     aliasesLabel: "可识别别名",
-    aliasesTitle: "不一定要手动重命名所有导出列",
+    aliasesTitle: "识别常见导出列，但不改变指标含义",
     dataRequirementsLabel: "数据要求",
     dataRequirementsTitle: "准备可靠收入下降诊断所需的最少字段。",
     dataRequirementsText: "用这个页面确认哪些 CSV 列是必需的，哪些字段能提升诊断质量，以及哪些导出列名可以被自动识别。",
     quickChecklistTitle: "快速检查清单",
     quickChecklist: ["最近一天对比至少需要 2 个报表日期", "7 天对比至少需要 14 个报表日期", "两个周期内分组名称保持一致", "至少包含收入和展示量"],
     bestFieldsTitle: "最好包含的字段",
-    bestFields: ["date", "app 或 game name", "placement / ad unit", "country", "ad source / network", "revenue", "impressions", "requests 和 fills（如果有）"],
+    bestFields: ["date", "app 或 game name", "placement、ad unit 和 format", "country", "ad source / network 和 mediation", "revenue", "impressions", "requests、matched requests、fills 及独立比例（如果有）"],
     safeAnonymizeTitle: "可以脱敏的内容",
     safeAnonymize: ["appName", "placementName", "广告单元名称", "包名", "账号 ID"],
     safeAnonymizeNote: "保留指标数值和分组一致性，不要打乱对比关系。",
@@ -239,18 +232,18 @@ const copy = {
         why: "requests 和 fills 对发现填充率或匹配率问题特别有用。clicks 可以帮助检查 CTR 变化是否合理。"
       },
       aliases: {
-        text: "测试前不需要手动重命名每一个导出列。",
-        why: "只要含义清楚，解析器可以识别 AdMob、AppLovin MAX、LevelPlay、TopOn 和自定义报表里的常见列名。"
+        text: "测试前不需要手动重命名每一个导出列。match rate、fill rate、placement、ad unit、ad format、ad source 和 mediation 仍是不同概念。",
+        why: "可识别别名只帮助映射常见导出列，不会把平台定义不同的指标当成相同指标。"
       }
     },
     aliasInfoCards: [
       {
         title: "自动识别常见列名",
-        text: "date、day、report date、eCPM、match rate、ad source 等常见别名可以自动映射，不必手动重命名。"
+        text: "常见别名可以自动映射，同时把 match rate 和 fill rate 保持为不同字段。"
       },
       {
         title: "保持含义一致",
-        text: "两个对比周期里的 app、country、placement 和 source 名称应保持一致，方便正确匹配下降来源。"
+        text: "两个对比周期里的 app、country、placement、ad unit、format 和 source 名称应保持一致。"
       },
       {
         title: "仍然可以脱敏",
@@ -260,7 +253,7 @@ const copy = {
     whyItMatters: "为什么重要",
     privacyTitle: "隐私优先",
     privacyText:
-      "公开 Demo 只在浏览器本地解析 CSV，不上传、不保存。申请人工诊断前，请移除 App ID、精确 App 名称和任何私密账号标识。",
+      "公开 Demo 只在浏览器本地解析 CSV，不上传。如果选择申请免费诊断，浏览器可能在当前会话中保留简短草稿预填下一页。自行发送前，请移除 App ID、精确 App 名称和任何私密账号标识。",
     tryDemo: "试用演示",
     tryThisSample: "试用 14 天演示",
     dataSafety: "数据安全"

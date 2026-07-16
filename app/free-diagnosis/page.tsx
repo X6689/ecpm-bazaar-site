@@ -3,8 +3,8 @@ import { pageMetadata } from "@/lib/site-metadata";
 import { FreeDiagnosisContent } from "./free-diagnosis-content";
 
 export const metadata: Metadata = pageMetadata(
-  "Free Ad Revenue Diagnosis",
-  "Get a free diagnosis for low mobile game ad revenue across eCPM, ARPDAU, fill rate, GEO, ad format, mediation, and ad source performance.",
+  "Free Mobile Ad Revenue Diagnosis",
+  "Request a directional diagnosis of a mobile ad revenue drop using anonymized report rows across traffic, fill, country mix, placement, ad source, timing, and weighted eCPM.",
   "/free-diagnosis/"
 );
 

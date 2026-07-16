@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, CheckCircle2, GitBranch, ShieldCheck } from "lucide-react";
+import { getMonetizationTerm } from "@/lib/content/monetization-terms";
 import { useLanguagePreference } from "@/lib/language";
 import { SiteFooter } from "../site-footer";
 
@@ -22,41 +23,48 @@ const copy = {
     orderTitle: "Check upstream signals before trusting blended eCPM.",
     order: [
       "Check impressions first",
-      "Compare match rate / fill rate",
+      "Compare ad requests, fills, match rate, and fill rate",
       "Split by country",
       "Split by placement or ad unit",
       "Check ad source / mediation source",
       "Check time-of-day and external events",
-      "Only then look at blended eCPM"
+      "Review weighted eCPM last"
     ],
     logic: [
       {
+        termId: "impressions",
         title: "Impressions",
-        text: "Did ad exposure fall because DAU, sessions, placement visibility, or impressions per DAU changed?"
+        text: "Determines whether the revenue drop started with lower ad exposure."
       },
       {
-        title: "Weighted eCPM",
-        text: "Did pricing change after accounting for country, format, placement, and ad-source mix?"
+        termId: "ad-requests",
+        title: "Requests, fills, match rate, and fill rate",
+        text: "Ad requests show attempts to load or serve an ad. Matched requests and fills are platform-defined signals; compare them without assuming match rate and fill rate are identical."
       },
       {
-        title: "Fill / match rate",
-        text: "Did requests stay stable while fills dropped, pointing to demand, mediation, floor, or availability issues?"
-      },
-      {
+        termId: "country-mix",
         title: "Country mix",
-        text: "Did traffic shift toward lower-value GEOs, lowering blended eCPM even if each country stayed normal?"
+        text: "Changes in impression share across GEOs can move blended eCPM without a global pricing collapse."
       },
       {
-        title: "Placement exposure",
-        text: "Did one rewarded, interstitial, or banner placement stop showing enough impressions?"
+        termId: "placement",
+        title: "Placement or ad unit",
+        text: "Rewarded, interstitial, native, banner, app-open, and other placements can move independently. Keep placement, ad unit, and format distinct when the export does."
       },
       {
-        title: "Ad source / mediation",
-        text: "Did one source or mediation setup contribute most of the change?"
+        termId: "ad-source",
+        title: "Ad source or mediation source",
+        text: "One bidding or waterfall source may lose volume while aggregate metrics hide the change."
       },
       {
-        title: "Audience timing / live events",
-        text: "Did sports matches, holidays, seasonality, or time-of-day behavior reduce impressions and distort daily averages?"
+        termId: "time-of-day-pattern",
+        title: "Time of day and external events",
+        text: "Sports events, holidays, exams, work schedules, outages, or local events can change audience activity and peak-hour impressions."
+      },
+      {
+        termId: "weighted-ecpm",
+        title: "Weighted eCPM",
+        text: "Interpret blended pricing after traffic composition and fill changes have been separated."
       }
     ],
     exampleLabel: "Example",
@@ -97,41 +105,48 @@ const copy = {
     orderTitle: "先检查上游信号，再相信混合 eCPM。",
     order: [
       "先检查展示量",
-      "比较匹配率 / 填充率",
+      "比较广告请求、fills、匹配率和填充率",
       "按国家拆分",
       "按广告位或广告单元拆分",
       "检查广告源 / 聚合广告源",
       "检查一天中的时间和外部事件",
-      "最后再看混合 eCPM"
+      "最后再看加权 eCPM"
     ],
     logic: [
       {
+        termId: "impressions",
         title: "展示量",
-        text: "广告曝光是否因为 DAU、会话、广告位曝光或人均展示变化而下降？"
+        text: "用于判断收入下降是否首先来自广告曝光减少。"
       },
       {
-        title: "加权 eCPM",
-        text: "在考虑国家、广告形式、广告位和广告源结构后，价格是否真的变化？"
+        termId: "ad-requests",
+        title: "请求、fills、匹配率和填充率",
+        text: "广告请求表示尝试加载或展示广告。matched requests 和 fills 会受平台定义影响，不能默认把匹配率和填充率当成相同指标。"
       },
       {
-        title: "填充率 / 匹配率",
-        text: "请求稳定但填充下降，是否指向需求、聚合、底价或广告源可用性问题？"
-      },
-      {
+        termId: "country-mix",
         title: "国家结构",
-        text: "流量是否转向低价值 GEO，导致整体 eCPM 被拉低？"
+        text: "各 GEO 的展示占比变化，可能在没有全局价格崩塌时拉低混合 eCPM。"
       },
       {
-        title: "广告位曝光",
-        text: "是否某个激励视频、插屏或横幅广告位展示不足？"
+        termId: "placement",
+        title: "广告位或广告单元",
+        text: "激励视频、插屏、原生、横幅、App open 等位置可以独立变化；报表区分时，不要混淆 placement、ad unit 和 format。"
       },
       {
-        title: "广告源 / 聚合",
-        text: "是否某个广告源或聚合设置贡献了大部分变化？"
+        termId: "ad-source",
+        title: "广告源或聚合广告源",
+        text: "一个竞价或瀑布流广告源可能失去量级，而汇总指标会掩盖这种变化。"
       },
       {
-        title: "用户时间行为 / 现实事件",
-        text: "体育比赛、节假日、季节性或一天中的使用时间变化，是否减少了展示量并扭曲了日均数据？"
+        termId: "time-of-day-pattern",
+        title: "一天中的时间和外部事件",
+        text: "体育赛事、节假日、考试、工作节奏、故障或本地事件都可能改变用户活跃和高峰时段展示。"
+      },
+      {
+        termId: "weighted-ecpm",
+        title: "加权 eCPM",
+        text: "先分离流量结构和填充变化，再解释混合价格变化。"
       }
     ],
     exampleLabel: "示例",
@@ -213,7 +228,8 @@ export function MethodContent() {
                 <CheckCircle2 size={22} aria-hidden="true" />
               </span>
               <h2>{item.title}</h2>
-              <p>{item.text}</p>
+              <p>{lang === "en" ? getMonetizationTerm(item.termId)?.shortDefinition ?? item.text : item.text}</p>
+              {lang === "en" && getMonetizationTerm(item.termId)?.caveat ? <small>{getMonetizationTerm(item.termId)?.caveat}</small> : null}
             </article>
           ))}
         </div>

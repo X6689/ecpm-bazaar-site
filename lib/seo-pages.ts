@@ -133,7 +133,7 @@ export const seoGuides: SeoGuide[] = [
       {
         title: "When it is probably not an eCPM problem",
         text:
-          "If eCPM, match rate, and fill rate stay mostly stable while peak-hour impressions drop, the likely driver is audience behavior rather than demand collapse."
+          "If eCPM, match rate, and fill rate stay mostly stable while peak-hour impressions drop, the most likely driver is audience behavior rather than demand collapse."
       },
       {
         title: "Try a browser-only CSV diagnosis",
@@ -237,6 +237,178 @@ export const seoGuides: SeoGuide[] = [
     related: ["admob-match-rate-dropped", "why-did-my-admob-revenue-drop", "mobile-game-ad-revenue-diagnosis-checklist"]
   },
   {
+    slug: "admob-impressions-dropped-ecpm-normal",
+    title: "AdMob impressions dropped but eCPM stayed normal",
+    description:
+      "What to check when AdMob impressions fall while eCPM remains normal, including DAU, sessions, ad requests, placement exposure, show rate, and timing.",
+    metaTitle: "AdMob impressions dropped but eCPM stayed normal",
+    metaDescription:
+      "Diagnose AdMob impression drops with stable eCPM by checking DAU, sessions, requests, placement exposure, show rate, country, and time-of-day patterns.",
+    eyebrow: "Impression diagnosis",
+    intro:
+      "Stable eCPM does not protect revenue if fewer ads are shown. When impressions fall, start with traffic and ad exposure before changing floors, bidders, or mediation settings.",
+    sections: [
+      {
+        title: "Separate fewer users from fewer ad opportunities",
+        text:
+          "Impressions can fall because DAU or sessions fell, or because active users reached fewer eligible ad moments. Compare impressions per DAU or per session when the data is available."
+      },
+      {
+        title: "Check requests, fills, and show rate in order",
+        text:
+          "A request drop points to trigger logic or user activity. Stable requests with fewer impressions can point to fill, readiness, visibility, or show-rate behavior instead."
+      },
+      {
+        title: "Find whether the drop is concentrated",
+        text:
+          "Split impressions by country, placement, ad unit, format, app version, and hour. One affected rewarded placement should not be diagnosed as a global eCPM issue."
+      }
+    ],
+    checksTitle: "First checks",
+    checks: [
+      "Compare DAU, sessions, and impressions per DAU or session.",
+      "Compare ad requests, fills, show rate, and impressions for the same placement.",
+      "Check recent product releases, frequency rules, and ad trigger logic.",
+      "Split the drop by country, placement, ad unit, format, and app version.",
+      "Compare normal peak hours with the affected hours.",
+      "Review eCPM only after exposure and serving signals are separated."
+    ],
+    diagnosisTitle: "Common interpretation",
+    diagnosis:
+      "If eCPM is stable while impressions drop, the most likely driver is lower traffic or ad exposure. A pricing change becomes more likely only after requests, fills, and placement exposure are stable.",
+    nextAction: "Use two comparable periods to find the first upstream signal that changed before changing monetization settings.",
+    related: ["why-did-my-admob-revenue-drop", "admob-revenue-drop-live-events", "mobile-game-ad-revenue-diagnosis-checklist"]
+  },
+  {
+    slug: "fill-rate-dropped-after-mediation-update",
+    title: "Fill rate dropped after a mediation update",
+    description:
+      "A diagnosis checklist for fill-rate drops after a mediation update, covering requests, fills, match rate, source availability, SDK releases, floors, and rollout scope.",
+    metaTitle: "Fill rate dropped after a mediation update",
+    metaDescription:
+      "Check a post-update fill-rate drop by comparing requests, fills, match rate, source availability, rollout scope, SDK changes, and price floors before changing more settings.",
+    eyebrow: "Mediation update diagnosis",
+    intro:
+      "A fill-rate drop after a mediation change is a timing signal, not proof that the update caused it. Compare the same segments before and after the rollout, then inspect what changed in serving behavior.",
+    sections: [
+      {
+        title: "Confirm the rollout boundary",
+        text:
+          "Record the app version, SDK version, mediation configuration, and rollout time. A change that began before the rollout needs a different explanation."
+      },
+      {
+        title: "Keep match rate and fill rate separate",
+        text:
+          "Match rate and fill rate use platform-specific definitions. Compare requests, matched requests when available, fills, and impressions without assuming that one rate proves the behavior of the other."
+      },
+      {
+        title: "Check the source and segment level",
+        text:
+          "A global average can hide a source, country, format, or ad-unit failure. Look for the smallest segment that changed immediately after the update."
+      }
+    ],
+    checksTitle: "Post-update checks",
+    checks: [
+      "Compare the same country, placement, and ad source before and after the rollout.",
+      "Check requests, matched requests when available, fills, impressions, and show rate separately.",
+      "Verify SDK and adapter versions, initialization, consent, and error logging.",
+      "Review source availability, bidding or waterfall configuration, and timeout behavior.",
+      "Check price-floor and instance changes made near the update.",
+      "Avoid changing multiple configuration items until the affected segment is confirmed."
+    ],
+    diagnosisTitle: "Common interpretation",
+    diagnosis:
+      "If requests are stable but fills fall in the newly released segments, the update, a source configuration, or a serving condition deserves investigation. If the movement is broad across unchanged versions too, demand or traffic may be the stronger explanation.",
+    nextAction: "Build a narrow before/after comparison for the affected version and keep a rollback or controlled test path available.",
+    related: ["rewarded-ads-fill-rate-dropped", "one-ad-source-stopped-filling", "admob-match-rate-dropped"]
+  },
+  {
+    slug: "one-ad-source-stopped-filling",
+    title: "One ad source stopped filling: what should you check?",
+    description:
+      "How to diagnose an ad source that stopped filling without confusing a low source-level rate with app-level fill, bidding competition, or revenue contribution.",
+    metaTitle: "One ad source stopped filling: what to check",
+    metaDescription:
+      "Diagnose a source that stopped filling by separating app-level serving from source-level bids, fills, wins, impressions, revenue share, configuration, and demand availability.",
+    eyebrow: "Ad source diagnosis",
+    intro:
+      "A weak source-level fill or match rate does not automatically mean the whole app cannot serve ads. In bidding and waterfall setups, another source may win, fill, or take most of the eligible volume.",
+    sections: [
+      {
+        title: "Start at the app and ad-unit level",
+        text:
+          "Check whether app-level requests, fills, impressions, show rate, and revenue actually changed. A source-level decline matters most when it changes total serving or revenue contribution."
+      },
+      {
+        title: "Read source metrics in context",
+        text:
+          "Compare bids, eligible responses, fills, wins, impressions, revenue share, and eCPM where the platform exposes them. Low source-level volume can be normal when other sources win."
+      },
+      {
+        title: "Verify serving conditions",
+        text:
+          "Check source status, SDK or adapter initialization, consent, placement mapping, floors, geo availability, and recent changes to the mediation configuration."
+      }
+    ],
+    checksTitle: "Source-level checks",
+    checks: [
+      "Confirm whether app-level fill, impressions, or revenue also declined.",
+      "Compare the source by country, placement, ad unit, format, and app version.",
+      "Review bids, fills, wins, impressions, revenue share, and eCPM where available.",
+      "Check source status, adapter versions, initialization, consent, and placement mapping.",
+      "Review floor rules and mediation changes near the movement.",
+      "Do not remove a source only because one platform-specific rate is low."
+    ],
+    diagnosisTitle: "Common interpretation",
+    diagnosis:
+      "If app-level serving remains healthy while one bidder loses volume, auction competition or source demand may have shifted. If total fill and revenue fall with that source, its configuration or availability becomes more important to investigate.",
+    nextAction: "Document total serving and source contribution before making a source removal, floor, or mediation change.",
+    related: ["fill-rate-dropped-after-mediation-update", "admob-match-rate-dropped", "rewarded-ads-fill-rate-dropped"]
+  },
+  {
+    slug: "revenue-dropped-after-changing-price-floors",
+    title: "Revenue dropped after changing price floors",
+    description:
+      "What to check when mobile ad revenue falls after changing price floors, including requests, fills, impressions, eCPM, country mix, source behavior, and rollout scope.",
+    metaTitle: "Revenue dropped after changing price floors",
+    metaDescription:
+      "Diagnose a revenue drop after changing price floors by checking request volume, fills, impressions, weighted eCPM, country mix, source behavior, and the rollout before changing floors again.",
+    eyebrow: "Price-floor diagnosis",
+    intro:
+      "A higher floor can raise the price of some winning impressions while reducing eligible demand or total fills. Diagnose total revenue per request and per impression before deciding whether a floor change helped.",
+    sections: [
+      {
+        title: "Do not judge only by eCPM",
+        text:
+          "An eCPM lift can still produce less total revenue if requests, fills, or impressions fall more sharply. Compare revenue, weighted eCPM, fills, and impressions together."
+      },
+      {
+        title: "Check the affected rollout segments",
+        text:
+          "Compare countries, ad units, formats, and sources that received the floor change against unchanged or comparable segments. Broad averages hide where the trade-off occurred."
+      },
+      {
+        title: "Use comparable windows",
+        text:
+          "A single day can be distorted by weekday patterns, seasonality, demand budgets, or traffic mix. Use matching periods and record the exact floor and rollout time."
+      }
+    ],
+    checksTitle: "Floor-change checks",
+    checks: [
+      "Record the previous floor, new floor, rollout time, and affected segments.",
+      "Compare requests, fills, impressions, weighted eCPM, and revenue per 1,000 requests before and after.",
+      "Split results by country, format, placement or ad unit, and ad source.",
+      "Check whether the eCPM lift was offset by lower fills or impressions.",
+      "Compare changed segments with a controlled or unchanged segment where possible.",
+      "Avoid repeatedly moving floors before the trade-off is visible in the report."
+    ],
+    diagnosisTitle: "Common interpretation",
+    diagnosis:
+      "If weighted eCPM rose but total revenue fell, the floor may have reduced the volume of eligible or filled opportunities. If both eCPM and fill fell, source demand, traffic mix, or a broader configuration change may need separate investigation.",
+    nextAction: "Use a matching before/after CSV to decide whether the floor changed pricing, fill, traffic composition, or several signals at once.",
+    related: ["admob-ecpm-dropped-impressions-stable", "fill-rate-dropped-after-mediation-update", "why-did-my-admob-revenue-drop"]
+  },
+  {
     slug: "mobile-game-ad-revenue-diagnosis-checklist",
     title: "Mobile game ad revenue diagnosis checklist",
     description:
@@ -259,7 +431,7 @@ export const seoGuides: SeoGuide[] = [
     ],
     diagnosisTitle: "Output format",
     diagnosis:
-      "A useful diagnosis should say: revenue changed by X, the likely driver is Y, the affected segment is Z, and the first check should be A. That is easier to act on than a dashboard screenshot.",
+      "A useful diagnosis should say: revenue changed by X, the most likely driver is Y, the affected segment is Z, and the first check should be A. That is easier to act on than a dashboard screenshot.",
     nextAction: "Start with a before/after CSV and turn it into one diagnosis card.",
     related: ["why-did-my-admob-revenue-drop", "admob-match-rate-dropped", "admob-ecpm-dropped-impressions-stable"]
   }

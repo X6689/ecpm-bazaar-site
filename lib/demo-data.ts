@@ -141,22 +141,35 @@ export const fourteenDaySampleRows: MetricRow[] = [
 ];
 
 export function metricRowsToCsv(rows: MetricRow[]) {
-  const header = "date,appName,placementName,country,network,revenue,ecpm,impressions,requests,fills,clicks";
-  const lines = rows.map((item) =>
-    [
-      item.date,
-      item.appName,
-      item.placementName,
-      item.country,
-      item.network,
-      item.revenue.toFixed(2),
-      item.ecpm.toFixed(2),
-      Math.round(item.impressions),
-      Math.round(item.requests),
-      Math.round(item.fills),
-      Math.round(item.clicks)
-    ].join(",")
-  );
+  const columns: Array<{ header: string; value: (item: MetricRow) => string | number | undefined }> = [
+    { header: "date", value: (item) => item.date },
+    { header: "appName", value: (item) => item.appName },
+    { header: "placementName", value: (item) => item.placementName },
+    ...(rows.some((item) => item.adUnit !== undefined) ? [{ header: "adUnit", value: (item: MetricRow) => item.adUnit }] : []),
+    ...(rows.some((item) => item.adFormat !== undefined) ? [{ header: "adFormat", value: (item: MetricRow) => item.adFormat }] : []),
+    { header: "country", value: (item) => item.country },
+    { header: "network", value: (item) => item.network },
+    ...(rows.some((item) => item.mediation !== undefined) ? [{ header: "mediation", value: (item: MetricRow) => item.mediation }] : []),
+    { header: "revenue", value: (item) => item.revenue.toFixed(2) },
+    { header: "ecpm", value: (item) => item.ecpm.toFixed(2) },
+    { header: "impressions", value: (item) => Math.round(item.impressions) },
+    { header: "requests", value: (item) => Math.round(item.requests) },
+    ...(rows.some((item) => item.matchedRequests !== undefined)
+      ? [{ header: "matchedRequests", value: (item: MetricRow) => item.matchedRequests === undefined ? "" : Math.round(item.matchedRequests) }]
+      : []),
+    { header: "fills", value: (item) => Math.round(item.fills) },
+    ...(rows.some((item) => item.matchRate !== undefined)
+      ? [{ header: "matchRate", value: (item: MetricRow) => item.matchRate === undefined ? "" : item.matchRate.toFixed(2) }]
+      : []),
+    { header: "fillRate", value: (item) => item.fillRate.toFixed(2) },
+    { header: "clicks", value: (item) => Math.round(item.clicks) }
+  ];
+  const escapeCsv = (value: string | number | undefined) => {
+    const text = String(value ?? "");
+    return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+  };
+  const header = columns.map((column) => column.header).join(",");
+  const lines = rows.map((item) => columns.map((column) => escapeCsv(column.value(item))).join(","));
 
   return [header, ...lines].join("\n");
 }

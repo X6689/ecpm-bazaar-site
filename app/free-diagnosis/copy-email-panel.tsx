@@ -29,8 +29,21 @@ const platformOptions = ["AdMob", "Unity Ads", "AppLovin MAX", "Unity LevelPlay 
 const mediationOptions = ["None", "AdMob mediation", "AppLovin MAX", "Unity LevelPlay / ironSource", "TopOn", "Not sure"];
 const adFormatOptions = ["Rewarded", "Interstitial", "Banner", "Mixed"];
 const dauRangeOptions = ["<1k", "1k-10k", "10k-100k", "100k+", "Not sure"];
+const monthlyRevenueOptions = ["Under $100", "$100–$500", "$500–$2,000", "$2,000–$10,000", "$10,000+", "Prefer not to say"];
+const reportHistoryOptions = ["2–6 days", "7–13 days", "14–29 days", "30+ days", "Not sure"];
+const appStatusOptions = ["Live app with active ad traffic", "Soft launch", "Recently launched", "Testing only"];
 const optionValues = {
-  change: ["Revenue low", "Revenue drop", "eCPM drop", "ARPDAU low", "Fill rate drop", "Impressions drop", "Country mix change", "Ad source change"],
+  change: [
+    "Revenue dropped",
+    "eCPM dropped",
+    "Fill / match rate dropped",
+    "Impressions dropped",
+    "Country mix changed",
+    "Placement performance changed",
+    "Ad source stopped filling",
+    "Peak-hour traffic changed",
+    "Not sure"
+  ],
   period: ["Latest day vs previous day", "Last 7 days vs previous 7 days", "Custom period"]
 };
 
@@ -42,9 +55,12 @@ const copy = {
     adFormatLabel: "Main ad format",
     topGeoLabel: "Top GEO",
     dauRangeLabel: "DAU range",
+    monthlyRevenueLabel: "Approx monthly ad revenue",
+    reportHistoryLabel: "Report history available",
+    appStatusLabel: "App status",
     metricLabel: "Approx metrics",
     metricPlaceholder: "Example: eCPM $4.20, ARPDAU $0.035, fill rate 62%, impressions/DAU 2.4",
-    changeLabel: "Main change",
+    changeLabel: "Main concern",
     periodLabel: "Comparison period",
     changedLabel: "What changed?",
     changedPlaceholder: "Example: US rewarded video revenue dropped yesterday, but impressions were almost stable.",
@@ -70,6 +86,9 @@ const copy = {
     adFormatLine: "Main ad format",
     topGeoLine: "Top GEO",
     dauRangeLine: "DAU range",
+    monthlyRevenueLine: "Approx monthly ad revenue",
+    reportHistoryLine: "Report history available",
+    appStatusLine: "App status",
     metricLine: "Approx metrics",
     changeLine: "Main change",
     periodLine: "Comparison period",
@@ -88,9 +107,12 @@ const copy = {
     adFormatLabel: "主要广告形式",
     topGeoLabel: "主要 GEO",
     dauRangeLabel: "DAU 范围",
+    monthlyRevenueLabel: "每月广告收入大致范围",
+    reportHistoryLabel: "可用的报表历史",
+    appStatusLabel: "App 状态",
     metricLabel: "大致指标",
     metricPlaceholder: "示例：eCPM $4.20，ARPDAU $0.035，填充率 62%，展示/DAU 2.4",
-    changeLabel: "主要变化",
+    changeLabel: "主要关注的问题",
     periodLabel: "对比周期",
     changedLabel: "发生了什么变化？",
     changedPlaceholder: "示例：美国激励视频昨天收入下降，但展示量基本稳定。",
@@ -116,6 +138,9 @@ const copy = {
     adFormatLine: "主要广告形式",
     topGeoLine: "主要 GEO",
     dauRangeLine: "DAU 范围",
+    monthlyRevenueLine: "每月广告收入大致范围",
+    reportHistoryLine: "可用的报表历史",
+    appStatusLine: "App 状态",
     metricLine: "大致指标",
     changeLine: "主要变化",
     periodLine: "对比周期",
@@ -124,7 +149,7 @@ const copy = {
     rowsLine: "脱敏数据行或字段说明：",
     safetyLine: "我不会发送登录凭证、API key、私密账号 ID 或未脱敏的用户级数据。",
     subject: "Free eCPM Bazaar diagnosis request",
-    changeLabels: ["收入偏低", "收入下降", "eCPM 下降", "ARPDAU 偏低", "填充率下降", "展示量下降", "国家结构变化", "广告源变化"],
+    changeLabels: ["收入下降", "eCPM 下降", "填充率 / 匹配率下降", "展示量下降", "国家结构变化", "广告位表现变化", "广告源停止填充", "高峰时段流量变化", "不确定"],
     periodLabels: ["最近一天 vs 前一天", "最近 7 天 vs 前 7 天", "自定义周期"]
   }
 };
@@ -142,6 +167,9 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
   const [adFormat, setAdFormat] = useState(adFormatOptions[0]);
   const [topGeo, setTopGeo] = useState("");
   const [dauRange, setDauRange] = useState(dauRangeOptions[0]);
+  const [monthlyRevenue, setMonthlyRevenue] = useState(monthlyRevenueOptions[5]);
+  const [reportHistory, setReportHistory] = useState(reportHistoryOptions[4]);
+  const [appStatus, setAppStatus] = useState(appStatusOptions[0]);
   const [metrics, setMetrics] = useState("");
   const [changeIndex, setChangeIndex] = useState(0);
   const [periodIndex, setPeriodIndex] = useState(0);
@@ -183,6 +211,9 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
     `${t.adFormatLine}: ${adFormat}`,
     `${t.topGeoLine}: ${trimOrFallback(topGeo, "[US / Tier 1 / Tier 3 / mixed / other]")}`,
     `${t.dauRangeLine}: ${dauRange}`,
+    `${t.monthlyRevenueLine}: ${monthlyRevenue}`,
+    `${t.reportHistoryLine}: ${reportHistory}`,
+    `${t.appStatusLine}: ${appStatus}`,
     `${t.metricLine}: ${trimOrFallback(metrics, "[eCPM / ARPDAU / fill rate / impressions per DAU]")}`,
     `${t.changeLine}: ${t.changeLabels[changeIndex]}`,
     `${t.periodLine}: ${t.periodLabels[periodIndex]}`,
@@ -271,6 +302,30 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
             </select>
           </label>
           <label className="form-field">
+            <span>{t.monthlyRevenueLabel}</span>
+            <select value={monthlyRevenue} onChange={(event) => setMonthlyRevenue(event.target.value)}>
+              {monthlyRevenueOptions.map((option) => (
+                <option key={option}>{option}</option>
+              ))}
+            </select>
+          </label>
+          <label className="form-field">
+            <span>{t.reportHistoryLabel}</span>
+            <select value={reportHistory} onChange={(event) => setReportHistory(event.target.value)}>
+              {reportHistoryOptions.map((option) => (
+                <option key={option}>{option}</option>
+              ))}
+            </select>
+          </label>
+          <label className="form-field">
+            <span>{t.appStatusLabel}</span>
+            <select value={appStatus} onChange={(event) => setAppStatus(event.target.value)}>
+              {appStatusOptions.map((option) => (
+                <option key={option}>{option}</option>
+              ))}
+            </select>
+          </label>
+          <label className="form-field">
             <span>{t.changeLabel}</span>
             <select value={changeIndex} onChange={(event) => setChangeIndex(Number(event.target.value))}>
               {optionValues.change.map((option, index) => (
@@ -304,7 +359,7 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
           <label className="form-field form-wide">
             <span>{t.rowsLabel}</span>
             <textarea
-              placeholder={`date,gameName,platform,adNetwork,mediation,adFormat,placementName,country,revenue,ecpm,arpDau,dau,impressions,impressionsPerDau,requests,fills,fillRate\n2026-06-14,Game A,Android,AdMob,AppLovin MAX,Rewarded,Rewarded Home,US,128.42,18.70,0.035,3650,6868,1.88,9200,7100,77.2`}
+              placeholder={`date,gameName,platform,adNetwork,mediation,adFormat,placementName,adUnit,country,revenue,ecpm,arpDau,dau,impressions,impressionsPerDau,requests,matchedRequests,fills,matchRate,fillRate\n2026-06-14,Game A,Android,AdMob,AppLovin MAX,Rewarded,Rewarded Home,Rewarded_01,US,128.42,18.70,0.035,3650,6868,1.88,9200,7600,7100,82.6,77.2`}
               value={dataSample}
               onChange={(event) => setDataSample(event.target.value)}
             />
