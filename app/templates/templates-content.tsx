@@ -35,15 +35,28 @@ const templates = [
   },
   {
     href: "levelplay-topon-ecpm-bazaar-template.csv",
-    templateType: "levelplay-topon" as const,
+    templateType: "unity-levelplay" as const,
     fields: "date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks",
     en: {
-      title: "Unity LevelPlay / TopOn template",
-      note: "Use this for mediation reports where one row represents a date, country, placement, and ad source."
+      title: "Unity LevelPlay template",
+      note: "Use this for LevelPlay exports where one row represents a date, country, placement, and ad source."
     },
     zh: {
-      title: "Unity LevelPlay / TopOn 模板",
-      note: "适合一行代表日期、国家、广告位和广告源组合的聚合变现报表。"
+      title: "Unity LevelPlay 模板",
+      note: "适合 Unity LevelPlay 的按日期、国家、广告位和广告源导出。"
+    }
+  },
+  {
+    href: "levelplay-topon-ecpm-bazaar-template.csv",
+    templateType: "topon" as const,
+    fields: "date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks",
+    en: {
+      title: "TopOn template",
+      note: "Use this for TopOn exports where one row represents a date, country, placement, and ad source."
+    },
+    zh: {
+      title: "TopOn 模板",
+      note: "适合 TopOn 的按日期、国家、广告位和广告源导出。"
     }
   },
   {
@@ -270,7 +283,7 @@ export function TemplatesContent() {
   const t = copy[lang];
 
   return (
-    <main className="resource-page" lang={lang === "zh" ? "zh-CN" : "en"}>
+    <main className="resource-page bazaar-page bazaar-resource-page bazaar-templates-page" lang={lang === "zh" ? "zh-CN" : "en"}>
       <nav className="resource-nav" aria-label="Templates navigation">
         <a href="../">
           <ArrowLeft size={17} aria-hidden="true" />
@@ -293,7 +306,7 @@ export function TemplatesContent() {
         </div>
       </nav>
 
-      <section className="resource-hero">
+      <section className="resource-hero bazaar-resource-hero">
         <p className="eyebrow">
           <FileSpreadsheet size={16} aria-hidden="true" />
           {t.badge}
@@ -302,7 +315,7 @@ export function TemplatesContent() {
         <p>{t.lede}</p>
       </section>
 
-      <section className="template-grid" aria-label="Download CSV templates">
+      <section className="template-grid bazaar-platform-grid" aria-label="Download CSV templates">
         {templates.map((template) => (
           <article className="resource-card" key={template.href}>
             <span className="resource-icon">
@@ -446,6 +459,7 @@ export function TemplatesContent() {
             <h2>{t.aliasesTitle}</h2>
             <p>{t.sectionNotes.aliases.why}</p>
           </div>
+            <p className="alias-disclaimer">Accepted aliases help map export columns. They do not make platform-specific metric definitions identical.</p>
 
           <div className="alias-info-grid">
             {t.aliasInfoCards.map((card) => (

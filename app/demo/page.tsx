@@ -25,6 +25,7 @@ import { demoReviewDraftStorageKey, type DemoReviewDraft } from "@/lib/review-dr
 import type { MetricRow } from "@/lib/types";
 import { missingRequiredFieldCount, rowCountBucket, trackEvent } from "@/lib/validation-events";
 import { SiteFooter } from "../site-footer";
+import { PeriodComparisonChart } from "../components/diagnosis-visuals";
 
 type Driver = "revenue" | "impressions" | "ecpm" | "fillRate" | "countryMix";
 type DiagnosisSeverity = "high" | "medium" | "low";
@@ -1706,7 +1707,7 @@ export default function DemoPage() {
   }
 
   return (
-    <main className="demo-page" lang={lang === "zh" ? "zh-CN" : "en"}>
+    <main className="demo-page bazaar-page bazaar-demo-page" lang={lang === "zh" ? "zh-CN" : "en"}>
       <nav className="demo-nav" aria-label="Demo navigation">
         <a href="../">
           <ArrowLeft size={17} aria-hidden="true" />
@@ -1722,7 +1723,7 @@ export default function DemoPage() {
         </div>
       </nav>
 
-      <section className="demo-hero">
+      <section className="demo-hero bazaar-demo-hero">
         <div>
           <p className="eyebrow">
             <Play size={16} aria-hidden="true" />
@@ -1764,7 +1765,7 @@ export default function DemoPage() {
         </div>
       </section>
 
-      <section className="demo-panel scenario-panel" aria-label={t.scenarioLabel}>
+      <section className="demo-panel scenario-panel demo-workbench-panel" aria-label={t.scenarioLabel}>
         <div className="demo-panel-header">
           <div>
             <p className="section-label">{t.scenarioLabel}</p>
@@ -1787,7 +1788,7 @@ export default function DemoPage() {
         </div>
       </section>
 
-      <section className="demo-panel comparison-panel" aria-label={t.comparisonLabel}>
+      <section className="demo-panel comparison-panel demo-workbench-panel" aria-label={t.comparisonLabel}>
         <div className="demo-panel-header">
           <div>
             <p className="section-label">{t.comparisonLabel}</p>
@@ -1920,7 +1921,7 @@ export default function DemoPage() {
       </section>
 
       <section className="demo-grid">
-        <article className="demo-panel diagnosis-panel">
+        <article className="demo-panel diagnosis-panel bazaar-diagnosis-summary">
           <div className="demo-panel-header">
             <div>
               <p className="section-label">{t.diagnosis}</p>
@@ -1944,6 +1945,15 @@ export default function DemoPage() {
               : t.noRows}
           </p>
 
+          <div className="demo-period-chart">
+            <PeriodComparisonChart
+              label={lang === "zh" ? "收入周期对比（样例）" : "Revenue period comparison (sample)"}
+              previous={report.previous.revenue}
+              current={report.current.revenue}
+              previousLabel="P1"
+              currentLabel="P2"
+            />
+          </div>
           <div className="driver-callout">
             <span>{t.likelyDriver}</span>
             <strong>{t.driverLabels[report.driver]}</strong>
@@ -2287,7 +2297,7 @@ export default function DemoPage() {
         )}
       </section>
 
-      <section className="demo-panel data-panel">
+      <section className="demo-panel data-panel demo-collapsible-data">
         <div className="demo-panel-header">
           <h2>{t.dataPreview}</h2>
           <a

@@ -126,7 +126,7 @@ export function PrivacyContent() {
   const t = copy[lang];
 
   return (
-    <main className="resource-page" lang={lang === "zh" ? "zh-CN" : "en"}>
+    <main className="resource-page bazaar-page bazaar-resource-page bazaar-privacy-page" lang={lang === "zh" ? "zh-CN" : "en"}>
       <nav className="resource-nav" aria-label="Privacy navigation">
         <a href="../">
           <ArrowLeft size={17} aria-hidden="true" />
@@ -148,7 +148,7 @@ export function PrivacyContent() {
         </div>
       </nav>
 
-      <section className="resource-hero">
+      <section className="resource-hero bazaar-resource-hero">
         <p className="eyebrow">
           <ShieldCheck size={16} aria-hidden="true" />
           {t.badge}

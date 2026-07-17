@@ -1,171 +1,58 @@
 "use client";
 
-import { ArrowLeft, CheckCircle2, GitBranch, ShieldCheck } from "lucide-react";
-import { getMonetizationTerm } from "@/lib/content/monetization-terms";
+import { ArrowRight, CheckCircle2, ShieldCheck } from "lucide-react";
+import { CaseMiniChart } from "../components/diagnosis-visuals";
+import { ProductNav } from "../components/product-nav";
 import { useLanguagePreference } from "@/lib/language";
 import { SiteFooter } from "../site-footer";
 
-const copy = {
+type MethodStep = {
+  key: string;
+  number: string;
+  title: string;
+  answers: string;
+  definition: string;
+  misread: string;
+  next: string;
+  chart: "pricing" | "fill" | "geo" | "timing";
+};
+
+const copy: Record<"en" | "zh", { badge: string; title: string; lede: string; order: string; steps: MethodStep[]; limitsTitle: string; limits: string[]; demo: string; free: string }> = {
   en: {
-    back: "Back to site",
-    navDemo: "Demo",
-    navTemplates: "Templates",
-    navCases: "Cases",
-    navFree: "Free diagnosis",
-    navFaq: "FAQ",
-    language: "Language",
-    badge: "Method",
-    title: "How eCPM Bazaar diagnoses mobile ad revenue drops.",
-    lede:
-      "Revenue is the final symptom. eCPM Bazaar first separates the movement into traffic, pricing, fill, country, placement, ad-source, and audience-timing signals so a small team knows what to check before changing floors or mediation settings.",
-    logicTitle: "Revenue change is decomposed by",
-    orderLabel: "Diagnosis order",
-    orderTitle: "Check upstream signals before trusting blended eCPM.",
-    order: [
-      "Check impressions first",
-      "Compare ad requests, fills, match rate, and fill rate",
-      "Split by country",
-      "Split by placement or ad unit",
-      "Check ad source / mediation source",
-      "Check time-of-day and external events",
-      "Review weighted eCPM last"
+    badge: "How the diagnosis works",
+    title: "Why blended eCPM should be reviewed last.",
+    lede: "Revenue is the final symptom. Work upstream from exposure and serving, then check mix, placement, sources, timing, and only then weighted pricing.",
+    order: "Diagnosis order",
+    steps: [
+      { key: "impressions", number: "01", title: "Impressions", answers: "Did the revenue drop start with less ad exposure?", definition: "Count shown ads for a matching period. Pair it with DAU, sessions, or eligible moments when available.", misread: "Stable eCPM does not protect revenue when fewer ads are shown.", next: "Compare requests and fills for the same country and placement.", chart: "timing" },
+      { key: "fills", number: "02", title: "Requests, matches and fills", answers: "Are requests still arriving, and are they turning into filled opportunities?", definition: "Keep requests, matched requests, fills, show rate, match rate, and fill rate distinct because platforms define them differently.", misread: "A low source-level rate is not automatically an app-level serving failure.", next: "Split the affected serving metric by country and format.", chart: "fill" },
+      { key: "geo", number: "03", title: "Country mix", answers: "Did impression share move toward lower-value GEOs?", definition: "Compare country-level impressions, revenue contribution, and weighted eCPM across matching periods.", misread: "A lower blended eCPM does not prove global demand fell.", next: "Keep Tier 1 pricing separate from traffic composition.", chart: "geo" },
+      { key: "placement", number: "04", title: "Placement and ad unit", answers: "Is one format, placement, or ad unit driving the movement?", definition: "Keep placement, ad unit, and format separate whenever the export distinguishes them.", misread: "A global average can hide a single rewarded or interstitial issue.", next: "Compare the same placement by country and app version.", chart: "timing" },
+      { key: "source", number: "05", title: "Ad source and mediation", answers: "Did one bidder or waterfall source lose contribution?", definition: "Read bids, fills, wins, impressions, revenue share, and eCPM in the context the platform provides.", misread: "A bidder that wins less often may still be healthy if total serving is stable.", next: "Check availability, adapters, floors, consent, and source configuration.", chart: "fill" },
+      { key: "timing", number: "06", title: "Time and external events", answers: "Was the decline concentrated in an important hour or event window?", definition: "Compare peak hours, nearby normal hours, event days, and non-event days instead of only daily totals.", misread: "A live event can look like a pricing or mediation failure in a daily chart.", next: "Inspect impressions per active user before changing settings.", chart: "timing" },
+      { key: "pricing", number: "07", title: "Weighted eCPM", answers: "Did pricing move after upstream volume and mix signals stayed stable?", definition: "Use revenue divided by impressions, weighted across matching segments; never treat it as a raw mean of segment eCPMs.", misread: "A higher eCPM can still produce less revenue if fill or exposure fell.", next: "Compare country, format, source, and time-window pricing before changing floors.", chart: "pricing" }
     ],
-    logic: [
-      {
-        termId: "impressions",
-        title: "Impressions",
-        text: "Determines whether the revenue drop started with lower ad exposure."
-      },
-      {
-        termId: "ad-requests",
-        title: "Requests, fills, match rate, and fill rate",
-        text: "Ad requests show attempts to load or serve an ad. Matched requests and fills are platform-defined signals; compare them without assuming match rate and fill rate are identical."
-      },
-      {
-        termId: "country-mix",
-        title: "Country mix",
-        text: "Changes in impression share across GEOs can move blended eCPM without a global pricing collapse."
-      },
-      {
-        termId: "placement",
-        title: "Placement or ad unit",
-        text: "Rewarded, interstitial, native, banner, app-open, and other placements can move independently. Keep placement, ad unit, and format distinct when the export does."
-      },
-      {
-        termId: "ad-source",
-        title: "Ad source or mediation source",
-        text: "One bidding or waterfall source may lose volume while aggregate metrics hide the change."
-      },
-      {
-        termId: "time-of-day-pattern",
-        title: "Time of day and external events",
-        text: "Sports events, holidays, exams, work schedules, outages, or local events can change audience activity and peak-hour impressions."
-      },
-      {
-        termId: "weighted-ecpm",
-        title: "Weighted eCPM",
-        text: "Interpret blended pricing after traffic composition and fill changes have been separated."
-      }
-    ],
-    exampleLabel: "Example",
-    timingLabel: "Time-of-day and external events",
-    timingTitle: "Audience behavior can look like an ad stack problem.",
-    timingText:
-      "Revenue changes can be caused by audience behavior, not only ad demand. If the app normally monetizes most strongly during a specific time window, live sports, holidays, exams, work schedules, or local events can reduce impressions during the hours that matter most. This is why daily averages can be misleading. eCPM Bazaar encourages checking hourly or period-level patterns before assuming eCPM, floors, or mediation failed.",
-    exampleTitle: "A clear diagnosis is more useful than one more dashboard.",
-    beforeLabel: "Before",
-    before: "Revenue dropped 31%. eCPM looks normal. Not sure what changed.",
-    afterLabel: "After",
-    after:
-      "Fill rate dropped from 78% to 54% in US rewarded video / Unity Ads. Check source availability, timeout, mediation release, and floor settings first.",
-    limitsTitle: "What the method does not claim",
-    limits: [
-      "It is a directional CSV diagnosis, not final attribution.",
-      "It does not replace AdMob, AppLovin MAX, Unity LevelPlay, TopOn, or your internal analytics.",
-      "It does not guarantee higher revenue. It helps decide the first likely area to inspect."
-    ],
-    ctaTitle: "Test the method with sample data first.",
+    limitsTitle: "What this method does not claim",
+    limits: ["It is a directional CSV diagnosis, not final attribution.", "It does not replace platform reporting or internal analytics.", "It does not guarantee higher revenue; it narrows the first checks."],
     demo: "Try demo with sample data",
-    free: "Get free diagnosis"
+    free: "Request free diagnosis"
   },
   zh: {
-    back: "返回官网",
-    navDemo: "演示",
-    navTemplates: "模板",
-    navCases: "案例",
-    navFree: "免费诊断",
-    navFaq: "常见问题",
-    language: "语言",
     badge: "诊断方法",
-    title: "eCPM Bazaar 如何诊断手游广告收入下降。",
-    lede:
-      "收入是最终症状。eCPM Bazaar 会先把变化拆成流量、价格、填充、国家结构、广告位、广告源和用户时间行为信号，让小团队在改底价或聚合配置前知道先查哪里。",
-    logicTitle: "收入变化会按这些因素拆解",
-    orderLabel: "诊断顺序",
-    orderTitle: "先检查上游信号，再相信混合 eCPM。",
-    order: [
-      "先检查展示量",
-      "比较广告请求、fills、匹配率和填充率",
-      "按国家拆分",
-      "按广告位或广告单元拆分",
-      "检查广告源 / 聚合广告源",
-      "检查一天中的时间和外部事件",
-      "最后再看加权 eCPM"
+    title: "为什么加权 eCPM 应该最后再看。",
+    lede: "收入是最终症状。先从曝光和投放向上排查，再看结构、广告位、广告源、时段，最后才解释加权价格。",
+    order: "诊断顺序",
+    steps: [
+      { key: "impressions", number: "01", title: "展示量", answers: "收入下降是否先来自广告曝光减少？", definition: "比较匹配周期内的已展示广告；有条件时与 DAU、会话或可展示机会一起看。", misread: "eCPM 稳定并不能抵消展示下降造成的收入损失。", next: "比较同一国家和广告位的 requests 与 fills。", chart: "timing" },
+      { key: "fills", number: "02", title: "请求、匹配与填充", answers: "请求是否仍在发生，并转化为有效填充？", definition: "requests、matched requests、fills、show rate、match rate 与 fill rate 要分开保留，因为各平台定义不同。", misread: "单个广告源比例低，并不自动代表全 App 投放失败。", next: "按国家和广告形式拆分受影响的投放指标。", chart: "fill" },
+      { key: "geo", number: "03", title: "国家结构", answers: "展示占比是否向低价值 GEO 移动？", definition: "比较匹配周期中各国家的展示、收入贡献和加权 eCPM。", misread: "混合 eCPM 下降并不证明全球需求下降。", next: "把 Tier 1 价格和流量结构分开。", chart: "geo" },
+      { key: "placement", number: "04", title: "广告位与广告单元", answers: "是否由某个广告形式、广告位或广告单元驱动？", definition: "只要导出有区分，就不要混淆 placement、ad unit 和 format。", misread: "全局均值会掩盖一个激励或插屏广告位问题。", next: "按国家和 App 版本比较相同广告位。", chart: "timing" },
+      { key: "source", number: "05", title: "广告源与聚合", answers: "某个竞价或瀑布流广告源是否失去贡献？", definition: "按平台提供的上下文查看 bids、fills、wins、impressions、收入占比和 eCPM。", misread: "竞价胜出少的广告源，在总投放稳定时可能仍然正常。", next: "检查可用性、adapter、底价、同意状态和广告源配置。", chart: "fill" },
+      { key: "timing", number: "06", title: "时段与外部事件", answers: "下降是否集中在重要的时段或事件窗口？", definition: "比较高峰时段、相邻正常时段、事件日和非事件日，而不是只看日总数。", misread: "大型赛事在日图中可能看起来像价格或聚合故障。", next: "修改设置前先检查每活跃用户展示。", chart: "timing" },
+      { key: "pricing", number: "07", title: "加权 eCPM", answers: "在上游流量和结构信号稳定后，价格是否真的变化？", definition: "使用收入除以展示量，并在匹配分组中加权；不要直接平均各分组 eCPM。", misread: "填充或曝光下降时，较高 eCPM 仍可能带来更低收入。", next: "改底价前按国家、形式、广告源和时段比较价格。", chart: "pricing" }
     ],
-    logic: [
-      {
-        termId: "impressions",
-        title: "展示量",
-        text: "用于判断收入下降是否首先来自广告曝光减少。"
-      },
-      {
-        termId: "ad-requests",
-        title: "请求、fills、匹配率和填充率",
-        text: "广告请求表示尝试加载或展示广告。matched requests 和 fills 会受平台定义影响，不能默认把匹配率和填充率当成相同指标。"
-      },
-      {
-        termId: "country-mix",
-        title: "国家结构",
-        text: "各 GEO 的展示占比变化，可能在没有全局价格崩塌时拉低混合 eCPM。"
-      },
-      {
-        termId: "placement",
-        title: "广告位或广告单元",
-        text: "激励视频、插屏、原生、横幅、App open 等位置可以独立变化；报表区分时，不要混淆 placement、ad unit 和 format。"
-      },
-      {
-        termId: "ad-source",
-        title: "广告源或聚合广告源",
-        text: "一个竞价或瀑布流广告源可能失去量级，而汇总指标会掩盖这种变化。"
-      },
-      {
-        termId: "time-of-day-pattern",
-        title: "一天中的时间和外部事件",
-        text: "体育赛事、节假日、考试、工作节奏、故障或本地事件都可能改变用户活跃和高峰时段展示。"
-      },
-      {
-        termId: "weighted-ecpm",
-        title: "加权 eCPM",
-        text: "先分离流量结构和填充变化，再解释混合价格变化。"
-      }
-    ],
-    exampleLabel: "示例",
-    timingLabel: "一天中的时间和外部事件",
-    timingTitle: "用户行为变化可能看起来像广告栈问题。",
-    timingText:
-      "收入变化不一定只来自广告需求。如果 App 通常在特定时段变现最强，体育赛事、节假日、考试、工作节奏或本地事件都可能减少最重要时段的展示量。这也是日均值容易误导的原因。eCPM Bazaar 会鼓励先检查小时级或周期级模式，再判断 eCPM、底价或聚合是否失效。",
-    exampleTitle: "清楚的诊断，比再多一个报表更有用。",
-    beforeLabel: "Before",
-    before: "收入下降 31%。eCPM 看起来正常。不确定到底发生了什么。",
-    afterLabel: "After",
-    after: "美国激励视频 / Unity Ads 填充率从 78% 降到 54%。先检查广告源可用性、超时、聚合发布和底价配置。",
     limitsTitle: "这个方法不声称什么",
-    limits: [
-      "它是方向性 CSV 诊断，不是最终归因。",
-      "它不替代 AdMob、AppLovin MAX、Unity LevelPlay、TopOn 或内部数据系统。",
-      "它不承诺提高收入，只帮你判断最该先检查哪里。"
-    ],
-    ctaTitle: "先用样例数据测试这个方法。",
+    limits: ["它是方向性 CSV 诊断，不是最终归因。", "它不替代平台报表或内部分析。", "它不承诺提高收入，只缩小首轮检查范围。"],
     demo: "用样例数据试 Demo",
     free: "申请免费诊断"
   }
@@ -176,122 +63,45 @@ export function MethodContent() {
   const t = copy[lang];
 
   return (
-    <main className="resource-page" lang={lang === "zh" ? "zh-CN" : "en"}>
-      <nav className="resource-nav" aria-label="Method navigation">
-        <a href="../">
-          <ArrowLeft size={17} aria-hidden="true" />
-          {t.back}
-        </a>
-        <div>
-          <a href="../demo/">{t.navDemo}</a>
-          <a href="../templates/">{t.navTemplates}</a>
-          <a href="../cases/">{t.navCases}</a>
-          <a href="../free-diagnosis/">{t.navFree}</a>
-          <a href="../faq/">{t.navFaq}</a>
-          <div className="language-switch" aria-label={t.language}>
-            <button aria-pressed={lang === "zh"} className={lang === "zh" ? "active" : ""} type="button" onClick={() => setLang("zh")}>
-              中文
-            </button>
-            <button aria-pressed={lang === "en"} className={lang === "en" ? "active" : ""} type="button" onClick={() => setLang("en")}>
-              English
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      <section className="resource-hero">
-        <p className="eyebrow">
-          <GitBranch size={16} aria-hidden="true" />
-          {t.badge}
-        </p>
+    <main className="bazaar-page bazaar-resource-page bazaar-method-page" lang={lang === "zh" ? "zh-CN" : "en"}>
+      <ProductNav lang={lang} setLang={setLang} backHref="/" compact />
+      <section className="method-hero bazaar-container">
+        <p className="bazaar-eyebrow">{t.badge}</p>
         <h1>{t.title}</h1>
         <p>{t.lede}</p>
-        <div className="hero-actions">
-          <a className="primary-action" href="../demo/">
-            {t.demo}
-          </a>
-          <a className="secondary-action" href="../free-diagnosis/">
-            {t.free}
-          </a>
-        </div>
       </section>
 
-      <section className="template-section">
-        <div className="resource-link-heading">
-          <p className="section-label">{t.badge}</p>
-          <h2>{t.logicTitle}</h2>
-        </div>
-        <div className="template-grid" aria-label={t.logicTitle}>
-          {t.logic.map((item) => (
-            <article className="resource-card" key={item.title}>
-              <span className="resource-icon">
-                <CheckCircle2 size={22} aria-hidden="true" />
-              </span>
-              <h2>{item.title}</h2>
-              <p>{lang === "en" ? getMonetizationTerm(item.termId)?.shortDefinition ?? item.text : item.text}</p>
-              {lang === "en" && getMonetizationTerm(item.termId)?.caveat ? <small>{getMonetizationTerm(item.termId)?.caveat}</small> : null}
+      <section className="method-layout">
+        <aside className="method-step-nav" aria-label={t.order}>
+          <p>{t.order}</p>
+          <nav>
+            {t.steps.map((step) => <a href={`#${step.key}`} key={step.key}><span>{step.number}</span>{step.title}</a>)}
+          </nav>
+        </aside>
+        <div className="method-step-content">
+          {t.steps.map((step) => (
+            <article id={step.key} key={step.key}>
+              <div className="method-step-number">{step.number}</div>
+              <div className="method-step-copy">
+                <h2>{step.title}</h2>
+                <dl>
+                  <div><dt>What it answers</dt><dd>{step.answers}</dd></div>
+                  <div><dt>Metric definition</dt><dd>{step.definition}</dd></div>
+                  <div className="method-misread"><dt>Common misread</dt><dd>{step.misread}</dd></div>
+                  <div><dt>What to check next</dt><dd>{step.next}</dd></div>
+                </dl>
+              </div>
+              <CaseMiniChart type={step.chart} label="Directional sample" />
             </article>
           ))}
         </div>
       </section>
 
-      <section className="method-order-section">
-        <div className="resource-link-heading">
-          <p className="section-label">{t.orderLabel}</p>
-          <h2>{t.orderTitle}</h2>
-        </div>
-        <ol className="method-order-list">
-          {t.order.map((item, index) => (
-            <li key={item}>
-              <span>{index + 1}</span>
-              {item}
-            </li>
-          ))}
-        </ol>
+      <section className="method-limits bazaar-container">
+        <ShieldCheck size={22} aria-hidden="true" />
+        <div><p className="chapter-eyebrow">Directional diagnosis</p><h2>{t.limitsTitle}</h2><ul>{t.limits.map((item) => <li key={item}><CheckCircle2 size={15} aria-hidden="true" />{item}</li>)}</ul></div>
+        <div className="bazaar-actions"><a className="bazaar-button bazaar-button-primary" href="/demo/">{t.demo}<ArrowRight size={16} aria-hidden="true" /></a><a className="bazaar-button bazaar-resource-outline" href="/free-diagnosis/">{t.free}</a></div>
       </section>
-
-      <section className="guide-explanation method-timing-section">
-        <p className="section-label">{t.timingLabel}</p>
-        <h2>{t.timingTitle}</h2>
-        <p>{t.timingText}</p>
-      </section>
-
-      <section className="diagnosis-output-section" aria-label={t.exampleLabel}>
-        <div className="diagnosis-output-copy">
-          <p className="section-label">{t.exampleLabel}</p>
-          <h2>{t.exampleTitle}</h2>
-          <div className="method-before-after">
-            <article>
-              <span>{t.beforeLabel}</span>
-              <p>{t.before}</p>
-            </article>
-            <article>
-              <span>{t.afterLabel}</span>
-              <p>{t.after}</p>
-            </article>
-          </div>
-        </div>
-        <div className="mini-diagnosis-card">
-          <span className="share-card-brand">eCPM Bazaar</span>
-          <h3>{t.afterLabel}</h3>
-          <p>{t.after}</p>
-        </div>
-      </section>
-
-      <section className="resource-cta danger-note">
-        <ShieldCheck size={24} aria-hidden="true" />
-        <div>
-          <h2>{t.limitsTitle}</h2>
-          <p>{t.limits.join(" ")}</p>
-        </div>
-        <a className="primary-action" href="../demo/">
-          {t.demo}
-        </a>
-        <a className="secondary-action" href="../cases/">
-          {t.navCases}
-        </a>
-      </section>
-
       <SiteFooter lang={lang} />
     </main>
   );

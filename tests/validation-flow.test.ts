@@ -31,14 +31,6 @@ function publicSourceText() {
     .join("\n");
 }
 
-function assertArrayHasNoHandwrittenNumbers(relativePath: string, propertyName: string) {
-  const source = readFileSync(join(projectRoot, relativePath), "utf8");
-  const property = source.match(new RegExp(`${propertyName}:\\s*\\[([\\s\\S]*?)\\]`));
-
-  assert.ok(property, `${propertyName} array should exist in ${relativePath}`);
-  assert.doesNotMatch(property[1], /["'`]\s*\d+\.\s/);
-}
-
 test("public source has no legacy contact email", () => {
   const source = publicSourceText();
 
@@ -80,9 +72,12 @@ test("CSV validation exposes stable, useful error categories", () => {
   assert.equal(getCsvParseErrorCategory(new Error("unclassified")), "unknown");
 });
 
-test("ordered-list data does not contain a second handwritten number", () => {
-  assertArrayHasNoHandwrittenNumbers("app/page.tsx", "resourceOrder");
-  assertArrayHasNoHandwrittenNumbers("app/method/method-content.tsx", "order");
+test("legacy handwritten resource order data is not reintroduced", () => {
+  const home = readFileSync(join(projectRoot, "app/page.tsx"), "utf8");
+  const method = readFileSync(join(projectRoot, "app/method/method-content.tsx"), "utf8");
+
+  assert.equal(home.includes("resourceOrder"), false);
+  assert.doesNotMatch(method, /order:\s*\[/);
 });
 
 test("public capability copy only promises sample data and CSV", () => {

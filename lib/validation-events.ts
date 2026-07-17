@@ -37,7 +37,7 @@ export type ValidationEventProperties = {
   free_diagnosis_clicked: SharedProperties;
   diagnosis_form_started: SharedProperties & { form_source?: "direct" | "case" | "sample" | "demo-draft" };
   email_draft_generated: SharedProperties & { form_source?: "direct" | "case" | "sample" | "demo-draft" };
-  template_downloaded: SharedProperties & { template_type?: "admob" | "applovin-max" | "levelplay-topon" | "14-day-sample" };
+  template_downloaded: SharedProperties & { template_type?: "admob" | "applovin-max" | "unity-levelplay" | "topon" | "levelplay-topon" | "14-day-sample" };
   case_demo_started: SharedProperties & { case_type?: string };
   diagnosis_feedback_recorded: SharedProperties & {
     usefulness?: "yes" | "no" | "not-sure";

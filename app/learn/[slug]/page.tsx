@@ -37,7 +37,7 @@ export default function GuidePage({ params }: GuidePageProps) {
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
   return (
-    <main className="resource-page">
+    <main className="resource-page bazaar-page bazaar-resource-page bazaar-guide-page">
       <nav className="resource-nav" aria-label={`${guide.title} navigation`}>
         <a href="../../learn/">
           <ArrowLeft size={17} aria-hidden="true" />

@@ -8,6 +8,7 @@ import { demoReviewDraftStorageKey, parseDemoReviewDraft, type DemoReviewDraft }
 import { publicContactEmail } from "@/lib/site-contact";
 import { trackEvent } from "@/lib/validation-events";
 import { CopyEmailPanel, type DiagnosisRequestPreset } from "./copy-email-panel";
+import { ExampleOutputCard } from "../components/diagnosis-visuals";
 import { SiteFooter } from "../site-footer";
 
 const email = publicContactEmail;
@@ -442,7 +443,7 @@ export function FreeDiagnosisContent() {
   }, []);
 
   return (
-    <main className="resource-page" lang={lang === "zh" ? "zh-CN" : "en"}>
+    <main className="resource-page bazaar-page bazaar-resource-page bazaar-free-diagnosis-page" lang={lang === "zh" ? "zh-CN" : "en"}>
       <nav className="resource-nav" aria-label="Free diagnosis navigation">
         <a href="../">
           <ArrowLeft size={17} aria-hidden="true" />
@@ -465,7 +466,7 @@ export function FreeDiagnosisContent() {
         </div>
       </nav>
 
-      <section className="resource-hero diagnosis-intro-section">
+      <section className="resource-hero bazaar-resource-hero diagnosis-intro-section">
         <p className="eyebrow">
           <Mail size={16} aria-hidden="true" />
           {t.badge}
@@ -520,6 +521,7 @@ export function FreeDiagnosisContent() {
                   </a>
                 </div>
               ) : null}
+              <ExampleOutputCard lang={lang} />
               <div className="diagnosis-good-fit-card">
                 <h3>{t.goodForTitle}</h3>
                 <ul>

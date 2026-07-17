@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { siteDescription, siteTitle, siteUrl } from "@/lib/site-metadata";
 import "./globals.css";
+import "./visual-system.css";
+import "./resource-visuals.css";
+import "./method-visuals.css";
+import "./learn-visuals.css";
+import "./faq-visuals.css";
+import "./product-pages.css";
 
 export const metadata: Metadata = {
   metadataBase: siteUrl,
@@ -33,27 +39,11 @@ export const metadata: Metadata = {
     siteName: "eCPM Bazaar",
     title: siteTitle,
     description: siteDescription,
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1672,
-        height: 941,
-        alt: "Ad revenue dropped? Find the real driver first with eCPM Bazaar."
-      }
-    ]
+    images: [{ url: "/og-image.png", width: 1672, height: 941, alt: "Ad revenue dropped? Find the real driver first with eCPM Bazaar." }]
   },
-  twitter: {
-    card: "summary_large_image",
-    title: siteTitle,
-    description: siteDescription,
-    images: ["/og-image.png"]
-  }
+  twitter: { card: "summary_large_image", title: siteTitle, description: siteDescription, images: ["/og-image.png"] }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+  return <html lang="en"><body>{children}</body></html>;
 }

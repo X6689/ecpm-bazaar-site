@@ -6,6 +6,7 @@ import type { DemoScenarioId } from "@/lib/demo-data";
 import { writeClipboardText } from "@/lib/clipboard";
 import { useLanguagePreference } from "@/lib/language";
 import { trackEvent } from "@/lib/validation-events";
+import { CaseMiniChart } from "../components/diagnosis-visuals";
 import { SiteFooter } from "../site-footer";
 
 type DiagnosisCase = {
@@ -253,7 +254,7 @@ const copy = {
     navPrivacy: "Privacy",
     language: "Language",
     badge: "Directional diagnosis examples",
-    title: "See how a mobile ad revenue change is investigated before settings change.",
+    title: "Four common ways mobile ad revenue drops can be misread.",
     lede:
       "Before sending your own data, review how eCPM Bazaar turns anonymized mobile ad monetization rows into a diagnosis card, most likely drivers, and recommended next tests.",
     example: "Directional example",
@@ -296,7 +297,7 @@ const copy = {
     navPrivacy: "数据安全",
     language: "语言",
     badge: "方向性诊断示例",
-    title: "查看移动广告收入变化在修改设置前如何被排查。",
+    title: "移动广告收入下降最常被误读的四种情况。",
     lede:
       "发送自己的数据前，可以先看 eCPM Bazaar 如何把脱敏手游广告变现数据整理成诊断卡、可能原因和下一步测试建议。",
     example: "方向性示例",
@@ -346,7 +347,7 @@ export function CasesContent() {
   }
 
   return (
-    <main className="resource-page" lang={lang === "zh" ? "zh-CN" : "en"}>
+    <main className="resource-page bazaar-page bazaar-resource-page bazaar-cases-page" lang={lang === "zh" ? "zh-CN" : "en"}>
       <nav className="resource-nav" aria-label="Cases navigation">
         <a href="../">
           <ArrowLeft size={17} aria-hidden="true" />
@@ -369,7 +370,7 @@ export function CasesContent() {
         </div>
       </nav>
 
-      <section className="resource-hero">
+      <section className="resource-hero bazaar-resource-hero">
         <p className="eyebrow">
           <BarChart3 size={16} aria-hidden="true" />
           {t.badge}
@@ -378,13 +379,13 @@ export function CasesContent() {
         <p>{t.lede}</p>
       </section>
 
-      <section className="case-list" aria-label="Diagnosis examples">
-        {cases.map((item) => {
+      <section className="case-list bazaar-case-list" aria-label="Diagnosis examples">
+        {cases.map((item, index) => {
           const current = item[lang];
           const scenarioId = item.scenarioId;
           const hasDemoScenario = scenarioId !== undefined;
           return (
-            <article className="case-card" key={current.title}>
+            <article className="case-card case-chapter" id={`case-${["i", "ii", "iii", "iv"][index]}`} key={current.title}>
               <div className="case-top-grid">
                 <div className="case-explanation-panel">
                   <p className="section-label">{t.scenario}</p>
@@ -404,6 +405,7 @@ export function CasesContent() {
                 </div>
                 <div className="case-card-output">
                   <div className="mini-diagnosis-card">
+                  <CaseMiniChart type={["pricing", "fill", "geo", "timing"][index] as "pricing" | "fill" | "geo" | "timing"} label={t.directionalExample} />
                     <span className="share-card-brand">eCPM Bazaar</span>
                     <h3>{current.card.problem}</h3>
                     <div className="mini-score">

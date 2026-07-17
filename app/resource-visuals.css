@@ -1,0 +1,347 @@
+.bazaar-resource-page {
+  min-height: 100vh;
+  overflow: clip;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.bazaar-resource-page .resource-nav,
+.bazaar-resource-page .resource-hero,
+.bazaar-resource-page .case-list,
+.bazaar-resource-page .template-grid,
+.bazaar-resource-page .data-requirements-overview,
+.bazaar-resource-page .field-section,
+.bazaar-resource-page .accepted-aliases-section,
+.bazaar-resource-page .faq-list,
+.bazaar-resource-page .diagnosis-benefit-grid,
+.bazaar-resource-page .diagnosis-request-section,
+.bazaar-resource-page .privacy-reminder-grid,
+.bazaar-resource-page .diagnosis-output-section,
+.bazaar-resource-page .resource-cta,
+.bazaar-resource-page .method-layout,
+.bazaar-resource-page .learn-content-shell {
+  width: min(var(--page-width), calc(100% - 64px));
+  margin-inline: auto;
+}
+
+.bazaar-resource-page .resource-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 76px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.bazaar-resource-page .resource-nav > a,
+.bazaar-resource-page .resource-nav > div > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.bazaar-resource-page .resource-nav > div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.bazaar-resource-page .resource-nav .language-switch {
+  min-width: 96px;
+  min-height: 36px;
+  border-color: var(--color-border);
+  background: #fff;
+}
+
+.bazaar-resource-page .resource-nav .language-switch button.active {
+  background: var(--color-brand-strong);
+  color: #fff;
+}
+
+.bazaar-resource-page .resource-hero {
+  display: grid;
+  gap: 12px;
+  max-width: min(var(--page-width), calc(100% - 64px));
+  padding: clamp(48px, 7vw, 94px) 0 clamp(42px, 6vw, 75px);
+}
+
+.bazaar-resource-page .resource-hero .eyebrow {
+  color: var(--color-brand);
+  font-size: 12px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.bazaar-resource-page .resource-hero h1 {
+  max-width: 900px;
+  color: var(--color-ink);
+  font-size: clamp(40px, 5vw, 68px);
+  letter-spacing: 0;
+  line-height: 1.05;
+}
+
+.bazaar-resource-page .resource-hero > p:not(.eyebrow),
+.bazaar-resource-page .resource-hero > p:last-child {
+  max-width: 780px;
+  color: var(--color-muted);
+  font-size: 17px;
+  line-height: 1.72;
+}
+
+.bazaar-resource-page .resource-hero .hero-actions {
+  margin-top: 10px;
+}
+
+.bazaar-resource-page .primary-action,
+.bazaar-resource-page .secondary-action,
+.bazaar-resource-page .ghost-action,
+.bazaar-resource-page .case-demo-link,
+.bazaar-resource-page .case-free-link,
+.bazaar-resource-page .case-copy-link,
+.bazaar-resource-page .copy-result-button {
+  min-height: 42px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.bazaar-resource-page .primary-action,
+.bazaar-resource-page .case-demo-link {
+  border-color: var(--color-brand-strong);
+  background: var(--color-brand-strong);
+  color: #fff;
+}
+
+.bazaar-resource-page .secondary-action,
+.bazaar-resource-page .case-free-link,
+.bazaar-resource-page .case-copy-link,
+.bazaar-resource-page .ghost-action,
+.bazaar-resource-page .copy-result-button {
+  border-color: var(--color-border);
+  background: #fff;
+  color: var(--color-text);
+}
+
+.bazaar-resource-page .site-footer {
+  margin-top: clamp(50px, 8vw, 100px);
+  background: #071f1d;
+  color: #e8fff8;
+}
+
+.bazaar-resource-page .site-footer-main {
+  width: min(var(--page-width), calc(100% - 64px));
+}
+
+.bazaar-resource-page .site-footer-brand h2 { color: #fff; }
+.bazaar-resource-page .site-footer-brand p:last-child,
+.bazaar-resource-page .site-footer-column p { color: #a6c4bd; }
+.bazaar-resource-page .site-footer-column h3,
+.bazaar-resource-page .site-footer-column nav a,
+.bazaar-resource-page .site-footer-trust span,
+.bazaar-resource-page .site-footer-email { color: #d9f4ec; }
+
+/* Cases: chapter narrative on the left, compact signal panel on the right. */
+.bazaar-case-list {
+  display: grid;
+  gap: 0;
+  counter-reset: diagnosis-case;
+  border-top: 1px solid var(--color-border);
+}
+
+.bazaar-cases-page .case-chapter {
+  counter-increment: diagnosis-case;
+  margin: 0;
+  padding: clamp(38px, 6vw, 76px) 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.bazaar-cases-page .case-chapter:target { scroll-margin-top: 18px; }
+
+.bazaar-cases-page .case-top-grid,
+.bazaar-cases-page .case-action-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.8fr);
+  gap: clamp(28px, 5vw, 66px);
+}
+
+.bazaar-cases-page .case-explanation-panel {
+  padding: 0;
+  background: transparent;
+}
+
+.bazaar-cases-page .case-explanation-panel .section-label {
+  color: var(--color-brand);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bazaar-cases-page .case-explanation-panel .section-label::before {
+  color: var(--color-warning);
+  content: "Case " counter(diagnosis-case, upper-roman) " / ";
+}
+
+.bazaar-cases-page .case-explanation-panel h2 {
+  margin: 10px 0 18px;
+  color: var(--color-ink);
+  font-size: clamp(27px, 3vw, 42px);
+  letter-spacing: 0;
+  line-height: 1.12;
+}
+
+.bazaar-cases-page .case-explanation-panel > h3,
+.bazaar-cases-page .case-insight-card h3,
+.bazaar-cases-page .case-takeaway h3,
+.bazaar-cases-page .case-guidance-card h3,
+.bazaar-cases-page .recommended-checks-panel h3,
+.bazaar-cases-page .case-actions-panel h3 {
+  color: var(--color-muted);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bazaar-cases-page .case-signal {
+  margin-top: 6px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--color-warning);
+  background: #fff9eb;
+  color: #664918;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.65;
+}
+
+.bazaar-cases-page .case-insight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.bazaar-cases-page .case-insight-card {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.bazaar-cases-page .case-insight-card p,
+.bazaar-cases-page .case-takeaway p,
+.bazaar-cases-page .case-guidance-card p {
+  margin-top: 7px;
+  color: var(--color-text);
+  font-size: 14px;
+  line-height: 1.68;
+}
+
+.bazaar-cases-page .case-card-output {
+  display: grid;
+  align-content: start;
+  gap: 11px;
+}
+
+.bazaar-cases-page .case-card-output > .case-mini-chart {
+  padding: 13px;
+  background: var(--color-surface-muted);
+}
+
+.bazaar-cases-page .mini-diagnosis-card {
+  display: grid;
+  gap: 12px;
+  padding: 22px;
+  border: 1px solid #0e665a;
+  border-radius: 8px;
+  background: var(--color-brand-strong);
+  color: #eafff7;
+  box-shadow: none;
+}
+
+.bazaar-cases-page .mini-diagnosis-card .share-card-brand,
+.bazaar-cases-page .mini-diagnosis-card .mini-score span,
+.bazaar-cases-page .mini-diagnosis-card .mini-cause span,
+.bazaar-cases-page .mini-diagnosis-card dt { color: #a9d7c9; }
+
+.bazaar-cases-page .mini-diagnosis-card h3,
+.bazaar-cases-page .mini-diagnosis-card p,
+.bazaar-cases-page .mini-diagnosis-card .mini-score strong,
+.bazaar-cases-page .mini-diagnosis-card .mini-cause strong,
+.bazaar-cases-page .mini-diagnosis-card dd { color: #fff; }
+
+.bazaar-cases-page .mini-diagnosis-card dl { border-color: rgb(221 255 245 / 20%); }
+.bazaar-cases-page .mini-diagnosis-card dl > div { border-color: rgb(221 255 245 / 20%); }
+
+.bazaar-cases-page .case-action-grid { margin-top: 35px; align-items: start; }
+.bazaar-cases-page .case-action-left-stack,
+.bazaar-cases-page .case-action-right-stack { display: grid; gap: 0; }
+.bazaar-cases-page .case-takeaway,
+.bazaar-cases-page .case-guidance-card,
+.bazaar-cases-page .recommended-checks-panel,
+.bazaar-cases-page .case-actions-panel {
+  padding: 18px 0;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
+  background: transparent;
+}
+
+.bazaar-cases-page .case-takeaway { border-top-color: var(--color-warning); }
+.bazaar-cases-page .case-takeaway h3 { color: #9e6915; }
+.bazaar-cases-page .recommended-checks-panel { background: transparent; }
+.bazaar-cases-page .check-list { display: grid; gap: 10px; margin-top: 12px; }
+.bazaar-cases-page .check-list span { display: flex; align-items: flex-start; gap: 8px; color: var(--color-text); font-size: 13px; line-height: 1.5; }
+.bazaar-cases-page .check-list svg { flex: 0 0 auto; margin-top: 1px; color: var(--color-brand); }
+.bazaar-cases-page .case-card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.bazaar-cases-page .resource-cta { margin-top: 52px; }
+
+@media (max-width: 900px) {
+  .bazaar-resource-page .resource-nav > div > a:nth-child(n + 4) { display: none; }
+  .bazaar-cases-page .case-top-grid,
+  .bazaar-cases-page .case-action-grid { grid-template-columns: minmax(0, 1fr); }
+  .bazaar-cases-page .case-card-output { max-width: none; }
+}
+
+@media (max-width: 760px) {
+  .bazaar-resource-page .resource-nav,
+  .bazaar-resource-page .resource-hero,
+  .bazaar-resource-page .case-list,
+  .bazaar-resource-page .template-grid,
+  .bazaar-resource-page .data-requirements-overview,
+  .bazaar-resource-page .field-section,
+  .bazaar-resource-page .accepted-aliases-section,
+  .bazaar-resource-page .faq-list,
+  .bazaar-resource-page .diagnosis-benefit-grid,
+  .bazaar-resource-page .diagnosis-request-section,
+  .bazaar-resource-page .privacy-reminder-grid,
+  .bazaar-resource-page .diagnosis-output-section,
+  .bazaar-resource-page .resource-cta,
+  .bazaar-resource-page .method-layout,
+  .bazaar-resource-page .learn-content-shell,
+  .bazaar-resource-page .site-footer-main { width: min(100% - 40px, var(--page-width)); }
+  .bazaar-resource-page .resource-nav { min-height: 66px; }
+  .bazaar-resource-page .resource-nav > div { gap: 7px; }
+  .bazaar-resource-page .resource-nav > div > a { display: none; }
+  .bazaar-resource-page .resource-nav .language-switch { min-width: 88px; }
+  .bazaar-resource-page .resource-hero { padding: 42px 0 38px; }
+  .bazaar-resource-page .resource-hero h1 { font-size: 37px; }
+  .bazaar-resource-page .resource-hero > p:not(.eyebrow),
+  .bazaar-resource-page .resource-hero > p:last-child { font-size: 15px; }
+  .bazaar-cases-page .case-chapter { padding: 42px 0; }
+  .bazaar-cases-page .case-explanation-panel h2 { font-size: 29px; }
+  .bazaar-cases-page .case-insight-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .bazaar-cases-page .case-card-actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .bazaar-cases-page .case-demo-link,
+  .bazaar-cases-page .case-free-link,
+  .bazaar-cases-page .case-copy-link { width: 100%; }
+}
