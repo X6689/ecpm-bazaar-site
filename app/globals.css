@@ -1631,6 +1631,107 @@ h3,
   color: #991b1b;
 }
 
+
+.demo-error p {
+  margin: 0;
+}
+
+.demo-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.demo-error-actions a,
+.demo-error-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid #f0a7a7;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #8f1b1b;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.demo-error-actions a:hover,
+.demo-error-actions button:hover {
+  background: #fff7f7;
+}
+
+.diagnosis-feedback-panel {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbf8;
+}
+
+.diagnosis-feedback-panel h3 {
+  margin: 0;
+  color: var(--deep);
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.diagnosis-feedback-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.diagnosis-feedback-grid fieldset {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.diagnosis-feedback-grid legend {
+  margin-bottom: 8px;
+  color: #34423d;
+  font-size: 14px;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.feedback-next-check {
+  grid-column: 1 / -1;
+}
+
+.feedback-option-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.feedback-option-list button {
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #42514b;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.feedback-option-list button:hover,
+.feedback-option-list button.active {
+  border-color: #0f766e;
+  background: #e7f6f2;
+  color: #115e59;
+}
 .demo-privacy {
   align-items: center;
   width: min(1120px, calc(100% - 40px));
@@ -2476,6 +2577,7 @@ h3,
   color: #9a3412;
   font-size: 14px;
   font-weight: 700;
+
   line-height: 1.5;
 }
 
@@ -2520,6 +2622,7 @@ h3,
   font-size: 26px;
   line-height: 1.05;
 }
+
 
 .demo-metric em.negative {
   color: #b45309;
@@ -2577,6 +2680,14 @@ h3,
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .diagnosis-feedback-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feedback-next-check {
+    grid-column: auto;
+  }
+
   .share-card-action {
     grid-column: auto;
   }
@@ -2620,6 +2731,24 @@ h3,
   .demo-panel-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .demo-error-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .demo-error-actions a,
+  .demo-error-actions button {
+    width: 100%;
+  }
+
+  .diagnosis-feedback-panel {
+    padding: 16px;
+  }
+
+  .feedback-option-list button {
+    flex: 1 1 auto;
   }
 }
 

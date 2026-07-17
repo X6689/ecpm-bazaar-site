@@ -46,6 +46,16 @@ const principles = [
       title: "这是诊断，不是财务建议",
       text: "输出用于指导排查，不承诺收入提升，也不是让你盲目修改商业配置的建议。"
     }
+  },
+  {
+    en: {
+      title: "Anonymous validation events",
+      text: "No third-party analytics SDK currently runs on the public site. The built-in event interface is inactive by default and only permits anonymous, whitelisted properties such as page path, comparison period, row-count bucket, and parse-error category. It never includes CSV contents, filenames, email addresses, account IDs, or free-text notes."
+    },
+    zh: {
+      title: "匿名验证事件",
+      text: "公开网站目前没有运行第三方分析 SDK。内置事件接口默认不收集数据，只允许页面路径、对比周期、数据行数量区间和解析错误类别等匿名白名单属性；它绝不包含 CSV 内容、文件名、邮箱、账号 ID 或自由文本备注。"
+    }
   }
 ];
 

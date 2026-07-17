@@ -3,11 +3,13 @@
 import { ArrowLeft, Download, FileSpreadsheet, Play, ShieldCheck } from "lucide-react";
 import { acceptedAliasGroups } from "@/lib/content/monetization-terms";
 import { useLanguagePreference } from "@/lib/language";
+import { trackEvent } from "@/lib/validation-events";
 import { SiteFooter } from "../site-footer";
 
 const templates = [
   {
     href: "admob-ecpm-bazaar-template.csv",
+    templateType: "admob" as const,
     fields: "date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks",
     en: {
       title: "AdMob template",
@@ -20,6 +22,7 @@ const templates = [
   },
   {
     href: "applovin-max-ecpm-bazaar-template.csv",
+    templateType: "applovin-max" as const,
     fields: "date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks",
     en: {
       title: "AppLovin MAX template",
@@ -32,6 +35,7 @@ const templates = [
   },
   {
     href: "levelplay-topon-ecpm-bazaar-template.csv",
+    templateType: "levelplay-topon" as const,
     fields: "date, appName, placementName, country, network, revenue, ecpm, impressions, requests, fills, clicks",
     en: {
       title: "Unity LevelPlay / TopOn template",
@@ -44,6 +48,7 @@ const templates = [
   },
   {
     href: "14-day-ecpm-bazaar-sample.csv",
+    templateType: "14-day-sample" as const,
     demoHref: "../demo/?sample=14-day&compare=last-7-days",
     fields: "14 dates, 2 segments, eCPM-drop example",
     en: {
@@ -307,7 +312,12 @@ export function TemplatesContent() {
             <p>{template[lang].note}</p>
             <code>{template.fields}</code>
             <div className="resource-card-actions">
-              <a className="primary-action" download href={template.href}>
+              <a
+                className="primary-action"
+                download
+                href={template.href}
+                onClick={() => trackEvent("template_downloaded", { page_path: "/templates/", source_cta: "template-card", template_type: template.templateType })}
+              >
                 <Download size={18} aria-hidden="true" />
                 {t.download}
               </a>
@@ -429,7 +439,7 @@ export function TemplatesContent() {
         </div>
       </section>
 
-      <section className="accepted-aliases-section" aria-label={t.aliasesLabel}>
+      <section className="accepted-aliases-section" id="accepted-aliases" aria-label={t.aliasesLabel}>
         <div className="accepted-aliases-card">
           <div className="accepted-aliases-header">
             <p className="section-label">{t.aliasesLabel}</p>

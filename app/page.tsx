@@ -4,27 +4,22 @@ import {
   ArrowUpRight,
   CheckCircle2,
   CircleDot,
-  Globe2,
-  LineChart,
   Mail,
-  MapPinned,
-  Radar,
   ShieldCheck,
   Sparkles,
-  TriangleAlert,
-  Users
+  TriangleAlert
 } from "lucide-react";
 import { useLanguagePreference } from "@/lib/language";
+import { publicContactMailto } from "@/lib/site-contact";
+import { trackEvent } from "@/lib/validation-events";
 import { SiteFooter } from "./site-footer";
-
-const contactEmail = "xmmyy168@gmail.com";
 
 const copy = {
   zh: {
     name: "夏雨",
     role: "eCPM Bazaar 发起人",
-    navProduct: "产品",
-    navFunction: "功能",
+    navHowItWorks: "如何运作",
+    navResources: "资源",
     navDemo: "演示",
     navTemplates: "模板",
     navCases: "案例",
@@ -111,14 +106,10 @@ const copy = {
         text: "当报表无法解释变化时，再带着结构化证据联系平台或更深入的变现支持。"
       }
     ],
-    productLabel: "Product Direction",
-    productTitle: "eCPM Bazaar",
-    productText:
-      "一个面向海外移动游戏和 App 团队的广告收益诊断助手。它不承诺神奇提高收入，而是先帮开发者判断问题更可能来自 eCPM、ARPDAU、展示量、填充、国家结构、广告形式、广告位还是广告源。",
-    functionLabel: "Core Function",
-    functionTitle: "广告收入异常诊断工具",
-    functionText:
-      "当广告收益偏低或波动时，eCPM Bazaar 会判断主要问题是 eCPM、ARPDAU、填充率、展示频次、国家地区、广告形式、广告位，还是广告平台/广告源拖累，并给出优先排查建议。",
+    howItWorksLabel: "诊断流程",
+    howItWorksTitle: "从样例或脱敏 CSV 开始，再判断下一步。",
+    howItWorksText:
+      "用两个可比周期拆开流量、填充、国家结构、广告位、广告源、时段和价格信号，先理解发生了什么，再决定是否调整配置。",
     diagnosisTitle: "诊断示例",
     diagnosisText:
       "美国激励视频收入下降主要由填充率从 78% 降到 54% 导致，eCPM 基本稳定。建议优先检查该广告位的广告源填充、底价配置和平台状态。",
@@ -135,26 +126,9 @@ const copy = {
       { label: "横幅 / 日本", value: "小幅增长", width: "33%" }
     ],
     steps: [
-      { title: "导入数据", note: "CSV / Excel / API" },
-      { title: "识别异常", note: "收入、eCPM、填充率" },
-      { title: "输出建议", note: "先查最可能原因" }
-    ],
-    cards: [
-      {
-        icon: LineChart,
-        title: "看懂波动",
-        text: "把收入变化拆成展示量、eCPM、填充率等原因，而不是只看到一个下降百分比。"
-      },
-      {
-        icon: MapPinned,
-        title: "定位维度",
-        text: "按国家地区、广告位、广告形式和平台拆解，找出最影响收入的具体位置。"
-      },
-      {
-        icon: Radar,
-        title: "给出建议",
-        text: "把异常转成开发者能行动的排查清单，先查最可能影响收入的地方。"
-      }
+      { title: "使用样例或上传脱敏 CSV", note: "当前仅支持样例数据和 CSV" },
+      { title: "对比两个报告周期", note: "分离收入、展示量、eCPM 和填充变化" },
+      { title: "先检查最可能的原因", note: "再决定是否需要更深入的支持" }
     ],
     resourceLabel: "Validation Resources",
     resourceTitle: "先用真实报表验证诊断是否有用。",
@@ -173,21 +147,13 @@ const copy = {
       { title: "免费诊断", text: "用匿名数据发邮件，不需要账号密码或 API key。", href: "free-diagnosis/" },
       { title: "常见问题", text: "解释浏览器本地 CSV、字段要求、数据脱敏和适用团队。", href: "faq/" },
       { title: "数据安全", text: "说明哪些字段可以分享，哪些账号和隐私信息不要发送。", href: "privacy/" }
-    ],
-    serviceLabel: "Who I Serve",
-    serviceTitle: "先服务小团队，不做大而全的平台。",
-    serviceText:
-      "目标用户是每天关注广告收入、eCPM、ARPDAU 和填充率的小游戏/App 开发者。他们可能没有数据分析师或变现经理，但需要快速知道收益为什么低、为什么波动。",
-    aboutLabel: "About Me",
-    aboutTitle: "我会先用真实开发者数据验证这个方向。",
-    aboutText:
-      "当前目标不是把功能做重，而是先找到真实测试用户、沉淀匿名案例和反馈。诊断逻辑验证清楚后，再考虑登录系统、真实 API 接入或更完整的 Web 工具。"
+    ]
   },
   en: {
     name: "Xia Yu",
     role: "Founder of eCPM Bazaar",
-    navProduct: "Product",
-    navFunction: "Function",
+    navHowItWorks: "How it works",
+    navResources: "Resources",
     navDemo: "Demo",
     navTemplates: "Templates",
     navCases: "Cases",
@@ -274,14 +240,10 @@ const copy = {
         text: "When the report is not enough, bring a structured evidence trail to your platform or deeper monetization support."
       }
     ],
-    productLabel: "Product Direction",
-    productTitle: "eCPM Bazaar",
-    productText:
-      "A diagnosis assistant for overseas mobile game and app teams. It does not promise a revenue outcome; it helps developers understand whether low performance came from eCPM, ARPDAU, impressions, fill, country mix, ad format, placement, mediation, or ad source performance.",
-    functionLabel: "Core Function",
-    functionTitle: "Ad revenue anomaly diagnosis",
-    functionText:
-      "When ad revenue is low or changes, eCPM Bazaar identifies the most likely driver across eCPM, ARPDAU, fill rate, impressions per DAU, country, ad format, placement, or a specific ad platform/source, then suggests where to check first.",
+    howItWorksLabel: "How it works",
+    howItWorksTitle: "Start with a sample or anonymized CSV, then decide what to check next.",
+    howItWorksText:
+      "Use two comparable periods to separate traffic, fill, country mix, placement, source, timing, and pricing signals before deciding whether a setting needs to change.",
     diagnosisTitle: "Diagnosis Example",
     diagnosisText:
       "US rewarded video revenue fell mainly because fill rate dropped from 78% to 54%, while eCPM stayed stable. Prioritize checking ad source fill, floor settings, and platform status for this placement.",
@@ -298,26 +260,9 @@ const copy = {
       { label: "Banner / JP", value: "Minor lift", width: "33%" }
     ],
     steps: [
-      { title: "Import data", note: "CSV / Excel / API" },
-      { title: "Detect anomaly", note: "Revenue, eCPM, fill rate" },
-      { title: "Explain next step", note: "Check the most likely driver first" }
-    ],
-    cards: [
-      {
-        icon: LineChart,
-        title: "Understand Movement",
-        text: "Break revenue changes into impressions, eCPM, fill rate, and other drivers instead of staring at one percentage drop."
-      },
-      {
-        icon: MapPinned,
-        title: "Locate Dimensions",
-        text: "Split by country, placement, format, and platform to find the exact area dragging revenue down."
-      },
-      {
-        icon: Radar,
-        title: "Suggest Checks",
-        text: "Turn anomalies into a practical checklist so developers can inspect the most likely driver first."
-      }
+      { title: "Use sample data or upload an anonymized CSV", note: "The public workflow supports sample data and CSV only" },
+      { title: "Compare two reporting periods", note: "Separate revenue, impressions, eCPM, and fill changes" },
+      { title: "Check the most likely driver first", note: "Escalate only when the report needs more context" }
     ],
     resourceLabel: "Validation Resources",
     resourceTitle: "Validate the diagnosis with real report data first.",
@@ -336,22 +281,14 @@ const copy = {
       { title: "Free diagnosis", text: "Send anonymized rows by email. No login or API key needed.", href: "free-diagnosis/" },
       { title: "FAQ", text: "Understand browser-only CSV parsing, required fields, anonymization, and fit.", href: "faq/" },
       { title: "Data safety", text: "See what is safe to share and what account data should stay private.", href: "privacy/" }
-    ],
-    serviceLabel: "Who I Serve",
-    serviceTitle: "Starting with small teams, not a giant platform.",
-    serviceText:
-      "The target users are mini game and app developers who check ad revenue, eCPM, ARPDAU, and fill rate every day. They may not have a data analyst or monetization manager, but they need to know why revenue is low or moving.",
-    aboutLabel: "About Me",
-    aboutTitle: "I will validate this with real developer data first.",
-    aboutText:
-      "The current goal is not to overbuild. I want real test users, anonymized cases, and direct feedback first. After the diagnosis logic proves useful, the next step can be login, real API integrations, or a fuller web tool."
+    ]
   }
 };
 
 export default function Home() {
   const [lang, setLang] = useLanguagePreference("en");
   const t = copy[lang];
-  const mailto = `mailto:${contactEmail}`;
+  const mailto = publicContactMailto;
 
   return (
     <main className="site-page" lang={lang === "zh" ? "zh-CN" : "en"}>
@@ -364,15 +301,15 @@ export default function Home() {
           </span>
         </a>
         <div className="nav-links">
-          <a href="#product">{t.navProduct}</a>
-          <a href="#function">{t.navFunction}</a>
+          <a href="#how-it-works">{t.navHowItWorks}</a>
+          <a href="#resources">{t.navResources}</a>
           <a href="demo/">{t.navDemo}</a>
           <a href="templates/">{t.navTemplates}</a>
           <a href="cases/">{t.navCases}</a>
           <a href="method/">{t.navMethod}</a>
           <a href="learn/">{t.navGuides}</a>
           <a href="free-diagnosis/">{t.navFree}</a>
-          <a href="#contact">{t.navContact}</a>
+          <a href={mailto}>{t.navContact}</a>
           <div className="language-switch" aria-label={t.languageLabel}>
             <button
               aria-pressed={lang === "zh"}
@@ -407,11 +344,19 @@ export default function Home() {
           <h1>{t.title}</h1>
           <p className="hero-lede">{t.lede}</p>
           <div className="hero-actions">
-            <a className="primary-action" href="demo/">
+            <a
+              className="primary-action"
+              href="demo/"
+              onClick={() => trackEvent("sample_demo_started", { page_path: "/", source_cta: "homepage-hero", sample_type: "default" })}
+            >
               {t.primary}
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
-            <a className="secondary-action" href="free-diagnosis/">
+            <a
+              className="secondary-action"
+              href="free-diagnosis/"
+              onClick={() => trackEvent("free_diagnosis_clicked", { page_path: "/", source_cta: "homepage-hero" })}
+            >
               {t.secondary}
             </a>
           </div>
@@ -476,6 +421,25 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="function-section" id="how-it-works" aria-label={t.howItWorksLabel}>
+        <div className="function-copy">
+          <p className="section-label">{t.howItWorksLabel}</p>
+          <h2>{t.howItWorksTitle}</h2>
+          <p>{t.howItWorksText}</p>
+        </div>
+        <div className="function-steps">
+          {t.steps.map((step, index) => (
+            <div className="step-row" key={step.title}>
+              <span>{index + 1}</span>
+              <div>
+                <strong>{step.title}</strong>
+                <small>{step.note}</small>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="use-case-section" aria-label={t.useCaseLabel}>
         <div className="use-case-heading">
           <p className="section-label">{t.useCaseLabel}</p>
@@ -519,91 +483,14 @@ export default function Home() {
         </article>
       </section>
 
-      <section className="safety-section" aria-label={t.safetyLabel}>
-        <div>
-          <p className="section-label">
-            <ShieldCheck size={16} aria-hidden="true" />
-            {t.safetyLabel}
-          </p>
-          <h2>{t.safetyTitle}</h2>
-        </div>
-        <div className="safety-grid">
-          {t.safetyItems.map((item) => (
-            <span key={item}>
-              <ShieldCheck size={17} aria-hidden="true" />
-              {item}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      <section className="home-card-section" aria-label={t.cardSectionLabel}>
-        <div className="home-card-copy">
-          <p className="section-label">
-            <CheckCircle2 size={16} aria-hidden="true" />
-            {t.cardSectionLabel}
-          </p>
-          <h2>{t.cardSectionTitle}</h2>
-          <p>{t.cardSectionText}</p>
-          <div className="home-card-points">
-            {t.cardSectionPoints.map((item) => (
-              <span key={item}>
-                <CheckCircle2 size={16} aria-hidden="true" />
-                {item}
-              </span>
-            ))}
-          </div>
-          <div className="validation-actions">
-            <a className="primary-action" href="demo/">
-              {t.primary}
-              <ArrowUpRight size={18} aria-hidden="true" />
-            </a>
-            <a className="secondary-action" href="free-diagnosis/">
-              {t.secondary}
-            </a>
-          </div>
-          <a className="inline-resource-link" href="revenue-drop-diagnosis-card.svg">
-            {t.cardAssetLink}
-            <ArrowUpRight size={15} aria-hidden="true" />
-          </a>
-        </div>
-
-        <div className="home-diagnosis-card" aria-label={t.homeCardHeadline}>
-          <span className="share-card-brand">eCPM Bazaar</span>
-          <h3>{t.homeCardHeadline}</h3>
-          <p>{t.homeCardProblem}</p>
-          <dl>
-            {t.homeCardDetails.map((detail) => (
-              <div key={detail.label}>
-                <dt>{detail.label}</dt>
-                <dd>{detail.value}</dd>
-              </div>
-            ))}
-          </dl>
-          <div className="home-card-action">
-            <span>{t.homeCardActionLabel}</span>
-            <p>{t.homeCardAction}</p>
-          </div>
-        </div>
-      </section>
-
       <section className="validation-section" aria-label="Free test diagnosis program">
         <div className="validation-copy">
           <p className="section-label">
-            <Users size={16} aria-hidden="true" />
+            <ShieldCheck size={16} aria-hidden="true" />
             {t.validationLabel}
           </p>
           <h2>{t.validationTitle}</h2>
           <p>{t.validationText}</p>
-          <div className="validation-actions">
-            <a className="primary-action" href="demo/">
-              {t.primary}
-              <ArrowUpRight size={18} aria-hidden="true" />
-            </a>
-            <a className="secondary-action" href="free-diagnosis/">
-              {t.secondary}
-            </a>
-          </div>
         </div>
         <div className="validation-card-grid">
           {t.validationItems.map((item) => (
@@ -618,61 +505,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="intro-band" id="product">
-        <div>
-          <p className="section-label">{t.productLabel}</p>
-          <h2>{t.productTitle}</h2>
-        </div>
-        <p>{t.productText}</p>
-      </section>
-
-      <section className="function-section" id="function">
-        <div className="function-copy">
-          <p className="section-label">{t.functionLabel}</p>
-          <h2>{t.functionTitle}</h2>
-          <p>{t.functionText}</p>
-        </div>
-        <div className="function-steps">
-          {t.steps.map((step, index) => (
-            <div className="step-row" key={step.title}>
-              <span>{index + 1}</span>
-              <div>
-                <strong>{step.title}</strong>
-                <small>{step.note}</small>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <figure className="method-visual">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="og-image.png"
-          alt={
-            lang === "zh"
-              ? "广告收入下降后按 eCPM、展示量、填充率、国家结构、广告位和广告源拆解原因的示意图"
-              : "An illustration of diagnosing an ad revenue drop through eCPM, impressions, fill rate, country mix, placement, and ad source"
-          }
-        />
-      </figure>
-
-      <section className="focus-grid">
-        {t.cards.map((card) => {
-          const Icon = card.icon;
-          return (
-            <article className="focus-card" key={card.title}>
-              <span className="focus-icon">
-                <Icon size={22} aria-hidden="true" />
-              </span>
-              <h3>{card.title}</h3>
-              <p>{card.text}</p>
-            </article>
-          );
-        })}
-      </section>
-
-      <section className="resource-link-section" aria-label="eCPM Bazaar resources">
+      <section className="resource-link-section" id="resources" aria-label="eCPM Bazaar resources">
         <div className="resource-link-heading">
           <div>
             <p className="section-label">{t.resourceLabel}</p>
@@ -714,40 +547,64 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      <section className="about-section" id="contact">
-        <div className="about-copy">
-          <p className="section-label">{t.serviceLabel}</p>
-          <h2>{t.serviceTitle}</h2>
-          <p>{t.serviceText}</p>
-        </div>
-        <div className="about-body">
-          <div className="founder-note">
-            <CheckCircle2 size={22} aria-hidden="true" />
-            <div>
-              <p className="section-label">{t.aboutLabel}</p>
-              <h3>{t.aboutTitle}</h3>
-              <p>{t.aboutText}</p>
-            </div>
+      <section className="home-card-section" aria-label={t.cardSectionLabel}>
+        <div className="home-card-copy">
+          <p className="section-label">
+            <CheckCircle2 size={16} aria-hidden="true" />
+            {t.cardSectionLabel}
+          </p>
+          <h2>{t.cardSectionTitle}</h2>
+          <p>{t.cardSectionText}</p>
+          <div className="home-card-points">
+            {t.cardSectionPoints.map((item) => (
+              <span key={item}>
+                <CheckCircle2 size={16} aria-hidden="true" />
+                {item}
+              </span>
+            ))}
           </div>
-          <a href={mailto}>
-            <Globe2 size={18} aria-hidden="true" />
-            {contactEmail}
+          <div className="validation-actions">
+            <a
+              className="primary-action"
+              href="demo/"
+              onClick={() => trackEvent("sample_demo_started", { page_path: "/", source_cta: "homepage-final", sample_type: "default" })}
+            >
+              {t.primary}
+              <ArrowUpRight size={18} aria-hidden="true" />
+            </a>
+            <a
+              className="secondary-action"
+              href="free-diagnosis/"
+              onClick={() => trackEvent("free_diagnosis_clicked", { page_path: "/", source_cta: "homepage-final" })}
+            >
+              {t.secondary}
+            </a>
+          </div>
+          <a className="inline-resource-link" href="revenue-drop-diagnosis-card.svg">
+            {t.cardAssetLink}
+            <ArrowUpRight size={15} aria-hidden="true" />
           </a>
         </div>
+
+        <div className="home-diagnosis-card" aria-label={t.homeCardHeadline}>
+          <span className="share-card-brand">eCPM Bazaar</span>
+          <h3>{t.homeCardHeadline}</h3>
+          <p>{t.homeCardProblem}</p>
+          <dl>
+            {t.homeCardDetails.map((detail) => (
+              <div key={detail.label}>
+                <dt>{detail.label}</dt>
+                <dd>{detail.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="home-card-action">
+            <span>{t.homeCardActionLabel}</span>
+            <p>{t.homeCardAction}</p>
+          </div>
+        </div>
       </section>
 
-      <section className="launch-badge-section" aria-label="Launch badges">
-        <a className="fazier-badge" href="https://fazier.com" target="_blank" rel="noreferrer">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=featured&theme=light"
-            width={250}
-            height={106}
-            alt="Fazier badge"
-          />
-        </a>
-      </section>
 
       <SiteFooter lang={lang} />
     </main>

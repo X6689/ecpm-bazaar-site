@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -17,11 +17,13 @@ import {
 } from "lucide-react";
 import { writeClipboardText } from "@/lib/clipboard";
 import { acceptedAliasGroups } from "@/lib/content/monetization-terms";
+import { CsvParseError, getCsvParseErrorCategory, getMissingRequiredFieldCategory, getUnsupportedFileType, isInvalidNumericValue, type CsvParseErrorCategory } from "@/lib/csv-upload-validation";
 import { aggregateDiagnosisRows } from "@/lib/diagnosis-math";
 import { demoRows, demoScenarios, fourteenDaySampleRows, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
 import { demoReviewDraftStorageKey, type DemoReviewDraft } from "@/lib/review-draft";
 import type { MetricRow } from "@/lib/types";
+import { missingRequiredFieldCount, rowCountBucket, trackEvent } from "@/lib/validation-events";
 import { SiteFooter } from "../site-footer";
 
 type Driver = "revenue" | "impressions" | "ecpm" | "fillRate" | "countryMix";
@@ -82,6 +84,12 @@ type ParseCsvResult = {
   fields: FieldStatus[];
   issues: IssueKey[];
 };
+type FeedbackState = {
+  usefulness?: "yes" | "no" | "not-sure";
+  driverClarity?: "clear" | "partly-clear" | "unclear";
+  nextCheck?: "impressions" | "match-fill" | "country-mix" | "placement" | "ad-source" | "time-of-day" | "ecpm" | "not-sure";
+};
+
 
 const fieldLabels: Record<CsvField, string> = {
   date: "date",
@@ -117,6 +125,18 @@ const displayFields: CsvField[] = [
   "country",
   "network",
   "mediation",
+  "revenue",
+  "ecpm",
+  "impressions",
+  "requests",
+  "matchedRequests",
+  "fills",
+  "clicks",
+  "fillRate",
+  "matchRate"
+];
+
+const numericFields: CsvField[] = [
   "revenue",
   "ecpm",
   "impressions",
@@ -278,7 +298,38 @@ const copy = {
     rows: "rows",
     dataPreview: "Data preview",
     noRows: "No rows loaded yet.",
-    parseError: "Could not read this CSV. Check the column names and try again.",
+    parseErrors: {
+      unsupported_file_type: "This public demo accepts CSV files only.",
+      empty_file: "This CSV has no report rows. Add a header row and at least one row of data, then try again.",
+      missing_date: "We could not identify a date column. Rename it to date, report date, or another accepted alias, then try again.",
+      missing_revenue: "We could not identify a revenue column. Rename it to revenue, estimated revenue, or another accepted alias, then try again.",
+      missing_impressions: "We could not identify an impressions column. Rename it to impressions, ad impressions, or another accepted alias, then try again.",
+      invalid_numeric_values: "Some metric values are not valid numbers. Check revenue, impressions, rates, and counts for text or malformed values.",
+      insufficient_periods: "Add at least two report dates for a latest-day comparison, or 14 dates for a 7-day comparison.",
+      unmapped_columns: "We could not recognize any CSV columns. Use the accepted aliases or start from a CSV template.",
+      unknown: "We could not read this CSV. Check the format and accepted column names, then try again."
+    },
+    acceptedAliases: "View accepted aliases",
+    trySample: "Try sample data",
+    feedback: {
+      title: "Was this diagnosis useful?",
+      usefulness: "Did this identify something you had not checked?",
+      clarity: "Was the most likely driver understandable?",
+      nextCheck: "What will you check next?",
+      yes: "Yes",
+      no: "No",
+      notSure: "Not sure",
+      clear: "Clear",
+      partlyClear: "Partly clear",
+      unclear: "Unclear",
+      impressions: "Impressions",
+      matchFill: "Match / fill rate",
+      countryMix: "Country mix",
+      placement: "Placement",
+      adSource: "Ad source",
+      timeOfDay: "Time of day",
+      ecpm: "eCPM"
+    },
     fallbackIssue: "Some optional fields are missing, so the diagnosis will be less precise.",
     twoDatesIssue: "Add at least two dates to compare the latest day with the previous day.",
     sevenDayIssue: "Add at least 14 dates for a 7-day comparison. The current diagnosis falls back to latest day vs previous day.",
@@ -432,8 +483,39 @@ const copy = {
     rows: "行数据",
     dataPreview: "数据预览",
     noRows: "还没有载入数据。",
-    parseError: "无法读取这个 CSV，请检查字段名后再试。",
+    parseErrors: {
+      unsupported_file_type: "这个公开 Demo 目前只接受 CSV 文件。",
+      empty_file: "这个 CSV 没有可用的报表行。请加入表头和至少一行数据后重试。",
+      missing_date: "无法识别 date 列。请改为 date、report date 或其他可识别别名后重试。",
+      missing_revenue: "无法识别 revenue 列。请改为 revenue、estimated revenue 或其他可识别别名后重试。",
+      missing_impressions: "无法识别 impressions 列。请改为 impressions、ad impressions 或其他可识别别名后重试。",
+      invalid_numeric_values: "部分指标不是有效数字。请检查收入、展示量、比例和计数列中是否混入文字或格式错误的数值。",
+      insufficient_periods: "最近一天对比至少需要两个报表日期，7 天对比至少需要 14 个日期。",
+      unmapped_columns: "没有识别到可用的 CSV 列。请使用可识别别名，或从 CSV 模板开始。",
+      unknown: "无法读取这个 CSV。请检查格式和可识别字段名后重试。"
+    },
+    acceptedAliases: "查看可识别别名",
+    trySample: "试用样例数据",
     fallbackIssue: "部分可选字段缺失，诊断精度会降低。",
+    feedback: {
+      title: "这次诊断有帮助吗？",
+      usefulness: "它有没有提示你一个之前没有检查过的方向？",
+      clarity: "最可能的原因是否容易理解？",
+      nextCheck: "你接下来准备先检查什么？",
+      yes: "有",
+      no: "没有",
+      notSure: "不确定",
+      clear: "清楚",
+      partlyClear: "部分清楚",
+      unclear: "不清楚",
+      impressions: "展示量",
+      matchFill: "匹配率 / 填充率",
+      countryMix: "国家结构",
+      placement: "广告位",
+      adSource: "广告源",
+      timeOfDay: "一天中的时段",
+      ecpm: "eCPM"
+    },
     twoDatesIssue: "至少需要两个日期，才能比较最近一天和前一天。",
     sevenDayIssue: "7 天对比至少需要 14 个日期。当前诊断会退回到最近一天 vs 前一天。",
     fillIssue: "requests 和 fills 缺失或为 0，填充率诊断会受限。",
@@ -552,12 +634,20 @@ function parseCsv(text: string): ParseCsvResult {
     .map((line) => line.trim())
     .filter(Boolean);
 
+  if (lines.length < 2) {
+    throw new CsvParseError("empty_file");
+  }
+
   const delimiter = detectDelimiter(lines[0] ?? "");
   const headers = parseCsvLine(lines[0] ?? "", delimiter).map((header) => header.trim());
   const fieldMap = buildFieldMap(headers);
-  const missingRequired = requiredFields.filter((field) => !fieldMap.has(field));
-  if (missingRequired.length) {
-    throw new Error("Missing required columns");
+  if (fieldMap.size === 0) {
+    throw new CsvParseError("unmapped_columns");
+  }
+
+  const missingRequiredCategory = getMissingRequiredFieldCategory([...fieldMap.keys()]);
+  if (missingRequiredCategory) {
+    throw new CsvParseError(missingRequiredCategory);
   }
 
   const rows = lines.slice(1).map((line, index) => {
@@ -570,6 +660,10 @@ function parseCsv(text: string): ParseCsvResult {
         record[field] = values[columnIndex] ?? "";
       }
     });
+
+    if (numericFields.some((field) => isInvalidNumericValue(valueFrom(record, field)))) {
+      throw new CsvParseError("invalid_numeric_values");
+    }
 
     const requests = numberValue(valueFrom(record, "requests"));
     const matchedRequests = numberValue(valueFrom(record, "matchedRequests"));
@@ -911,7 +1005,7 @@ export default function DemoPage() {
   const [source, setSource] = useState<"demo" | "sample" | "sample14" | "scenario" | "upload" | "paste">("demo");
   const [activeScenarioId, setActiveScenarioId] = useState<DemoScenarioId>(demoScenarios[0].id);
   const [comparisonMode, setComparisonMode] = useState<ComparisonMode>("latest-day");
-  const [error, setError] = useState("");
+  const [parseErrorCategory, setParseErrorCategory] = useState<CsvParseErrorCategory | null>(null);
   const [pastedCsv, setPastedCsv] = useState("");
   const [copied, setCopied] = useState(false);
   const [copiedResult, setCopiedResult] = useState(false);
@@ -920,6 +1014,9 @@ export default function DemoPage() {
   const [manualCopyText, setManualCopyText] = useState("");
   const t = copy[lang];
   const report = useMemo(() => diagnose(rows, comparisonMode), [comparisonMode, rows]);
+  const [feedback, setFeedback] = useState<FeedbackState>({});
+  const viewedResultKeys = useRef(new Set<string>());
+
   const activeScenario = demoScenarios.find((scenario) => scenario.id === activeScenarioId) ?? demoScenarios[0];
   const currentCsv = useMemo(() => metricRowsToCsv(rows), [rows]);
   const sourceLabel =
@@ -952,6 +1049,10 @@ export default function DemoPage() {
       setRows(parsed.rows);
       setFieldStatuses(parsed.fields);
       setCsvIssues(parsed.issues);
+      setParseErrorCategory(null);
+      setManualCopyText("");
+      setFeedback({});
+      trackEvent("sample_demo_started", { page_path: "/demo/", source_cta: "shared-link", comparison_period: linkedComparisonMode ?? "last-7-days", sample_type: "14-day" });
       setSource("sample14");
       setPastedCsv(csv);
       return;
@@ -964,6 +1065,10 @@ export default function DemoPage() {
       setRows(parsed.rows);
       setFieldStatuses(parsed.fields);
       setCsvIssues(parsed.issues);
+      setParseErrorCategory(null);
+      setManualCopyText("");
+      setFeedback({});
+      trackEvent("case_demo_started", { page_path: "/demo/", source_cta: "shared-link", case_type: scenario.id });
       setSource("scenario");
       setActiveScenarioId(scenario.id);
       setPastedCsv(metricRowsToCsv(scenario.rows));
@@ -974,6 +1079,26 @@ export default function DemoPage() {
       setComparisonMode(linkedComparisonMode);
     }
   }, []);
+
+  useEffect(() => {
+    if (source === "demo" || rows.length === 0) {
+      return;
+    }
+
+    const resultKey = `${source}:${comparisonMode}:${rows.length}:${report.previousDate ?? ""}:${report.currentDate ?? ""}:${activeScenarioId}`;
+    if (viewedResultKeys.current.has(resultKey)) {
+      return;
+    }
+
+    viewedResultKeys.current.add(resultKey);
+    trackEvent("diagnosis_result_viewed", {
+      page_path: "/demo/",
+      source_cta: source === "upload" ? "csv-upload" : source === "paste" ? "csv-paste" : source === "scenario" ? "diagnosis-cases" : "sample-demo",
+      comparison_period: comparisonMode,
+      row_count_bucket: rowCountBucket(rows.length),
+      case_type: source === "scenario" ? activeScenarioId : undefined
+    });
+  }, [activeScenarioId, comparisonMode, report.currentDate, report.previousDate, rows.length, source]);
 
   function buildDemoUrl(scenarioId: DemoScenarioId | null, mode: ComparisonMode, sampleId: DemoSampleId | null = null) {
     if (typeof window === "undefined") {
@@ -1267,34 +1392,71 @@ export default function DemoPage() {
     ].filter(Boolean).join("\n");
   }, [caveats, lang, rankedDrivers, report, suggestedChecks, supportingSignals, t]);
 
+  function applyParsedRows(parsed: ParseCsvResult) {
+    setRows(parsed.rows);
+    setFieldStatuses(parsed.fields);
+    setCsvIssues(parsed.issues);
+    setParseErrorCategory(null);
+    setManualCopyText("");
+    setFeedback({});
+  }
+
+  function trackParseSuccess(parsed: ParseCsvResult, inputSource: "file" | "paste") {
+    const detectedColumnCount = parsed.fields.filter((field) => Boolean(field.matchedHeader)).length;
+    const missingFieldCount = parsed.fields.filter((field) => field.required && !field.matchedHeader).length;
+
+    trackEvent("csv_parse_success", {
+      page_path: "/demo/",
+      source_cta: inputSource === "file" ? "csv-upload" : "csv-paste",
+      row_count_bucket: rowCountBucket(parsed.rows.length),
+      detected_column_count: detectedColumnCount,
+      missing_required_field_count: missingRequiredFieldCount(missingFieldCount)
+    });
+  }
+
+  function handleParseFailure(error: unknown, inputSource: "file" | "paste") {
+    const category = getCsvParseErrorCategory(error);
+    setParseErrorCategory(category);
+    trackEvent("csv_parse_failed", {
+      page_path: "/demo/",
+      source_cta: inputSource === "file" ? "csv-upload" : "csv-paste",
+      parse_error_category: category,
+      input_source: inputSource
+    });
+  }
+
   async function onUpload(file?: File) {
     if (!file) return;
+    trackEvent("csv_upload_started", { page_path: "/demo/", source_cta: "csv-upload", input_source: "file" });
+
+    const unsupportedFileType = getUnsupportedFileType(file);
+    if (unsupportedFileType) {
+      handleParseFailure(new CsvParseError(unsupportedFileType), "file");
+      return;
+    }
+
     try {
       const parsed = parseCsv(await file.text());
-      setRows(parsed.rows);
-      setFieldStatuses(parsed.fields);
-      setCsvIssues(parsed.issues);
+      applyParsedRows(parsed);
+      trackParseSuccess(parsed, "file");
       setSource("upload");
-      setError("");
-      setManualCopyText("");
       replaceDemoUrl(null, comparisonMode);
-    } catch {
-      setError(t.parseError);
+    } catch (error) {
+      handleParseFailure(error, "file");
     }
   }
 
   function analyzePastedCsv() {
+    trackEvent("csv_upload_started", { page_path: "/demo/", source_cta: "csv-paste", input_source: "paste" });
+
     try {
       const parsed = parseCsv(pastedCsv);
-      setRows(parsed.rows);
-      setFieldStatuses(parsed.fields);
-      setCsvIssues(parsed.issues);
+      applyParsedRows(parsed);
+      trackParseSuccess(parsed, "paste");
       setSource("paste");
-      setError("");
-      setManualCopyText("");
       replaceDemoUrl(null, comparisonMode);
-    } catch {
-      setError(t.parseError);
+    } catch (error) {
+      handleParseFailure(error, "paste");
     }
   }
 
@@ -1302,15 +1464,12 @@ export default function DemoPage() {
     const mode: ComparisonMode = "latest-day";
     const csv = metricRowsToCsv(demoRows);
     const parsed = parseCsv(csv);
-    setRows(parsed.rows);
-    setFieldStatuses(parsed.fields);
-    setCsvIssues(parsed.issues);
+    applyParsedRows(parsed);
+    trackEvent("sample_demo_started", { page_path: "/demo/", source_cta: "demo-hero", comparison_period: mode, sample_type: "default" });
     setSource("sample");
-    setError("");
     setActiveScenarioId(demoScenarios[0].id);
     setComparisonMode(mode);
     setPastedCsv(csv);
-    setManualCopyText("");
     replaceDemoUrl(demoScenarios[0].id, mode);
   }
 
@@ -1318,14 +1477,11 @@ export default function DemoPage() {
     const csv = metricRowsToCsv(fourteenDaySampleRows);
     const parsed = parseCsv(csv);
     const mode: ComparisonMode = "last-7-days";
-    setRows(parsed.rows);
-    setFieldStatuses(parsed.fields);
-    setCsvIssues(parsed.issues);
+    applyParsedRows(parsed);
+    trackEvent("sample_demo_started", { page_path: "/demo/", source_cta: "demo-hero", comparison_period: mode, sample_type: "14-day" });
     setSource("sample14");
-    setError("");
     setPastedCsv(csv);
     setComparisonMode(mode);
-    setManualCopyText("");
     replaceDemoUrl(null, mode, "14-day");
   }
 
@@ -1334,15 +1490,12 @@ export default function DemoPage() {
     const scenario = demoScenarios.find((item) => item.id === scenarioId) ?? demoScenarios[0];
     const csv = metricRowsToCsv(scenario.rows);
     const parsed = parseCsv(csv);
-    setRows(parsed.rows);
-    setFieldStatuses(parsed.fields);
-    setCsvIssues(parsed.issues);
+    applyParsedRows(parsed);
+    trackEvent("case_demo_started", { page_path: "/demo/", source_cta: "diagnosis-cases", case_type: scenario.id });
     setSource("scenario");
     setActiveScenarioId(scenario.id);
     setComparisonMode(mode);
-    setError("");
     setPastedCsv(csv);
-    setManualCopyText("");
     replaceDemoUrl(scenario.id, mode);
   }
 
@@ -1353,13 +1506,14 @@ export default function DemoPage() {
     setSource("demo");
     setActiveScenarioId(demoScenarios[0].id);
     setComparisonMode("latest-day");
-    setError("");
+    setParseErrorCategory(null);
     setPastedCsv("");
     setManualCopyText("");
     replaceDemoUrl(null, "latest-day");
   }
 
   function selectComparisonMode(mode: ComparisonMode) {
+    setFeedback({});
     setComparisonMode(mode);
     replaceDemoUrl(shouldShareScenario() ? activeScenarioId : null, mode, shouldShareFourteenDaySample() ? "14-day" : null);
   }
@@ -1389,6 +1543,18 @@ export default function DemoPage() {
     } catch {
       // If private browsing blocks storage, the normal free diagnosis page still works.
     }
+  }
+
+  function recordFeedback(nextFeedback: FeedbackState) {
+    const mergedFeedback = { ...feedback, ...nextFeedback };
+    setFeedback(mergedFeedback);
+    trackEvent("diagnosis_feedback_recorded", {
+      page_path: "/demo/",
+      source_cta: "diagnosis-feedback",
+      usefulness: mergedFeedback.usefulness,
+      driver_clarity: mergedFeedback.driverClarity,
+      next_check: mergedFeedback.nextCheck
+    });
   }
 
   async function copyDemoLink() {
@@ -1663,7 +1829,18 @@ export default function DemoPage() {
         <span>{t.privacy}</span>
         <a href="../privacy/">{lang === "zh" ? "查看数据安全说明" : "View data safety"}</a>
       </section>
-      {error ? <p className="demo-error">{error}</p> : null}
+      {parseErrorCategory ? (
+        <aside className="demo-error" role="alert">
+          <p>{t.parseErrors[parseErrorCategory]}</p>
+          <div className="demo-error-actions">
+            <a href="../templates/#accepted-aliases">{t.acceptedAliases}</a>
+            <button type="button" onClick={loadSample}>
+              <Table2 size={16} aria-hidden="true" />
+              {t.trySample}
+            </button>
+          </div>
+        </aside>
+      ) : null}
 
       <section className="demo-panel paste-panel" aria-label={t.pasteCsv}>
         <div className="demo-panel-header">
@@ -1809,12 +1986,108 @@ export default function DemoPage() {
             <section>
               <h3>{t.nextAction}</h3>
               <p>{t.nextActionText}</p>
-              <a className="next-action-link" href={freeDiagnosisHref} onClick={saveDemoReviewDraft}>
+              <a
+                className="next-action-link"
+                href={freeDiagnosisHref}
+                onClick={() => {
+                  trackEvent("free_diagnosis_clicked", { page_path: "/demo/", source_cta: "diagnosis-next-action" });
+                  saveDemoReviewDraft();
+                }}
+              >
                 <Mail size={16} aria-hidden="true" />
                 {t.requestReview}
               </a>
             </section>
           </div>
+
+          <section className="diagnosis-feedback-panel" aria-label={t.feedback.title}>
+            <h3>{t.feedback.title}</h3>
+            <div className="diagnosis-feedback-grid">
+              <fieldset>
+                <legend>{t.feedback.usefulness}</legend>
+                <div className="feedback-option-list">
+                  <button
+                    aria-pressed={feedback.usefulness === "yes"}
+                    className={feedback.usefulness === "yes" ? "active" : ""}
+                    type="button"
+                    onClick={() => recordFeedback({ usefulness: "yes" })}
+                  >
+                    {t.feedback.yes}
+                  </button>
+                  <button
+                    aria-pressed={feedback.usefulness === "no"}
+                    className={feedback.usefulness === "no" ? "active" : ""}
+                    type="button"
+                    onClick={() => recordFeedback({ usefulness: "no" })}
+                  >
+                    {t.feedback.no}
+                  </button>
+                  <button
+                    aria-pressed={feedback.usefulness === "not-sure"}
+                    className={feedback.usefulness === "not-sure" ? "active" : ""}
+                    type="button"
+                    onClick={() => recordFeedback({ usefulness: "not-sure" })}
+                  >
+                    {t.feedback.notSure}
+                  </button>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>{t.feedback.clarity}</legend>
+                <div className="feedback-option-list">
+                  <button
+                    aria-pressed={feedback.driverClarity === "clear"}
+                    className={feedback.driverClarity === "clear" ? "active" : ""}
+                    type="button"
+                    onClick={() => recordFeedback({ driverClarity: "clear" })}
+                  >
+                    {t.feedback.clear}
+                  </button>
+                  <button
+                    aria-pressed={feedback.driverClarity === "partly-clear"}
+                    className={feedback.driverClarity === "partly-clear" ? "active" : ""}
+                    type="button"
+                    onClick={() => recordFeedback({ driverClarity: "partly-clear" })}
+                  >
+                    {t.feedback.partlyClear}
+                  </button>
+                  <button
+                    aria-pressed={feedback.driverClarity === "unclear"}
+                    className={feedback.driverClarity === "unclear" ? "active" : ""}
+                    type="button"
+                    onClick={() => recordFeedback({ driverClarity: "unclear" })}
+                  >
+                    {t.feedback.unclear}
+                  </button>
+                </div>
+              </fieldset>
+              <fieldset className="feedback-next-check">
+                <legend>{t.feedback.nextCheck}</legend>
+                <div className="feedback-option-list">
+                  {[
+                    ["impressions", t.feedback.impressions],
+                    ["match-fill", t.feedback.matchFill],
+                    ["country-mix", t.feedback.countryMix],
+                    ["placement", t.feedback.placement],
+                    ["ad-source", t.feedback.adSource],
+                    ["time-of-day", t.feedback.timeOfDay],
+                    ["ecpm", t.feedback.ecpm],
+                    ["not-sure", t.feedback.notSure]
+                  ].map(([value, label]) => (
+                    <button
+                      aria-pressed={feedback.nextCheck === value}
+                      className={feedback.nextCheck === value ? "active" : ""}
+                      key={value}
+                      type="button"
+                      onClick={() => recordFeedback({ nextCheck: value as NonNullable<FeedbackState["nextCheck"]> })}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
+            </div>
+          </section>
 
           {manualCopyText ? (
             <div className="manual-copy-panel">
@@ -2017,7 +2290,13 @@ export default function DemoPage() {
       <section className="demo-panel data-panel">
         <div className="demo-panel-header">
           <h2>{t.dataPreview}</h2>
-          <a href={freeDiagnosisHref} onClick={saveDemoReviewDraft}>
+          <a
+            href={freeDiagnosisHref}
+            onClick={() => {
+              trackEvent("free_diagnosis_clicked", { page_path: "/demo/", source_cta: "data-preview" });
+              saveDemoReviewDraft();
+            }}
+          >
             <Mail size={17} aria-hidden="true" />
             {t.requestReview}
           </a>

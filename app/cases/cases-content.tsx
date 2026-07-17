@@ -5,6 +5,7 @@ import { ArrowLeft, BarChart3, CheckCircle2, Copy, Mail, Play } from "lucide-rea
 import type { DemoScenarioId } from "@/lib/demo-data";
 import { writeClipboardText } from "@/lib/clipboard";
 import { useLanguagePreference } from "@/lib/language";
+import { trackEvent } from "@/lib/validation-events";
 import { SiteFooter } from "../site-footer";
 
 type DiagnosisCase = {
@@ -470,7 +471,11 @@ export function CasesContent() {
                   <h3>{t.actionsTitle}</h3>
                   <div className="case-card-actions">
                     {hasDemoScenario ? (
-                      <a className="case-demo-link" href={`../demo/?case=${scenarioId}`}>
+                      <a
+                        className="case-demo-link"
+                        href={`../demo/?case=${scenarioId}`}
+                        onClick={() => trackEvent("case_demo_started", { page_path: "/cases/", source_cta: "case-card", case_type: scenarioId })}
+                      >
                         <Play size={17} aria-hidden="true" />
                         {t.tryThisCase}
                       </a>

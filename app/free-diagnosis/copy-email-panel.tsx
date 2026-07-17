@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CheckCircle2, Copy, Mail, Send } from "lucide-react";
 import { writeClipboardText } from "@/lib/clipboard";
+import { publicContactEmail } from "@/lib/site-contact";
+import { trackEvent } from "@/lib/validation-events";
 
 type Lang = "en" | "zh";
 
@@ -15,15 +17,16 @@ export type DiagnosisRequestPreset = {
   dataSample?: string;
 };
 
+type FormSource = "direct" | "case" | "sample" | "demo-draft";
+
 type CopyEmailPanelProps = {
   body: string;
   fieldList: string;
   lang?: Lang;
   mailto: string;
   preset?: DiagnosisRequestPreset | null;
+  formSource?: FormSource;
 };
-
-const contactEmail = "xmmyy168@gmail.com";
 
 const platformOptions = ["AdMob", "Unity Ads", "AppLovin MAX", "Unity LevelPlay / ironSource", "TopOn", "Other"];
 const mediationOptions = ["None", "AdMob mediation", "AppLovin MAX", "Unity LevelPlay / ironSource", "TopOn", "Not sure"];
@@ -159,7 +162,7 @@ function trimOrFallback(value: string, fallback: string) {
   return trimmed.length > 0 ? trimmed : fallback;
 }
 
-export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }: CopyEmailPanelProps) {
+export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset, formSource = "direct" }: CopyEmailPanelProps) {
   const [copied, setCopied] = useState<"request" | "body" | "fields" | null>(null);
   const [email, setEmail] = useState("");
   const [platform, setPlatform] = useState(platformOptions[0]);
@@ -174,6 +177,7 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
   const [changeIndex, setChangeIndex] = useState(0);
   const [periodIndex, setPeriodIndex] = useState(0);
   const [notes, setNotes] = useState("");
+  const formStartedRef = useRef(false);
   const [dataSample, setDataSample] = useState("");
   const [openedDraft, setOpenedDraft] = useState(false);
   const t = copy[lang];
@@ -228,7 +232,7 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
     t.safetyLine
   ].join("\n");
 
-  const diagnosisMailto = `mailto:${contactEmail}?subject=${encodeURIComponent(t.subject)}&body=${encodeURIComponent(diagnosisRequest)}`;
+  const diagnosisMailto = `mailto:${publicContactEmail}?subject=${encodeURIComponent(t.subject)}&body=${encodeURIComponent(diagnosisRequest)}`;
 
   async function copyText(kind: "request" | "body" | "fields", text: string) {
     if (await writeClipboardText(text)) {
@@ -239,7 +243,22 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
     }
   }
 
+  function trackFormStarted() {
+    if (formStartedRef.current) {
+      return;
+    }
+
+    formStartedRef.current = true;
+    trackEvent("diagnosis_form_started", { page_path: "/free-diagnosis/", form_source: formSource });
+  }
+
+  function trackDraftGenerated() {
+    trackEvent("email_draft_generated", { page_path: "/free-diagnosis/", form_source: formSource });
+  }
+
   function openDraft() {
+    trackFormStarted();
+    trackDraftGenerated();
     setOpenedDraft(true);
     window.location.href = diagnosisMailto;
   }
@@ -248,6 +267,7 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
     <div className="copy-panel">
       <form
         className="diagnosis-request-form"
+        onFocus={trackFormStarted}
         onSubmit={(event) => {
           event.preventDefault();
           openDraft();
@@ -377,7 +397,14 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset }:
       </form>
 
       <div className="copy-actions">
-        <a className="primary-action" href={mailto}>
+        <a
+          className="primary-action"
+          href={mailto}
+          onClick={() => {
+            trackFormStarted();
+            trackDraftGenerated();
+          }}
+        >
           <Mail size={18} aria-hidden="true" />
           {t.openStarter}
         </a>

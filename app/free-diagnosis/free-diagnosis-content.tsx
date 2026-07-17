@@ -5,10 +5,12 @@ import { ArrowLeft, ArrowUpRight, CheckCircle2, Mail, Play, ShieldCheck } from "
 import { demoScenarios, fourteenDaySampleRows, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
 import { demoReviewDraftStorageKey, parseDemoReviewDraft, type DemoReviewDraft } from "@/lib/review-draft";
+import { publicContactEmail } from "@/lib/site-contact";
+import { trackEvent } from "@/lib/validation-events";
 import { CopyEmailPanel, type DiagnosisRequestPreset } from "./copy-email-panel";
 import { SiteFooter } from "../site-footer";
 
-const email = "xmmyy168@gmail.com";
+const email = publicContactEmail;
 const subject = "Free eCPM Bazaar diagnosis";
 const fieldList =
   "date, gameName, platform, adNetwork, mediation, adFormat, placementName, adUnit, country, revenue, ecpm, arpDau, dau, impressions, impressionsPerDau, requests, matchedRequests, fills, matchRate, fillRate";
@@ -424,6 +426,7 @@ export function FreeDiagnosisContent() {
 
     return null;
   }, [activeSample, activeScenario, demoDraft, t]);
+  const formSource = activeSample ? "sample" : demoDraft ? "demo-draft" : activeScenario ? "case" : "direct";
   const mailto = useMemo(
     () => `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(t.requestBody)}`,
     [t.requestBody]
@@ -471,7 +474,11 @@ export function FreeDiagnosisContent() {
         <p>{t.lede}</p>
         <p className="diagnosis-conversion-note">{t.conversionText}</p>
         <div className="hero-actions">
-          <a className="primary-action" href={mailto}>
+          <a
+            className="primary-action"
+            href={mailto}
+            onClick={() => trackEvent("email_draft_generated", { page_path: "/free-diagnosis/", form_source: "direct" })}
+          >
             <Mail size={18} aria-hidden="true" />
             {t.emailButton}
           </a>
@@ -537,7 +544,7 @@ export function FreeDiagnosisContent() {
               </div>
             </div>
           </div>
-          <CopyEmailPanel body={t.requestBody} fieldList={fieldList} lang={lang} mailto={mailto} preset={preset} />
+          <CopyEmailPanel body={t.requestBody} fieldList={fieldList} lang={lang} mailto={mailto} preset={preset} formSource={formSource} />
         </div>
       </section>
 

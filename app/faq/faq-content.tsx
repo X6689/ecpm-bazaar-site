@@ -45,11 +45,11 @@ const faqs = [
     en: {
       question: "Do I need to connect AdMob, AppLovin MAX, Unity LevelPlay, or TopOn?",
       answer:
-        "Not for the public demo. Start with CSV rows or the sample CSV. API connections can come later only after the diagnosis workflow is useful with real data."
+        "No. The current public workflow supports only sample data and anonymized CSV rows. Account connections, API integrations, and automatic sync are not available."
     },
     zh: {
       question: "我需要连接 AdMob、AppLovin MAX、Unity LevelPlay 或 TopOn 吗？",
-      answer: "公开 Demo 不需要。先用 CSV 行或样例 CSV 测试。只有诊断流程被真实数据证明有用后，才考虑真实 API 接入。"
+      answer: "不需要。当前公开流程只支持样例数据和脱敏 CSV 行；账号连接、API 接入和自动同步目前都不可用。"
     }
   },
   {
