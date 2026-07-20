@@ -14,8 +14,7 @@
 .bazaar-demo-page .demo-privacy,
 .bazaar-demo-page .demo-error,
 .bazaar-demo-page .demo-assist-grid,
-.bazaar-demo-page .demo-grid,
-.bazaar-demo-page .site-footer {
+.bazaar-demo-page .demo-grid {
   width: min(var(--page-width), calc(100% - 64px));
   margin-inline: auto;
 }
@@ -180,8 +179,7 @@
   .bazaar-demo-page .demo-privacy,
   .bazaar-demo-page .demo-error,
   .bazaar-demo-page .demo-assist-grid,
-  .bazaar-demo-page .demo-grid,
-  .bazaar-demo-page .site-footer { width: min(100% - 40px, var(--page-width)); }
+  .bazaar-demo-page .demo-grid { width: min(100% - 40px, var(--page-width)); }
   .bazaar-demo-page .demo-hero { padding: 38px 0 24px; }
   .bazaar-demo-page .demo-hero h1 { font-size: 36px; }
   .bazaar-demo-page .demo-actions { display: grid; grid-template-columns: minmax(0, 1fr); }

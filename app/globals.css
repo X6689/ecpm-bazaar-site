@@ -1250,16 +1250,24 @@ h3,
 }
 
 .site-footer {
-  width: min(1120px, calc(100% - 40px));
-  margin: 70px auto 0;
+  width: 100%;
+  margin: 70px 0 0;
   padding: 34px 0 56px;
   border-top: 1px solid var(--line);
 }
 
 .site-footer-main {
   display: grid;
-  grid-template-columns: minmax(260px, 1.2fr) minmax(150px, 0.55fr) minmax(210px, 0.8fr) minmax(220px, 0.72fr);
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.55fr) minmax(0, 0.8fr) minmax(0, 0.72fr);
   gap: 30px;
+  width: min(1120px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.site-footer-main > *,
+.site-footer-brand,
+.site-footer-column {
+  min-width: 0;
 }
 
 .site-footer-brand {
@@ -1303,23 +1311,49 @@ h3,
 .site-footer-trust span,
 .site-footer-email {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 7px;
+  min-width: 0;
+  max-width: 100%;
   width: fit-content;
   color: #41524b;
   font-size: 14px;
   font-weight: 720;
   line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 
 .site-footer-column nav a svg,
 .site-footer-email svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
   color: var(--teal);
+}
+
+.site-footer-email span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .site-footer-trust svg {
   flex: 0 0 auto;
+  margin-top: 2px;
   color: var(--teal);
+}
+
+@media (max-width: 1080px) {
+  .site-footer-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px 40px;
+  }
+}
+
+@media (max-width: 620px) {
+  .site-footer-main {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100% - 32px, 1120px);
+  }
 }
 
 @media (max-width: 880px) {
@@ -1374,8 +1408,7 @@ h3,
   .focus-grid,
   .home-diagnosis-card dl,
   .fit-split,
-  .resource-link-grid,
-  .site-footer-main {
+  .resource-link-grid {
     grid-template-columns: 1fr;
     flex-direction: column;
   }
@@ -1398,8 +1431,7 @@ h3,
   .method-visual,
   .resource-link-section,
   .focus-grid,
-  .launch-badge-section,
-  .site-footer {
+  .launch-badge-section {
     width: min(1120px, calc(100% - 32px));
   }
 

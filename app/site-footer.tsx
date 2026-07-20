@@ -97,7 +97,7 @@ export function SiteFooter({ lang }: SiteFooterProps) {
           <h3>{t.contact}</h3>
           <a className="site-footer-email" href={`mailto:${publicContactEmail}`}>
             <Mail size={16} aria-hidden="true" />
-            {publicContactEmail}
+            <span>{publicContactEmail}</span>
           </a>
           <p>{t.note}</p>
         </div>

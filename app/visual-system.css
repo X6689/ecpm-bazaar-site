@@ -596,8 +596,8 @@
 .bazaar-final-cta h2 { color: #fff; }
 .bazaar-final-cta p:not(.bazaar-eyebrow) { color: #cdebe3; }
 
-.bazaar-page .site-footer { margin: 0; padding: 50px 0; border-top: 0; background: #071f1d; color: #e8fff8; }
-.bazaar-page .site-footer-main { width: min(var(--page-width), calc(100% - 64px)); }
+.bazaar-page .site-footer { width: 100%; margin: 0; padding: 50px 0; border-top: 0; background: #071f1d; color: #e8fff8; }
+.bazaar-page .site-footer-main { width: min(var(--page-width), calc(100% - 64px)); margin-inline: auto; }
 .bazaar-page .site-footer-brand h2 { color: #fff; }
 .bazaar-page .site-footer-brand p:last-child,
 .bazaar-page .site-footer-column p { color: #a6c4bd; }

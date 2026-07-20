@@ -134,10 +134,6 @@
   color: #e8fff8;
 }
 
-.bazaar-resource-page .site-footer-main {
-  width: min(var(--page-width), calc(100% - 64px));
-}
-
 .bazaar-resource-page .site-footer-brand h2 { color: #fff; }
 .bazaar-resource-page .site-footer-brand p:last-child,
 .bazaar-resource-page .site-footer-column p { color: #a6c4bd; }
@@ -327,8 +323,7 @@
   .bazaar-resource-page .diagnosis-output-section,
   .bazaar-resource-page .resource-cta,
   .bazaar-resource-page .method-layout,
-  .bazaar-resource-page .learn-content-shell,
-  .bazaar-resource-page .site-footer-main { width: min(100% - 40px, var(--page-width)); }
+  .bazaar-resource-page .learn-content-shell { width: min(100% - 40px, var(--page-width)); }
   .bazaar-resource-page .resource-nav { min-height: 66px; }
   .bazaar-resource-page .resource-nav > div { gap: 7px; }
   .bazaar-resource-page .resource-nav > div > a { display: none; }
