@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CheckCircle2, Copy, Mail, Send } from "lucide-react";
 import { writeClipboardText } from "@/lib/clipboard";
-import { publicContactEmail } from "@/lib/site-contact";
+import { publicContactMailto } from "@/lib/site-contact";
 import { trackEvent } from "@/lib/validation-events";
 
 type Lang = "en" | "zh";
@@ -232,7 +232,7 @@ export function CopyEmailPanel({ body, fieldList, lang = "en", mailto, preset, f
     t.safetyLine
   ].join("\n");
 
-  const diagnosisMailto = `mailto:${publicContactEmail}?subject=${encodeURIComponent(t.subject)}&body=${encodeURIComponent(diagnosisRequest)}`;
+  const diagnosisMailto = `${publicContactMailto}?subject=${encodeURIComponent(t.subject)}&body=${encodeURIComponent(diagnosisRequest)}`;
 
   async function copyText(kind: "request" | "body" | "fields", text: string) {
     if (await writeClipboardText(text)) {

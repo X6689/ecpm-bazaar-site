@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowUpRight, CheckCircle2, Mail, Play, ShieldCheck } from "
 import { demoScenarios, fourteenDaySampleRows, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
 import { demoReviewDraftStorageKey, parseDemoReviewDraft, type DemoReviewDraft } from "@/lib/review-draft";
-import { publicContactEmail } from "@/lib/site-contact";
+import { publicContactEmail, publicContactMailto } from "@/lib/site-contact";
 import { trackEvent } from "@/lib/validation-events";
 import { CopyEmailPanel, type DiagnosisRequestPreset } from "./copy-email-panel";
 import { ExampleOutputCard } from "../components/diagnosis-visuals";
@@ -429,7 +429,7 @@ export function FreeDiagnosisContent() {
   }, [activeSample, activeScenario, demoDraft, t]);
   const formSource = activeSample ? "sample" : demoDraft ? "demo-draft" : activeScenario ? "case" : "direct";
   const mailto = useMemo(
-    () => `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(t.requestBody)}`,
+    () => `${publicContactMailto}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(t.requestBody)}`,
     [t.requestBody]
   );
 

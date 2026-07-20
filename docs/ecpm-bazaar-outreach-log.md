@@ -15,7 +15,7 @@ This file is the running record for eCPM Bazaar outreach, free launch sites, for
 | Free diagnosis | https://ecpmbazaar.com/free-diagnosis/ | Mailto-based intake for anonymized ad monetization rows; no account access. |
 | FAQ | https://ecpmbazaar.com/faq/ | Common questions about browser-only CSV diagnosis, fields, anonymization, and fit. |
 | Data safety | https://ecpmbazaar.com/privacy/ | Privacy-first guidance for what to share and what to keep private. |
-| Contact email | xmmyy168@gmail.com | Overseas-facing contact address. |
+| Contact email | xia.business.systems@gmail.com | Overseas-facing contact address. |
 | GitHub repo | https://github.com/X6689/ecpm-bazaar-site | Source and GitHub Pages deployment. |
 
 ## Product Positioning
@@ -57,7 +57,7 @@ Execution focus:
 - Copied diagnosis output now includes the top segment drops so users can paste a more useful summary into Reddit, email, or support conversations.
 - Demo and free-diagnosis copy buttons now use a clipboard fallback; demo also shows a manual-copy textarea when browser clipboard access is blocked.
 - Demo now supports pasted CSV or tab-separated report rows, so users can test rows copied from spreadsheets without selecting a file.
-- Free diagnosis now has a browser-only request builder for contact email, ad platform, change type, comparison period, notes, and anonymized rows; it generates an email draft to `xmmyy168@gmail.com`.
+- Free diagnosis now has a browser-only request builder for contact email, ad platform, change type, comparison period, notes, and anonymized rows; it generates an email draft to `xia.business.systems@gmail.com`.
 - Demo now includes a shareable diagnosis report with driver ranking, suggested checks, caveats, and a copy-ready report preview for Reddit/email/team discussion.
 
 ## X / Twitter Positioning Assets

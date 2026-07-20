@@ -2,7 +2,7 @@
 
 import { ArrowUpRight, Mail, ShieldCheck } from "lucide-react";
 import type { Lang } from "@/lib/language";
-import { publicContactEmail } from "@/lib/site-contact";
+import { publicContactEmail, publicContactMailto } from "@/lib/site-contact";
 
 type SiteFooterProps = {
   lang: Lang;
@@ -95,7 +95,7 @@ export function SiteFooter({ lang }: SiteFooterProps) {
 
         <div className="site-footer-column">
           <h3>{t.contact}</h3>
-          <a className="site-footer-email" href={`mailto:${publicContactEmail}`}>
+          <a className="site-footer-email" href={publicContactMailto}>
             <Mail size={16} aria-hidden="true" />
             <span>{publicContactEmail}</span>
           </a>

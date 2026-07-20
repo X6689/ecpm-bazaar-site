@@ -33,9 +33,12 @@ function publicSourceText() {
 
 test("public source has no legacy contact email", () => {
   const source = publicSourceText();
+  const legacyContactEmails = ["xmmyy168", "xmmyy1688"].map((localPart) => `${localPart}@gmail.com`);
 
-  assert.equal(source.includes("xmmyy168@gmail.com"), false);
-  assert.equal(source.includes("xmmyy1688@gmail.com"), true);
+  for (const legacyEmail of legacyContactEmails) {
+    assert.equal(source.includes(legacyEmail), false);
+  }
+  assert.equal(source.includes("xia.business.systems@gmail.com"), true);
 });
 
 test("validation event sanitizer removes sensitive fields", () => {
