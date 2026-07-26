@@ -16,8 +16,9 @@ import {
   Table2
 } from "lucide-react";
 import { writeClipboardText } from "@/lib/clipboard";
-import { acceptedAliasGroups } from "@/lib/content/monetization-terms";
-import { CsvParseError, getCsvParseErrorCategory, getMissingRequiredFieldCategory, getUnsupportedFileType, isInvalidNumericValue, type CsvParseErrorCategory } from "@/lib/csv-upload-validation";
+import { combineCsvReports, createFieldStatuses, parseCsv, type FieldStatus, type IssueKey, type ParseCsvResult } from "@/lib/csv-parser";
+import { CsvParseError, getCsvParseErrorCategory, getUnsupportedFileType, type CsvParseErrorCategory } from "@/lib/csv-upload-validation";
+import { buildDimensionMovements, chooseDriver, percentChange, type Driver } from "@/lib/diagnosis-analysis";
 import { aggregateDiagnosisRows } from "@/lib/diagnosis-math";
 import { demoRows, demoScenarios, fourteenDaySampleRows, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
@@ -27,10 +28,9 @@ import { missingRequiredFieldCount, rowCountBucket, trackEvent } from "@/lib/val
 import { SiteFooter } from "../site-footer";
 import { PeriodComparisonChart } from "../components/diagnosis-visuals";
 
-type Driver = "revenue" | "impressions" | "ecpm" | "fillRate" | "countryMix";
 type DiagnosisSeverity = "high" | "medium" | "low";
 type ComparisonMode = "latest-day" | "last-7-days";
-type DemoSampleId = "14-day";
+type DemoSampleId = "14-day" | "synthetic";
 type BreakdownRow = {
   key: string;
   label: string;
@@ -44,110 +44,12 @@ type BreakdownRow = {
   driver: Driver;
   revenueDelta: number;
 };
-type CsvField =
-  | "date"
-  | "appName"
-  | "placementName"
-  | "adUnit"
-  | "adFormat"
-  | "country"
-  | "network"
-  | "mediation"
-  | "revenue"
-  | "ecpm"
-  | "impressions"
-  | "requests"
-  | "matchedRequests"
-  | "fills"
-  | "clicks"
-  | "fillRate"
-  | "matchRate";
-
-type FieldStatus = {
-  field: CsvField;
-  label: string;
-  required: boolean;
-  matchedHeader?: string;
-};
-
-type IssueKey =
-  | "fallbackIssue"
-  | "twoDatesIssue"
-  | "sevenDayIssue"
-  | "fillIssue"
-  | "ecpmIssue"
-  | "matchRateDefinitionNote"
-  | "rowMatchIssue"
-  | "lowVolumeIssue";
-
-type ParseCsvResult = {
-  rows: MetricRow[];
-  fields: FieldStatus[];
-  issues: IssueKey[];
-};
 type FeedbackState = {
   usefulness?: "yes" | "no" | "not-sure";
   driverClarity?: "clear" | "partly-clear" | "unclear";
   nextCheck?: "impressions" | "match-fill" | "country-mix" | "placement" | "ad-source" | "time-of-day" | "ecpm" | "not-sure";
 };
 
-
-const fieldLabels: Record<CsvField, string> = {
-  date: "date",
-  appName: "appName",
-  placementName: "placementName",
-  adUnit: "adUnit",
-  adFormat: "adFormat",
-  country: "country",
-  network: "network",
-  mediation: "mediation",
-  revenue: "revenue",
-  ecpm: "ecpm",
-  impressions: "impressions",
-  requests: "requests",
-  matchedRequests: "matchedRequests",
-  fills: "fills",
-  clicks: "clicks",
-  fillRate: "fillRate",
-  matchRate: "matchRate"
-};
-
-const fieldAliases = Object.fromEntries(
-  acceptedAliasGroups.map(({ field, aliases }) => [field, [...aliases]])
-) as Record<CsvField, string[]>;
-
-const requiredFields: CsvField[] = ["date", "revenue", "impressions"];
-const displayFields: CsvField[] = [
-  "date",
-  "appName",
-  "placementName",
-  "adUnit",
-  "adFormat",
-  "country",
-  "network",
-  "mediation",
-  "revenue",
-  "ecpm",
-  "impressions",
-  "requests",
-  "matchedRequests",
-  "fills",
-  "clicks",
-  "fillRate",
-  "matchRate"
-];
-
-const numericFields: CsvField[] = [
-  "revenue",
-  "ecpm",
-  "impressions",
-  "requests",
-  "matchedRequests",
-  "fills",
-  "clicks",
-  "fillRate",
-  "matchRate"
-];
 
 function normalizeScenarioId(value: string | null): DemoScenarioId | null {
   if (demoScenarios.some((scenario) => scenario.id === value)) {
@@ -166,7 +68,7 @@ function normalizeComparisonMode(value: string | null): ComparisonMode | null {
 }
 
 function normalizeSampleId(value: string | null): DemoSampleId | null {
-  return value === "14-day" ? value : null;
+  return value === "14-day" || value === "synthetic" ? value : null;
 }
 
 function changeIndexForDriver(driver: Driver) {
@@ -194,6 +96,9 @@ const copy = {
       "Use the sample data or upload a CSV. eCPM Bazaar compares the selected period with the previous period and explains whether revenue moved because of eCPM, impressions, fill rate, country, placement, or ad source changes.",
     useSample: "Load sample CSV",
     useFourteenDaySample: "Load 14-day sample",
+    useSyntheticSample: "Try with sample data",
+    loadingSyntheticSample: "Analyzing sample data...",
+    syntheticLoadError: "The sample reports could not be loaded. Please try again.",
     downloadSample: "Download current CSV",
     scenarioLabel: "Diagnosis cases",
     scenarioTitle: "Try three common ad revenue drop scenarios",
@@ -234,6 +139,7 @@ const copy = {
     requestReview: "Request diagnosis",
     sourceSample: "Sample CSV loaded",
     sourceFourteenDaySample: "14-day sample loaded",
+    sourceSyntheticSample: "Synthetic sample data loaded",
     sourceScenario: "Diagnosis case loaded",
     sourceDemo: "Built-in demo data",
     sourceUpload: "Uploaded CSV",
@@ -296,6 +202,17 @@ const copy = {
     weightedEcpm: "Weighted eCPM",
     impressions: "Impressions",
     fillRate: "Fill rate",
+    requests: "Requests",
+    matchRate: "Match rate",
+    showRate: "Show rate",
+    syntheticLabel: "Synthetic sample data",
+    syntheticDisclosure: "This demonstration does not contain real customer or app data.",
+    uploadOwnReports: "Upload your own report",
+    dimensionEvidence: "Mix and delivery evidence",
+    dimensionEvidenceTitle: "Where delivery changed",
+    countryMixView: "Country mix",
+    formatMixView: "Format mix",
+    sourceDeliveryView: "Ad-source delivery",
     rows: "rows",
     dataPreview: "Data preview",
     noRows: "No rows loaded yet.",
@@ -380,6 +297,9 @@ const copy = {
       "使用样例数据或上传 CSV。eCPM Bazaar 会比较所选周期和上一周期，判断收入变化更可能来自 eCPM、展示量、填充率、国家地区、广告位还是广告来源。",
     useSample: "载入样例 CSV",
     useFourteenDaySample: "载入 14 天样例",
+    useSyntheticSample: "使用合成样例数据",
+    loadingSyntheticSample: "正在分析样例数据...",
+    syntheticLoadError: "无法载入样例报表，请重试。",
     downloadSample: "下载当前 CSV",
     scenarioLabel: "诊断案例",
     scenarioTitle: "试试三类常见广告收入下降场景",
@@ -419,6 +339,7 @@ const copy = {
     requestReview: "申请诊断",
     sourceSample: "已载入样例 CSV",
     sourceFourteenDaySample: "已载入 14 天样例",
+    sourceSyntheticSample: "已载入合成样例数据",
     sourceScenario: "已载入诊断案例",
     sourceDemo: "内置演示数据",
     sourceUpload: "已上传 CSV",
@@ -481,6 +402,17 @@ const copy = {
     weightedEcpm: "加权 eCPM",
     impressions: "展示量",
     fillRate: "填充率",
+    requests: "请求数",
+    matchRate: "匹配率",
+    showRate: "展示率",
+    syntheticLabel: "合成样例数据",
+    syntheticDisclosure: "本演示不包含真实客户或应用数据。",
+    uploadOwnReports: "上传你自己的报表",
+    dimensionEvidence: "结构与投放证据",
+    dimensionEvidenceTitle: "投放变化发生在哪里",
+    countryMixView: "国家结构",
+    formatMixView: "广告格式结构",
+    sourceDeliveryView: "广告源投放",
     rows: "行数据",
     dataPreview: "数据预览",
     noRows: "还没有载入数据。",
@@ -558,195 +490,6 @@ const copy = {
     summarySuffix: "相较上一周期。"
   }
 };
-
-function numberValue(value: unknown) {
-  const parsed = Number(String(value ?? "").replace(/[$,%]/g, "").trim());
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function normalizeHeader(header: string) {
-  return header.replace(/^\uFEFF/, "").toLowerCase().replace(/[^a-z0-9]/g, "");
-}
-
-const aliasLookup = new Map<string, CsvField>();
-for (const field of displayFields) {
-  for (const alias of fieldAliases[field]) {
-    aliasLookup.set(normalizeHeader(alias), field);
-  }
-}
-
-function createFieldStatuses(fieldMap?: Map<CsvField, string>): FieldStatus[] {
-  return displayFields.map((field) => ({
-    field,
-    label: fieldLabels[field],
-    required: requiredFields.includes(field),
-    matchedHeader: fieldMap === undefined ? fieldLabels[field] : fieldMap.get(field)
-  }));
-}
-
-function buildFieldMap(headers: string[]) {
-  const fieldMap = new Map<CsvField, string>();
-
-  for (const header of headers) {
-    const field = aliasLookup.get(normalizeHeader(header));
-    if (field && !fieldMap.has(field)) {
-      fieldMap.set(field, header);
-    }
-  }
-
-  return fieldMap;
-}
-
-function valueFrom(record: Record<CsvField, string>, field: CsvField) {
-  return record[field] ?? "";
-}
-
-function detectDelimiter(headerLine: string) {
-  const tabCount = headerLine.split("\t").length;
-  const commaCount = headerLine.split(",").length;
-  return tabCount > commaCount ? "\t" : ",";
-}
-
-function parseCsvLine(line: string, delimiter = ",") {
-  const values: string[] = [];
-  let current = "";
-  let inQuotes = false;
-
-  for (const char of line) {
-    if (char === "\"") {
-      inQuotes = !inQuotes;
-      continue;
-    }
-    if (char === delimiter && !inQuotes) {
-      values.push(current.trim());
-      current = "";
-      continue;
-    }
-    current += char;
-  }
-
-  values.push(current.trim());
-  return values;
-}
-
-function parseCsv(text: string): ParseCsvResult {
-  const lines = text
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
-
-  if (lines.length < 2) {
-    throw new CsvParseError("empty_file");
-  }
-
-  const delimiter = detectDelimiter(lines[0] ?? "");
-  const headers = parseCsvLine(lines[0] ?? "", delimiter).map((header) => header.trim());
-  const fieldMap = buildFieldMap(headers);
-  if (fieldMap.size === 0) {
-    throw new CsvParseError("unmapped_columns");
-  }
-
-  const missingRequiredCategory = getMissingRequiredFieldCategory([...fieldMap.keys()]);
-  if (missingRequiredCategory) {
-    throw new CsvParseError(missingRequiredCategory);
-  }
-
-  const rows = lines.slice(1).map((line, index) => {
-    const values = parseCsvLine(line, delimiter);
-    const record = Object.fromEntries(displayFields.map((field) => [field, ""])) as Record<CsvField, string>;
-
-    headers.forEach((header, columnIndex) => {
-      const field = aliasLookup.get(normalizeHeader(header));
-      if (field) {
-        record[field] = values[columnIndex] ?? "";
-      }
-    });
-
-    if (numericFields.some((field) => isInvalidNumericValue(valueFrom(record, field)))) {
-      throw new CsvParseError("invalid_numeric_values");
-    }
-
-    const requests = numberValue(valueFrom(record, "requests"));
-    const matchedRequests = numberValue(valueFrom(record, "matchedRequests"));
-    const fills = numberValue(valueFrom(record, "fills"));
-    const impressions = numberValue(valueFrom(record, "impressions"));
-    const revenue = numberValue(valueFrom(record, "revenue"));
-    const providedEcpm = numberValue(valueFrom(record, "ecpm"));
-    const ecpm = providedEcpm || (impressions ? (revenue / impressions) * 1000 : 0);
-    const providedFillRate = numberValue(valueFrom(record, "fillRate"));
-    const fillRate = providedFillRate || (requests ? (fills / requests) * 100 : 0);
-    const matchRate = numberValue(valueFrom(record, "matchRate"));
-    const clicks = numberValue(valueFrom(record, "clicks"));
-
-    return {
-      date: String(valueFrom(record, "date") || `row-${index + 1}`),
-      appId: String(valueFrom(record, "appName") || "app").toLowerCase().replace(/\s+/g, "_"),
-      appName: String(valueFrom(record, "appName") || "Uploaded App"),
-      placementId: String(valueFrom(record, "placementName") || valueFrom(record, "adUnit") || valueFrom(record, "adFormat") || "placement")
-        .toLowerCase()
-        .replace(/\s+/g, "_"),
-      placementName: String(valueFrom(record, "placementName") || valueFrom(record, "adUnit") || valueFrom(record, "adFormat") || "All Placements"),
-      adUnit: String(valueFrom(record, "adUnit") || "") || undefined,
-      adFormat: String(valueFrom(record, "adFormat") || "") || undefined,
-      country: String(valueFrom(record, "country") || "ALL"),
-      network: String(valueFrom(record, "network") || "Uploaded Source"),
-      mediation: String(valueFrom(record, "mediation") || "") || undefined,
-      revenue,
-      ecpm,
-      impressions,
-      requests,
-      matchedRequests: fieldMap.has("matchedRequests") ? matchedRequests : undefined,
-      fills,
-      clicks,
-      fillRate,
-      matchRate: fieldMap.has("matchRate") ? matchRate : undefined,
-      ctr: impressions ? (clicks / impressions) * 100 : 0
-    };
-  });
-
-  return {
-    rows,
-    fields: createFieldStatuses(fieldMap),
-    issues: analyzeCsvIssues(rows, fieldMap)
-  };
-}
-
-function analyzeCsvIssues(rows: MetricRow[], fieldMap: Map<CsvField, string>): IssueKey[] {
-  const issues = new Set<IssueKey>();
-  const dates = new Set(rows.map((row) => row.date));
-  const optionalFields: CsvField[] = ["appName", "placementName", "country", "network", "ecpm", "requests", "fills"];
-
-  if (optionalFields.some((field) => !fieldMap.has(field))) {
-    issues.add("fallbackIssue");
-  }
-
-  if (dates.size < 2) {
-    issues.add("twoDatesIssue");
-  }
-
-  if (!fieldMap.has("requests") || !fieldMap.has("fills") || rows.every((row) => row.requests === 0 || row.fills === 0)) {
-    issues.add("fillIssue");
-  }
-
-  if (!fieldMap.has("ecpm")) {
-    issues.add("ecpmIssue");
-  }
-
-  if (fieldMap.has("matchRate") || fieldMap.has("matchedRequests")) {
-    issues.add("matchRateDefinitionNote");
-  }
-
-  if (rows.some((row) => row.impressions > 0 && row.impressions < 1000)) {
-    issues.add("lowVolumeIssue");
-  }
-
-  return [...issues];
-}
-
-function percentChange(current: number, previous: number) {
-  if (previous === 0) return 0;
-  return ((current - previous) / previous) * 100;
-}
 
 function pct(value: number) {
   return `${value > 0 ? "+" : ""}${value.toFixed(1)}%`;
@@ -837,7 +580,7 @@ function countryMixChange(currentRows: MetricRow[], previousRows: MetricRow[]) {
 
   const countries = new Set([...currentRows.map((row) => row.country), ...previousRows.map((row) => row.country)]);
   let shareShift = 0;
-  let weightedCountryEcpmMovement = 0;
+  let weightedCountryEcpmDecline = 0;
 
   for (const country of countries) {
     const currentCountry = totals(currentRows.filter((row) => row.country === country));
@@ -857,41 +600,14 @@ function countryMixChange(currentRows: MetricRow[], previousRows: MetricRow[]) {
       shareShift += Math.abs(shareDelta);
     }
 
-    weightedCountryEcpmMovement += Math.abs(percentChange(currentCountry.ecpm, previousCountry.ecpm)) * currentShare;
+    weightedCountryEcpmDecline += Math.max(0, -percentChange(currentCountry.ecpm, previousCountry.ecpm)) * currentShare;
   }
 
-  if (shareShift >= 0.12 && weightedCountryEcpmMovement < Math.abs(globalEcpmChange) * 0.7) {
+  if (shareShift >= 0.12 && weightedCountryEcpmDecline < Math.abs(globalEcpmChange) * 0.7) {
     return -Math.max(Math.abs(globalEcpmChange), shareShift * 100);
   }
 
   return 0;
-}
-
-function chooseDriver(changes: Record<Driver, number>): Driver {
-  if (changes.countryMix < -5) {
-    return "countryMix";
-  }
-
-  if (changes.fillRate < -8 && changes.ecpm > -6) {
-    return "fillRate";
-  }
-
-  if (changes.ecpm < -8 && changes.fillRate > -8) {
-    return "ecpm";
-  }
-
-  if (changes.impressions < -8 && changes.fillRate > -8) {
-    return "impressions";
-  }
-
-  const specificDrivers: Array<{ driver: Driver; change: number }> = [
-    { driver: "fillRate" as const, change: changes.fillRate },
-    { driver: "ecpm" as const, change: changes.ecpm },
-    { driver: "impressions" as const, change: changes.impressions },
-    { driver: "countryMix" as const, change: changes.countryMix }
-  ].filter((item) => item.change < -3);
-
-  return specificDrivers.sort((a, b) => a.change - b.change)[0]?.driver ?? "revenue";
 }
 
 function segmentKey(row: MetricRow) {
@@ -979,15 +695,18 @@ function diagnose(rows: MetricRow[], comparisonMode: ComparisonMode) {
     fillRate: percentChange(current.fillRate, previous.fillRate),
     countryMix: countryMixChange(currentRows, previousRows)
   };
-
-  const driver = chooseDriver(changes);
+  const showRateChange = percentChange(current.showRate ?? 0, previous.showRate ?? 0);
+  const driver = chooseDriver(changes, showRateChange);
   const breakdowns = buildBreakdowns(currentRows, previousRows);
   const largestDrop = breakdowns[0];
 
   return {
     current,
     previous,
+    currentRows,
+    previousRows,
     changes,
+    showRateChange,
     currentDate,
     previousDate,
     driver,
@@ -1003,7 +722,7 @@ export default function DemoPage() {
   const [rows, setRows] = useState<MetricRow[]>(demoRows);
   const [fieldStatuses, setFieldStatuses] = useState<FieldStatus[]>(createFieldStatuses());
   const [csvIssues, setCsvIssues] = useState<IssueKey[]>([]);
-  const [source, setSource] = useState<"demo" | "sample" | "sample14" | "scenario" | "upload" | "paste">("demo");
+  const [source, setSource] = useState<"demo" | "sample" | "sample14" | "synthetic" | "scenario" | "upload" | "paste">("demo");
   const [activeScenarioId, setActiveScenarioId] = useState<DemoScenarioId>(demoScenarios[0].id);
   const [comparisonMode, setComparisonMode] = useState<ComparisonMode>("latest-day");
   const [parseErrorCategory, setParseErrorCategory] = useState<CsvParseErrorCategory | null>(null);
@@ -1013,6 +732,8 @@ export default function DemoPage() {
   const [copiedCard, setCopiedCard] = useState(false);
   const [downloadedCard, setDownloadedCard] = useState(false);
   const [manualCopyText, setManualCopyText] = useState("");
+  const [sampleLoading, setSampleLoading] = useState(false);
+  const [sampleLoadError, setSampleLoadError] = useState(false);
   const t = copy[lang];
   const report = useMemo(() => diagnose(rows, comparisonMode), [comparisonMode, rows]);
   const [feedback, setFeedback] = useState<FeedbackState>({});
@@ -1025,7 +746,9 @@ export default function DemoPage() {
       ? t.sourceUpload
       : source === "paste"
         ? t.sourcePaste
-        : source === "sample14"
+        : source === "synthetic"
+          ? t.sourceSyntheticSample
+          : source === "sample14"
           ? t.sourceFourteenDaySample
           : source === "sample"
             ? t.sourceSample
@@ -1059,6 +782,11 @@ export default function DemoPage() {
       return;
     }
 
+    if (linkedSampleId === "synthetic") {
+      void loadSyntheticSample("shared-link", false);
+      return;
+    }
+
     if (linkedScenarioId) {
       setComparisonMode("latest-day");
       const scenario = demoScenarios.find((item) => item.id === linkedScenarioId) ?? demoScenarios[0];
@@ -1079,6 +807,8 @@ export default function DemoPage() {
     if (linkedComparisonMode) {
       setComparisonMode(linkedComparisonMode);
     }
+    // Shared-link state is intentionally read only once when the page mounts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -1135,6 +865,10 @@ export default function DemoPage() {
     return nextSource === "sample14";
   }
 
+  function shouldShareSyntheticSample(nextSource = source) {
+    return nextSource === "synthetic";
+  }
+
   const freeDiagnosisHref = shouldShareFourteenDaySample()
     ? "../free-diagnosis/?sample=14-day"
     : shouldShareScenario()
@@ -1161,6 +895,16 @@ export default function DemoPage() {
         .sort((a, b) => a.change - b.change),
     [report.changes]
   );
+  const dimensionEvidence = useMemo(
+    () => [
+      { key: "country", title: t.countryMixView, rows: buildDimensionMovements(report.currentRows, report.previousRows, "country").slice(0, 4) },
+      { key: "format", title: t.formatMixView, rows: buildDimensionMovements(report.currentRows, report.previousRows, "adFormat").slice(0, 4) },
+      { key: "source", title: t.sourceDeliveryView, rows: buildDimensionMovements(report.currentRows, report.previousRows, "network").slice(0, 4) }
+    ],
+    [report.currentRows, report.previousRows, t.countryMixView, t.formatMixView, t.sourceDeliveryView]
+  );
+  const volumeAndShowRateFinding =
+    report.driver === "impressions" && report.showRateChange < -8 && report.changes.ecpm > -10;
   const suggestedChecks = useMemo(() => {
     const checks: Record<Driver, string[]> =
       lang === "zh"
@@ -1171,9 +915,9 @@ export default function DemoPage() {
               "对照平台状态、节假日/季节性和主要广告源预算变化。"
             ],
             impressions: [
-              "先确认 DAU、会话、广告请求量和展示机会是否同步变化。",
-              "检查最近版本、广告触发逻辑、广告位展示频率和埋点是否改动。",
-              "按国家和广告位看展示量下降是否只发生在某个流量段。"
+              "按广告位比较 requests、matched requests、impressions 和 show rate，找到展示链路掉量的位置。",
+              "检查激励广告触发频率、会话行为、最近版本和活动是否改变了广告机会。",
+              "按广告源和国家拆分投放量，确认是否有某个来源或高价值地区明显掉量。"
             ],
             fillRate: [
               "按国家、广告位、广告源检查 requests、fills、match/fill rate。",
@@ -1198,9 +942,9 @@ export default function DemoPage() {
               "Compare against platform status, seasonality, and major demand-source budget shifts."
             ],
             impressions: [
-              "Confirm whether DAU, sessions, ad requests, and ad opportunities moved in the same direction.",
-              "Check recent releases, ad trigger logic, placement frequency, and reporting instrumentation.",
-              "Break impressions down by country and placement before changing monetization settings."
+              "Compare requests, matched requests, impressions, and show rate by placement to find where delivery was lost.",
+              "Check rewarded trigger frequency, session behavior, recent releases, and live events that may have changed ad opportunities.",
+              "Split delivery by ad source and country to confirm whether one source or high-value region lost disproportionate volume."
             ],
             fillRate: [
               "Review requests, fills, and match/fill rate by country, placement, and ad source.",
@@ -1224,12 +968,15 @@ export default function DemoPage() {
   const supportingSignals = useMemo(() => {
     const labels =
       lang === "zh"
-        ? { revenue: "收入", impressions: "展示量", ecpm: "加权 eCPM", fillRate: "填充率", largest: "最大下滑分组" }
-        : { revenue: "Revenue", impressions: "Impressions", ecpm: "Weighted eCPM", fillRate: "Fill rate", largest: "Largest segment drop" };
+        ? { revenue: "收入", impressions: "展示量", ecpm: "加权 eCPM", fillRate: "填充率", requests: "请求数", matchRate: "匹配率", showRate: "展示率", largest: "最大下滑分组" }
+        : { revenue: "Revenue", impressions: "Impressions", ecpm: "Weighted eCPM", fillRate: "Fill rate", requests: "Requests", matchRate: "Match rate", showRate: "Show rate", largest: "Largest segment drop" };
     const signals = [
       `${labels.revenue}: ${money(report.previous.revenue)} -> ${money(report.current.revenue)} (${pct(report.changes.revenue)})`,
       `${labels.impressions}: ${Math.round(report.previous.impressions).toLocaleString("en-US")} -> ${Math.round(report.current.impressions).toLocaleString("en-US")} (${pct(report.changes.impressions)})`,
       `${labels.ecpm}: ${money(report.previous.ecpm)} -> ${money(report.current.ecpm)} (${pct(report.changes.ecpm)})`,
+      `${labels.requests}: ${Math.round(report.previous.requests).toLocaleString("en-US")} -> ${Math.round(report.current.requests).toLocaleString("en-US")} (${pct(percentChange(report.current.requests, report.previous.requests))})`,
+      `${labels.matchRate}: ${(report.previous.matchRate ?? 0).toFixed(1)}% -> ${(report.current.matchRate ?? 0).toFixed(1)}% (${pct(percentChange(report.current.matchRate ?? 0, report.previous.matchRate ?? 0))})`,
+      `${labels.showRate}: ${(report.previous.showRate ?? 0).toFixed(1)}% -> ${(report.current.showRate ?? 0).toFixed(1)}% (${pct(report.showRateChange)})`,
       `${labels.fillRate}: ${report.previous.fillRate.toFixed(1)}% -> ${report.current.fillRate.toFixed(1)}% (${pct(report.changes.fillRate)})`
     ];
 
@@ -1461,6 +1208,37 @@ export default function DemoPage() {
     }
   }
 
+  async function loadSyntheticSample(sourceCta: "demo-hero" | "shared-link" = "demo-hero", updateUrl = true) {
+    const mode: ComparisonMode = "last-7-days";
+    setSampleLoading(true);
+    setSampleLoadError(false);
+
+    try {
+      const responses = await Promise.all([
+        fetch("/demo-data/ecpm-baseline.csv"),
+        fetch("/demo-data/ecpm-comparison.csv")
+      ]);
+      if (responses.some((response) => !response.ok)) throw new Error("sample_fetch_failed");
+      const csv = combineCsvReports(await Promise.all(responses.map((response) => response.text())));
+      const parsed = parseCsv(csv);
+      applyParsedRows(parsed);
+      trackEvent("sample_demo_started", {
+        page_path: "/demo/",
+        source_cta: sourceCta,
+        comparison_period: mode,
+        sample_type: "synthetic"
+      });
+      setSource("synthetic");
+      setComparisonMode(mode);
+      setPastedCsv(csv);
+      if (updateUrl) replaceDemoUrl(null, mode, "synthetic");
+    } catch {
+      setSampleLoadError(true);
+    } finally {
+      setSampleLoading(false);
+    }
+  }
+
   function loadSample() {
     const mode: ComparisonMode = "latest-day";
     const csv = metricRowsToCsv(demoRows);
@@ -1510,13 +1288,23 @@ export default function DemoPage() {
     setParseErrorCategory(null);
     setPastedCsv("");
     setManualCopyText("");
+    setSampleLoadError(false);
     replaceDemoUrl(null, "latest-day");
+  }
+
+  function uploadOwnReport() {
+    resetDemo();
+    window.setTimeout(() => document.getElementById("demo-csv-upload")?.click(), 0);
   }
 
   function selectComparisonMode(mode: ComparisonMode) {
     setFeedback({});
     setComparisonMode(mode);
-    replaceDemoUrl(shouldShareScenario() ? activeScenarioId : null, mode, shouldShareFourteenDaySample() ? "14-day" : null);
+    replaceDemoUrl(
+      shouldShareScenario() ? activeScenarioId : null,
+      mode,
+      shouldShareSyntheticSample() ? "synthetic" : shouldShareFourteenDaySample() ? "14-day" : null
+    );
   }
 
   function saveDemoReviewDraft() {
@@ -1559,7 +1347,11 @@ export default function DemoPage() {
   }
 
   async function copyDemoLink() {
-    const url = buildDemoUrl(shouldShareScenario() ? activeScenarioId : null, comparisonMode, shouldShareFourteenDaySample() ? "14-day" : null);
+    const url = buildDemoUrl(
+      shouldShareScenario() ? activeScenarioId : null,
+      comparisonMode,
+      shouldShareSyntheticSample() ? "synthetic" : shouldShareFourteenDaySample() ? "14-day" : null
+    );
     if (await writeClipboardText(url)) {
       setCopied(true);
       setManualCopyText("");
@@ -1733,7 +1525,11 @@ export default function DemoPage() {
           <p>{t.lede}</p>
         </div>
         <div className="demo-actions">
-          <button className="primary-action" type="button" onClick={loadSample}>
+          <button className="primary-action" type="button" disabled={sampleLoading} onClick={() => void loadSyntheticSample()}>
+            <Play size={18} aria-hidden="true" />
+            {sampleLoading ? t.loadingSyntheticSample : t.useSyntheticSample}
+          </button>
+          <button className="secondary-action" type="button" onClick={loadSample}>
             <Table2 size={18} aria-hidden="true" />
             {t.useSample}
           </button>
@@ -1752,7 +1548,7 @@ export default function DemoPage() {
           <label className="secondary-action upload-action">
             <FileUp size={18} aria-hidden="true" />
             {t.upload}
-            <input accept=".csv,text/csv" type="file" onChange={(event) => onUpload(event.target.files?.[0])} />
+            <input id="demo-csv-upload" accept=".csv,text/csv" type="file" onChange={(event) => onUpload(event.target.files?.[0])} />
           </label>
           <button className="ghost-action" type="button" onClick={copyDemoLink}>
             <Copy size={17} aria-hidden="true" />
@@ -1764,6 +1560,13 @@ export default function DemoPage() {
           </button>
         </div>
       </section>
+
+      {sampleLoadError ? (
+        <aside className="demo-error" role="alert">
+          <p>{t.syntheticLoadError}</p>
+          <button type="button" onClick={() => void loadSyntheticSample()}>{t.useSyntheticSample}</button>
+        </aside>
+      ) : null}
 
       <section className="demo-panel scenario-panel demo-workbench-panel" aria-label={t.scenarioLabel}>
         <div className="demo-panel-header">
@@ -1939,8 +1742,25 @@ export default function DemoPage() {
             </div>
           </div>
 
+          {source === "synthetic" ? (
+            <div className="synthetic-disclosure" role="note">
+              <div>
+                <strong>{t.syntheticLabel}</strong>
+                <span>{t.syntheticDisclosure}</span>
+              </div>
+              <button type="button" onClick={uploadOwnReport}>
+                <FileUp size={16} aria-hidden="true" />
+                {t.uploadOwnReports}
+              </button>
+            </div>
+          ) : null}
+
           <p className="diagnosis-summary">
-            {report.largestDrop
+            {volumeAndShowRateFinding
+              ? lang === "zh"
+                ? "收入下降主要由展示量减少和展示率降低驱动，而不是广泛的 eCPM 崩塌。"
+                : "The revenue decline was driven mainly by fewer impressions and a lower show rate, not a broad eCPM collapse."
+              : report.largestDrop
               ? `${t.summaryPrefix} ${report.largestDrop.label}: ${money(report.largestDrop.previous.revenue)} -> ${money(report.largestDrop.current.revenue)} ${t.summarySuffix}`
               : t.noRows}
           </p>
@@ -2113,6 +1933,9 @@ export default function DemoPage() {
             { label: t.totalRevenue, value: money(report.current.revenue), change: report.changes.revenue },
             { label: t.weightedEcpm, value: money(report.current.ecpm), change: report.changes.ecpm },
             { label: t.impressions, value: Math.round(report.current.impressions).toLocaleString("en-US"), change: report.changes.impressions },
+            { label: t.requests, value: Math.round(report.current.requests).toLocaleString("en-US"), change: percentChange(report.current.requests, report.previous.requests) },
+            { label: t.matchRate, value: `${(report.current.matchRate ?? 0).toFixed(1)}%`, change: percentChange(report.current.matchRate ?? 0, report.previous.matchRate ?? 0) },
+            { label: t.showRate, value: `${(report.current.showRate ?? 0).toFixed(1)}%`, change: report.showRateChange },
             { label: t.fillRate, value: `${report.current.fillRate.toFixed(1)}%`, change: report.changes.fillRate }
           ].map((metric) => (
             <div className="demo-metric" key={metric.label}>
@@ -2122,6 +1945,32 @@ export default function DemoPage() {
             </div>
           ))}
         </article>
+      </section>
+
+      <section className="demo-panel dimension-evidence-panel" aria-label={t.dimensionEvidence}>
+        <div className="demo-panel-header">
+          <div>
+            <p className="section-label">{t.dimensionEvidence}</p>
+            <h2>{t.dimensionEvidenceTitle}</h2>
+          </div>
+        </div>
+        <div className="dimension-evidence-grid">
+          {dimensionEvidence.map((dimension) => (
+            <article key={dimension.key}>
+              <h3>{dimension.title}</h3>
+              <div className="dimension-movement-list">
+                {dimension.rows.map((item) => (
+                  <div key={item.label}>
+                    <strong>{item.label}</strong>
+                    <span>{Math.round(item.previousImpressions).toLocaleString("en-US")} -&gt; {Math.round(item.currentImpressions).toLocaleString("en-US")}</span>
+                    <em className={item.impressionChange < 0 ? "negative" : "positive"}>{pct(item.impressionChange)}</em>
+                    <small>{item.previousShare.toFixed(1)}% -&gt; {item.currentShare.toFixed(1)}% share</small>
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="demo-panel diagnosis-card-panel" aria-label={t.diagnosisCard}>

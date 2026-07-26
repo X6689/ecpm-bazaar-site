@@ -1,0 +1,113 @@
+date,appName,placementName,adUnit,adFormat,country,network,mediation,revenue,ecpm,impressions,requests,matchedRequests,fills,matchRate,fillRate,clicks
+2026-06-08,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-admob,Rewarded,US,AdMob,Sample Mediation,90.729372,7.056259,12858,23143,19440,19440,83.999481,83.999481,193
+2026-06-09,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-admob,Rewarded,US,AdMob,Sample Mediation,90.722316,7.056259,12857,23143,19440,19440,83.999481,83.999481,193
+2026-06-10,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-admob,Rewarded,US,AdMob,Sample Mediation,90.722316,7.056259,12857,23143,19440,19440,83.999481,83.999481,193
+2026-06-11,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-admob,Rewarded,US,AdMob,Sample Mediation,90.722316,7.056259,12857,23143,19440,19440,83.999481,83.999481,193
+2026-06-12,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-admob,Rewarded,US,AdMob,Sample Mediation,90.722316,7.056259,12857,23143,19440,19440,83.999481,83.999481,193
+2026-06-13,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-admob,Rewarded,US,AdMob,Sample Mediation,90.722316,7.056259,12857,23143,19440,19440,83.999481,83.999481,193
+2026-06-14,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-admob,Rewarded,US,AdMob,Sample Mediation,90.722316,7.056259,12857,23142,19440,19440,84.003111,84.003111,193
+2026-06-08,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-applovin,Rewarded,US,AppLovin,Sample Mediation,41.764314,6.496238,6429,11572,9720,9720,83.995852,83.995852,96
+2026-06-09,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-applovin,Rewarded,US,AppLovin,Sample Mediation,41.764314,6.496238,6429,11572,9720,9720,83.995852,83.995852,96
+2026-06-10,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-applovin,Rewarded,US,AppLovin,Sample Mediation,41.764314,6.496238,6429,11572,9720,9720,83.995852,83.995852,96
+2026-06-11,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-applovin,Rewarded,US,AppLovin,Sample Mediation,41.764314,6.496238,6429,11571,9720,9720,84.003111,84.003111,96
+2026-06-12,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-applovin,Rewarded,US,AppLovin,Sample Mediation,41.757818,6.496238,6428,11571,9720,9720,84.003111,84.003111,96
+2026-06-13,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-applovin,Rewarded,US,AppLovin,Sample Mediation,41.757818,6.496238,6428,11571,9720,9720,84.003111,84.003111,96
+2026-06-14,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-us-applovin,Rewarded,US,AppLovin,Sample Mediation,41.757818,6.496238,6428,11571,9720,9720,84.003111,84.003111,96
+2026-06-08,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-us-admob,Interstitial,US,AdMob,Sample Mediation,14.002753,3.920144,3572,6429,5400,5400,83.994400,83.994400,54
+2026-06-09,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-us-admob,Interstitial,US,AdMob,Sample Mediation,14.002753,3.920144,3572,6429,5400,5400,83.994400,83.994400,54
+2026-06-10,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-us-admob,Interstitial,US,AdMob,Sample Mediation,14.002753,3.920144,3572,6429,5400,5400,83.994400,83.994400,54
+2026-06-11,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-us-admob,Interstitial,US,AdMob,Sample Mediation,13.998833,3.920144,3571,6429,5400,5400,83.994400,83.994400,54
+2026-06-12,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-us-admob,Interstitial,US,AdMob,Sample Mediation,13.998833,3.920144,3571,6428,5400,5400,84.007467,84.007467,54
+2026-06-13,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-us-admob,Interstitial,US,AdMob,Sample Mediation,13.998833,3.920144,3571,6428,5400,5400,84.007467,84.007467,54
+2026-06-14,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-us-admob,Interstitial,US,AdMob,Sample Mediation,13.998833,3.920144,3571,6428,5400,5400,84.007467,84.007467,54
+2026-06-08,Sample Puzzle Game,Sample Banner Placement,sample-banner-us-unity-ads,Banner,US,Unity Ads,Sample Mediation,1.280207,1.120041,1143,2058,1728,1728,83.965015,83.965015,17
+2026-06-09,Sample Puzzle Game,Sample Banner Placement,sample-banner-us-unity-ads,Banner,US,Unity Ads,Sample Mediation,1.280207,1.120041,1143,2057,1728,1728,84.005834,84.005834,17
+2026-06-10,Sample Puzzle Game,Sample Banner Placement,sample-banner-us-unity-ads,Banner,US,Unity Ads,Sample Mediation,1.280207,1.120041,1143,2057,1728,1728,84.005834,84.005834,17
+2026-06-11,Sample Puzzle Game,Sample Banner Placement,sample-banner-us-unity-ads,Banner,US,Unity Ads,Sample Mediation,1.280207,1.120041,1143,2057,1728,1728,84.005834,84.005834,17
+2026-06-12,Sample Puzzle Game,Sample Banner Placement,sample-banner-us-unity-ads,Banner,US,Unity Ads,Sample Mediation,1.280207,1.120041,1143,2057,1728,1728,84.005834,84.005834,17
+2026-06-13,Sample Puzzle Game,Sample Banner Placement,sample-banner-us-unity-ads,Banner,US,Unity Ads,Sample Mediation,1.280207,1.120041,1143,2057,1728,1728,84.005834,84.005834,17
+2026-06-14,Sample Puzzle Game,Sample Banner Placement,sample-banner-us-unity-ads,Banner,US,Unity Ads,Sample Mediation,1.279087,1.120041,1142,2057,1728,1728,84.005834,84.005834,17
+2026-06-08,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-br-applovin,Rewarded,BR,AppLovin,Sample Mediation,25.922678,4.032148,6429,11572,9720,9720,83.995852,83.995852,96
+2026-06-09,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-br-applovin,Rewarded,BR,AppLovin,Sample Mediation,25.922678,4.032148,6429,11572,9720,9720,83.995852,83.995852,96
+2026-06-10,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-br-applovin,Rewarded,BR,AppLovin,Sample Mediation,25.922678,4.032148,6429,11572,9720,9720,83.995852,83.995852,96
+2026-06-11,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-br-applovin,Rewarded,BR,AppLovin,Sample Mediation,25.922678,4.032148,6429,11571,9720,9720,84.003111,84.003111,96
+2026-06-12,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-br-applovin,Rewarded,BR,AppLovin,Sample Mediation,25.918646,4.032148,6428,11571,9720,9720,84.003111,84.003111,96
+2026-06-13,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-br-applovin,Rewarded,BR,AppLovin,Sample Mediation,25.918646,4.032148,6428,11571,9720,9720,84.003111,84.003111,96
+2026-06-14,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-br-applovin,Rewarded,BR,AppLovin,Sample Mediation,25.918646,4.032148,6428,11571,9720,9720,84.003111,84.003111,96
+2026-06-08,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-applovin,Interstitial,BR,AppLovin,Sample Mediation,10.304378,2.576094,4000,7200,6048,6048,84.000000,84.000000,60
+2026-06-09,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-applovin,Interstitial,BR,AppLovin,Sample Mediation,10.304378,2.576094,4000,7200,6048,6048,84.000000,84.000000,60
+2026-06-10,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-applovin,Interstitial,BR,AppLovin,Sample Mediation,10.304378,2.576094,4000,7200,6048,6048,84.000000,84.000000,60
+2026-06-11,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-applovin,Interstitial,BR,AppLovin,Sample Mediation,10.304378,2.576094,4000,7200,6048,6048,84.000000,84.000000,60
+2026-06-12,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-applovin,Interstitial,BR,AppLovin,Sample Mediation,10.304378,2.576094,4000,7200,6048,6048,84.000000,84.000000,60
+2026-06-13,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-applovin,Interstitial,BR,AppLovin,Sample Mediation,10.304378,2.576094,4000,7200,6048,6048,84.000000,84.000000,60
+2026-06-14,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-applovin,Interstitial,BR,AppLovin,Sample Mediation,10.304378,2.576094,4000,7200,6048,6048,84.000000,84.000000,60
+2026-06-08,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-admob,Interstitial,BR,AdMob,Sample Mediation,21.889410,2.128078,10286,18515,15552,15552,83.996759,83.996759,154
+2026-06-09,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-admob,Interstitial,BR,AdMob,Sample Mediation,21.889410,2.128078,10286,18515,15552,15552,83.996759,83.996759,154
+2026-06-10,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-admob,Interstitial,BR,AdMob,Sample Mediation,21.889410,2.128078,10286,18514,15552,15552,84.001296,84.001296,154
+2026-06-11,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-admob,Interstitial,BR,AdMob,Sample Mediation,21.889410,2.128078,10286,18514,15552,15552,84.001296,84.001296,154
+2026-06-12,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-admob,Interstitial,BR,AdMob,Sample Mediation,21.889410,2.128078,10286,18514,15552,15552,84.001296,84.001296,154
+2026-06-13,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-admob,Interstitial,BR,AdMob,Sample Mediation,21.887282,2.128078,10285,18514,15552,15552,84.001296,84.001296,154
+2026-06-14,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-br-admob,Interstitial,BR,AdMob,Sample Mediation,21.887282,2.128078,10285,18514,15552,15552,84.001296,84.001296,154
+2026-06-08,Sample Puzzle Game,Sample Banner Placement,sample-banner-br-unity-ads,Banner,BR,Unity Ads,Sample Mediation,3.360123,0.672025,5000,9000,7560,7560,84.000000,84.000000,75
+2026-06-09,Sample Puzzle Game,Sample Banner Placement,sample-banner-br-unity-ads,Banner,BR,Unity Ads,Sample Mediation,3.360123,0.672025,5000,9000,7560,7560,84.000000,84.000000,75
+2026-06-10,Sample Puzzle Game,Sample Banner Placement,sample-banner-br-unity-ads,Banner,BR,Unity Ads,Sample Mediation,3.360123,0.672025,5000,9000,7560,7560,84.000000,84.000000,75
+2026-06-11,Sample Puzzle Game,Sample Banner Placement,sample-banner-br-unity-ads,Banner,BR,Unity Ads,Sample Mediation,3.360123,0.672025,5000,9000,7560,7560,84.000000,84.000000,75
+2026-06-12,Sample Puzzle Game,Sample Banner Placement,sample-banner-br-unity-ads,Banner,BR,Unity Ads,Sample Mediation,3.360123,0.672025,5000,9000,7560,7560,84.000000,84.000000,75
+2026-06-13,Sample Puzzle Game,Sample Banner Placement,sample-banner-br-unity-ads,Banner,BR,Unity Ads,Sample Mediation,3.360123,0.672025,5000,9000,7560,7560,84.000000,84.000000,75
+2026-06-14,Sample Puzzle Game,Sample Banner Placement,sample-banner-br-unity-ads,Banner,BR,Unity Ads,Sample Mediation,3.360123,0.672025,5000,9000,7560,7560,84.000000,84.000000,75
+2026-06-08,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-in-unity-ads,Rewarded,IN,Unity Ads,Sample Mediation,8.801731,2.464090,3572,6429,5400,5400,83.994400,83.994400,54
+2026-06-09,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-in-unity-ads,Rewarded,IN,Unity Ads,Sample Mediation,8.801731,2.464090,3572,6429,5400,5400,83.994400,83.994400,54
+2026-06-10,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-in-unity-ads,Rewarded,IN,Unity Ads,Sample Mediation,8.801731,2.464090,3572,6429,5400,5400,83.994400,83.994400,54
+2026-06-11,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-in-unity-ads,Rewarded,IN,Unity Ads,Sample Mediation,8.799266,2.464090,3571,6429,5400,5400,83.994400,83.994400,54
+2026-06-12,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-in-unity-ads,Rewarded,IN,Unity Ads,Sample Mediation,8.799266,2.464090,3571,6428,5400,5400,84.007467,84.007467,54
+2026-06-13,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-in-unity-ads,Rewarded,IN,Unity Ads,Sample Mediation,8.799266,2.464090,3571,6428,5400,5400,84.007467,84.007467,54
+2026-06-14,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-in-unity-ads,Rewarded,IN,Unity Ads,Sample Mediation,8.799266,2.464090,3571,6428,5400,5400,84.007467,84.007467,54
+2026-06-08,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-applovin,Interstitial,IN,AppLovin,Sample Mediation,5.601101,1.568057,3572,6429,5400,5400,83.994400,83.994400,54
+2026-06-09,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-applovin,Interstitial,IN,AppLovin,Sample Mediation,5.601101,1.568057,3572,6429,5400,5400,83.994400,83.994400,54
+2026-06-10,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-applovin,Interstitial,IN,AppLovin,Sample Mediation,5.601101,1.568057,3572,6429,5400,5400,83.994400,83.994400,54
+2026-06-11,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-applovin,Interstitial,IN,AppLovin,Sample Mediation,5.599533,1.568057,3571,6429,5400,5400,83.994400,83.994400,54
+2026-06-12,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-applovin,Interstitial,IN,AppLovin,Sample Mediation,5.599533,1.568057,3571,6428,5400,5400,84.007467,84.007467,54
+2026-06-13,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-applovin,Interstitial,IN,AppLovin,Sample Mediation,5.599533,1.568057,3571,6428,5400,5400,84.007467,84.007467,54
+2026-06-14,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-applovin,Interstitial,IN,AppLovin,Sample Mediation,5.599533,1.568057,3571,6428,5400,5400,84.007467,84.007467,54
+2026-06-08,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-admob,Interstitial,IN,AdMob,Sample Mediation,11.969319,1.232045,9715,17486,14688,14688,83.998627,83.998627,146
+2026-06-09,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-admob,Interstitial,IN,AdMob,Sample Mediation,11.969319,1.232045,9715,17486,14688,14688,83.998627,83.998627,146
+2026-06-10,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-admob,Interstitial,IN,AdMob,Sample Mediation,11.968087,1.232045,9714,17486,14688,14688,83.998627,83.998627,146
+2026-06-11,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-admob,Interstitial,IN,AdMob,Sample Mediation,11.968087,1.232045,9714,17486,14688,14688,83.998627,83.998627,146
+2026-06-12,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-admob,Interstitial,IN,AdMob,Sample Mediation,11.968087,1.232045,9714,17486,14688,14688,83.998627,83.998627,146
+2026-06-13,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-admob,Interstitial,IN,AdMob,Sample Mediation,11.968087,1.232045,9714,17485,14688,14688,84.003432,84.003432,146
+2026-06-14,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-in-admob,Interstitial,IN,AdMob,Sample Mediation,11.968087,1.232045,9714,17485,14688,14688,84.003432,84.003432,146
+2026-06-08,Sample Puzzle Game,Sample Banner Placement,sample-banner-in-unity-ads,Banner,IN,Unity Ads,Sample Mediation,2.800159,0.392014,7143,12858,10800,10800,83.994400,83.994400,107
+2026-06-09,Sample Puzzle Game,Sample Banner Placement,sample-banner-in-unity-ads,Banner,IN,Unity Ads,Sample Mediation,2.800159,0.392014,7143,12857,10800,10800,84.000933,84.000933,107
+2026-06-10,Sample Puzzle Game,Sample Banner Placement,sample-banner-in-unity-ads,Banner,IN,Unity Ads,Sample Mediation,2.800159,0.392014,7143,12857,10800,10800,84.000933,84.000933,107
+2026-06-11,Sample Puzzle Game,Sample Banner Placement,sample-banner-in-unity-ads,Banner,IN,Unity Ads,Sample Mediation,2.800159,0.392014,7143,12857,10800,10800,84.000933,84.000933,107
+2026-06-12,Sample Puzzle Game,Sample Banner Placement,sample-banner-in-unity-ads,Banner,IN,Unity Ads,Sample Mediation,2.800159,0.392014,7143,12857,10800,10800,84.000933,84.000933,107
+2026-06-13,Sample Puzzle Game,Sample Banner Placement,sample-banner-in-unity-ads,Banner,IN,Unity Ads,Sample Mediation,2.800159,0.392014,7143,12857,10800,10800,84.000933,84.000933,107
+2026-06-14,Sample Puzzle Game,Sample Banner Placement,sample-banner-in-unity-ads,Banner,IN,Unity Ads,Sample Mediation,2.799767,0.392014,7142,12857,10800,10800,84.000933,84.000933,107
+2026-06-08,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-de-admob,Rewarded,DE,AdMob,Sample Mediation,12.001240,5.600205,2143,3858,3240,3240,83.981337,83.981337,32
+2026-06-09,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-de-admob,Rewarded,DE,AdMob,Sample Mediation,12.001240,5.600205,2143,3857,3240,3240,84.003111,84.003111,32
+2026-06-10,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-de-admob,Rewarded,DE,AdMob,Sample Mediation,12.001240,5.600205,2143,3857,3240,3240,84.003111,84.003111,32
+2026-06-11,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-de-admob,Rewarded,DE,AdMob,Sample Mediation,12.001240,5.600205,2143,3857,3240,3240,84.003111,84.003111,32
+2026-06-12,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-de-admob,Rewarded,DE,AdMob,Sample Mediation,12.001240,5.600205,2143,3857,3240,3240,84.003111,84.003111,32
+2026-06-13,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-de-admob,Rewarded,DE,AdMob,Sample Mediation,12.001240,5.600205,2143,3857,3240,3240,84.003111,84.003111,32
+2026-06-14,Sample Puzzle Game,Sample Rewarded Placement,sample-rewarded-de-admob,Rewarded,DE,AdMob,Sample Mediation,11.995640,5.600205,2142,3857,3240,3240,84.003111,84.003111,32
+2026-06-08,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-applovin,Interstitial,DE,AppLovin,Sample Mediation,4.480164,4.480164,1000,1800,1512,1512,84.000000,84.000000,15
+2026-06-09,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-applovin,Interstitial,DE,AppLovin,Sample Mediation,4.480164,4.480164,1000,1800,1512,1512,84.000000,84.000000,15
+2026-06-10,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-applovin,Interstitial,DE,AppLovin,Sample Mediation,4.480164,4.480164,1000,1800,1512,1512,84.000000,84.000000,15
+2026-06-11,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-applovin,Interstitial,DE,AppLovin,Sample Mediation,4.480164,4.480164,1000,1800,1512,1512,84.000000,84.000000,15
+2026-06-12,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-applovin,Interstitial,DE,AppLovin,Sample Mediation,4.480164,4.480164,1000,1800,1512,1512,84.000000,84.000000,15
+2026-06-13,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-applovin,Interstitial,DE,AppLovin,Sample Mediation,4.480164,4.480164,1000,1800,1512,1512,84.000000,84.000000,15
+2026-06-14,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-applovin,Interstitial,DE,AppLovin,Sample Mediation,4.480164,4.480164,1000,1800,1512,1512,84.000000,84.000000,15
+2026-06-08,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-admob,Interstitial,DE,AdMob,Sample Mediation,23.393401,3.808140,6143,11058,9288,9288,83.993489,83.993489,92
+2026-06-09,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-admob,Interstitial,DE,AdMob,Sample Mediation,23.393401,3.808140,6143,11057,9288,9288,84.001085,84.001085,92
+2026-06-10,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-admob,Interstitial,DE,AdMob,Sample Mediation,23.393401,3.808140,6143,11057,9288,9288,84.001085,84.001085,92
+2026-06-11,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-admob,Interstitial,DE,AdMob,Sample Mediation,23.393401,3.808140,6143,11057,9288,9288,84.001085,84.001085,92
+2026-06-12,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-admob,Interstitial,DE,AdMob,Sample Mediation,23.393401,3.808140,6143,11057,9288,9288,84.001085,84.001085,92
+2026-06-13,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-admob,Interstitial,DE,AdMob,Sample Mediation,23.393401,3.808140,6143,11057,9288,9288,84.001085,84.001085,92
+2026-06-14,Sample Puzzle Game,Sample Interstitial Placement,sample-interstitial-de-admob,Interstitial,DE,AdMob,Sample Mediation,23.389593,3.808140,6142,11057,9288,9288,84.001085,84.001085,92
+2026-06-08,Sample Puzzle Game,Sample Banner Placement,sample-banner-de-unity-ads,Banner,DE,Unity Ads,Sample Mediation,2.432729,0.896033,2715,4886,4104,4104,83.995088,83.995088,41
+2026-06-09,Sample Puzzle Game,Sample Banner Placement,sample-banner-de-unity-ads,Banner,DE,Unity Ads,Sample Mediation,2.432729,0.896033,2715,4886,4104,4104,83.995088,83.995088,41
+2026-06-10,Sample Puzzle Game,Sample Banner Placement,sample-banner-de-unity-ads,Banner,DE,Unity Ads,Sample Mediation,2.431833,0.896033,2714,4886,4104,4104,83.995088,83.995088,41
+2026-06-11,Sample Puzzle Game,Sample Banner Placement,sample-banner-de-unity-ads,Banner,DE,Unity Ads,Sample Mediation,2.431833,0.896033,2714,4886,4104,4104,83.995088,83.995088,41
+2026-06-12,Sample Puzzle Game,Sample Banner Placement,sample-banner-de-unity-ads,Banner,DE,Unity Ads,Sample Mediation,2.431833,0.896033,2714,4886,4104,4104,83.995088,83.995088,41
+2026-06-13,Sample Puzzle Game,Sample Banner Placement,sample-banner-de-unity-ads,Banner,DE,Unity Ads,Sample Mediation,2.431833,0.896033,2714,4885,4104,4104,84.012282,84.012282,41
+2026-06-14,Sample Puzzle Game,Sample Banner Placement,sample-banner-de-unity-ads,Banner,DE,Unity Ads,Sample Mediation,2.431833,0.896033,2714,4885,4104,4104,84.012282,84.012282,41

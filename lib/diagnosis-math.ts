@@ -26,6 +26,7 @@ export function aggregateDiagnosisRows(rows: MetricRow[]) {
     fills,
     ecpm: weightedEcpm(revenue, impressions),
     fillRate: requests > 0 ? (fills / requests) * 100 : 0,
-    matchRate: hasMatchedRequests && requests > 0 ? (matchedRequests / requests) * 100 : reportedMatchRate
+    matchRate: hasMatchedRequests && requests > 0 ? (matchedRequests / requests) * 100 : reportedMatchRate,
+    showRate: hasMatchedRequests && matchedRequests > 0 ? (impressions / matchedRequests) * 100 : undefined
   };
 }

@@ -21,7 +21,7 @@ type SharedProperties = {
 };
 
 export type ValidationEventProperties = {
-  sample_demo_started: SharedProperties & { comparison_period?: "latest-day" | "last-7-days"; sample_type?: "default" | "14-day" };
+  sample_demo_started: SharedProperties & { comparison_period?: "latest-day" | "last-7-days"; sample_type?: "default" | "14-day" | "synthetic" };
   csv_upload_started: SharedProperties & { input_source?: "file" | "paste" };
   csv_parse_success: SharedProperties & {
     row_count_bucket?: RowCountBucket;

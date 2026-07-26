@@ -61,4 +61,10 @@ test("match rate remains separate from fill rate", () => {
 
   assert.equal(aggregate.matchRate, 850 / 1100 * 100);
   assert.equal(aggregate.fillRate, 620 / 1100 * 100);
+  assert.equal(aggregate.showRate, 1100 / 850 * 100);
+});
+
+test("show rate is unavailable when matched requests are not supplied", () => {
+  const aggregate = aggregateDiagnosisRows([row(10, 1000, { requests: 1200, fills: 900 })]);
+  assert.equal(aggregate.showRate, undefined);
 });

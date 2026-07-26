@@ -21,7 +21,7 @@ const copy = {
     heroEyebrow: "Mobile ad revenue drop diagnosis",
     heroTitle: "Find what most likely caused your mobile ad revenue drop.",
     heroText: "Use anonymized CSV rows to separate impressions, fill rate, country mix, placement, ad source, time of day, and weighted eCPM before changing floors or mediation settings.",
-    heroPrimary: "Try demo with sample data",
+    heroPrimary: "Try with sample data",
     heroSecondary: "Request free diagnosis",
     heroTemplate: "See sample CSV",
     trust: ["Browser-only CSV parsing", "No SDK", "No dashboard login", "Anonymized rows"],
@@ -66,7 +66,7 @@ const copy = {
     resourcesText: "Begin with a sample diagnosis, then move into templates, cases, and method notes only when you need more context.",
     finalTitle: "Not sure what changed?",
     finalText: "Try the sample diagnosis first. Send anonymized rows only when you need a second look.",
-    finalDemo: "Try demo",
+    finalDemo: "Try with sample data",
     finalFree: "Request free diagnosis"
   },
   zh: {
@@ -136,7 +136,7 @@ export default function HomeVisual() {
           <h1>{t.heroTitle}</h1>
           <p className="bazaar-hero-lede">{t.heroText}</p>
           <div className="bazaar-actions">
-            <a className="bazaar-button bazaar-button-primary" href="/demo/" onClick={() => trackEvent("sample_demo_started", { page_path: "/", source_cta: "visual-home-hero", sample_type: "default" })}><Play size={17} aria-hidden="true" />{t.heroPrimary}</a>
+            <a className="bazaar-button bazaar-button-primary" href="/demo/?sample=synthetic&compare=last-7-days" onClick={() => trackEvent("sample_demo_started", { page_path: "/", source_cta: "visual-home-hero", sample_type: "synthetic" })}><Play size={17} aria-hidden="true" />{t.heroPrimary}</a>
             <a className="bazaar-button bazaar-button-secondary" href="/free-diagnosis/" onClick={() => trackEvent("free_diagnosis_clicked", { page_path: "/", source_cta: "visual-home-hero" })}>{t.heroSecondary}<ArrowRight size={17} aria-hidden="true" /></a>
           </div>
           <a className="bazaar-text-link" href="/templates/">{t.heroTemplate}<ArrowRight size={15} aria-hidden="true" /></a>
@@ -180,7 +180,7 @@ export default function HomeVisual() {
       <section className="bazaar-section bazaar-resource-section" id="resources"><div className="bazaar-container">
         <SectionChapterHeader number={t.resourcesEyebrow.split(" / ")[0]} eyebrow={t.resourcesEyebrow.split(" / ")[1] ?? t.resourcesEyebrow} title={t.resourcesTitle} description={t.resourcesText} />
         <div className="resource-feature-grid">
-          <ResourceFeatureCard label="Primary" title="Demo" text="Use sample data or an anonymized CSV to get a directional diagnosis." href="/demo/" size="large" icon={<Play size={20} aria-hidden="true" />} action="Open demo" />
+          <ResourceFeatureCard label="Primary" title="Demo" text="Use sample data or an anonymized CSV to get a directional diagnosis." href="/demo/?sample=synthetic&compare=last-7-days" size="large" icon={<Play size={20} aria-hidden="true" />} action="Try with sample data" />
           <ResourceFeatureCard label="Prepare" title="Templates" text="Map export columns before you upload." href="/templates/" size="medium" icon={<FileSpreadsheet size={20} aria-hidden="true" />} action="View templates" />
           <ResourceFeatureCard label="Patterns" title="Cases" text="See how common drops can be misread." href="/cases/" size="medium" icon={<Layers3 size={20} aria-hidden="true" />} action="View cases" />
           <ResourceFeatureCard label="Method" title="Diagnosis order" href="/method/" size="small" action="Read" />
@@ -189,7 +189,7 @@ export default function HomeVisual() {
         </div>
       </div></section>
 
-      <section className="bazaar-final-cta"><div className="bazaar-container"><div><p className="bazaar-eyebrow">eCPM Bazaar</p><h2>{t.finalTitle}</h2><p>{t.finalText}</p></div><div className="bazaar-actions"><a className="bazaar-button bazaar-button-light" href="/demo/">{t.finalDemo}<ArrowRight size={17} aria-hidden="true" /></a><a className="bazaar-button bazaar-button-dark-outline" href="/free-diagnosis/">{t.finalFree}</a></div></div></section>
+      <section className="bazaar-final-cta"><div className="bazaar-container"><div><p className="bazaar-eyebrow">eCPM Bazaar</p><h2>{t.finalTitle}</h2><p>{t.finalText}</p></div><div className="bazaar-actions"><a className="bazaar-button bazaar-button-light" href="/demo/?sample=synthetic&compare=last-7-days">{t.finalDemo}<ArrowRight size={17} aria-hidden="true" /></a><a className="bazaar-button bazaar-button-dark-outline" href="/free-diagnosis/">{t.finalFree}</a></div></div></section>
       <SiteFooter lang={lang} />
     </main>
   );

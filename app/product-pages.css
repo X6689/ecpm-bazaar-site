@@ -37,11 +37,12 @@
 .bazaar-demo-page .paste-panel { order: 7; }
 .bazaar-demo-page .demo-grid { order: 8; }
 .bazaar-demo-page .demo-assist-grid { order: 9; }
-.bazaar-demo-page .diagnosis-card-panel { order: 10; }
-.bazaar-demo-page .report-panel { order: 11; }
-.bazaar-demo-page .breakdown-panel { order: 12; }
-.bazaar-demo-page .data-panel { order: 13; }
-.bazaar-demo-page .site-footer { order: 14; }
+.bazaar-demo-page .dimension-evidence-panel { order: 10; }
+.bazaar-demo-page .diagnosis-card-panel { order: 11; }
+.bazaar-demo-page .report-panel { order: 12; }
+.bazaar-demo-page .breakdown-panel { order: 13; }
+.bazaar-demo-page .data-panel { order: 14; }
+.bazaar-demo-page .site-footer { order: 15; }
 
 .bazaar-demo-page .demo-panel { margin-top: 16px; padding: clamp(20px, 3vw, 30px); border: 1px solid var(--color-border); border-radius: 8px; background: #fff; box-shadow: none; }
 .bazaar-demo-page .demo-workbench-panel { margin-top: 0; border-radius: 0; }
@@ -69,6 +70,11 @@
 .bazaar-demo-page .demo-grid { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 16px; margin-top: 16px; }
 .bazaar-demo-page .diagnosis-panel { display: grid; gap: 18px; background: #fff; }
 .bazaar-demo-page .diagnosis-summary { margin: 0; color: var(--color-text); font-size: 15px; line-height: 1.65; }
+.bazaar-demo-page .synthetic-disclosure { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 13px 14px; border-left: 3px solid var(--color-brand); background: var(--color-surface-muted); }
+.bazaar-demo-page .synthetic-disclosure > div { display: grid; gap: 3px; min-width: 0; }
+.bazaar-demo-page .synthetic-disclosure strong { color: var(--color-brand-strong); font-size: 13px; }
+.bazaar-demo-page .synthetic-disclosure span { color: var(--color-muted); font-size: 12px; line-height: 1.5; }
+.bazaar-demo-page .synthetic-disclosure button { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 7px 10px; border: 1px solid var(--color-border); border-radius: 6px; background: #fff; color: var(--color-brand-strong); font-weight: 800; }
 .bazaar-demo-page .demo-period-chart { max-width: 310px; }
 .bazaar-demo-page .demo-period-chart .period-comparison-chart { color: var(--color-danger); }
 .bazaar-demo-page .driver-callout { padding: 16px; border: 1px solid #ead4ab; border-radius: 6px; background: #fff9eb; }
@@ -86,6 +92,17 @@
 .bazaar-demo-page .demo-metric span { color: var(--color-muted); font-size: 10px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
 .bazaar-demo-page .demo-metric strong { color: var(--color-ink); font-size: 22px; }
 .bazaar-demo-page .demo-assist-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+.bazaar-demo-page .dimension-evidence-panel { margin-top: 16px; }
+.bazaar-demo-page .dimension-evidence-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin-top: 20px; border: 1px solid var(--color-border); background: var(--color-border); }
+.bazaar-demo-page .dimension-evidence-grid > article { min-width: 0; padding: 16px; background: #fff; }
+.bazaar-demo-page .dimension-evidence-grid h3 { margin: 0 0 12px; color: var(--color-brand-strong); font-size: 14px; }
+.bazaar-demo-page .dimension-movement-list { display: grid; gap: 0; }
+.bazaar-demo-page .dimension-movement-list > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 10px; min-width: 0; padding: 10px 0; border-top: 1px solid var(--color-border); }
+.bazaar-demo-page .dimension-movement-list strong { min-width: 0; overflow-wrap: anywhere; color: var(--color-ink); font-size: 12px; }
+.bazaar-demo-page .dimension-movement-list span,
+.bazaar-demo-page .dimension-movement-list small { color: var(--color-muted); font-size: 10px; }
+.bazaar-demo-page .dimension-movement-list em { grid-column: 2; grid-row: 1; font-size: 11px; font-style: normal; font-weight: 800; }
+.bazaar-demo-page .dimension-movement-list small { grid-column: 1 / -1; }
 .bazaar-demo-page .field-check-panel,
 .bazaar-demo-page .quality-panel { margin-top: 0; }
 .bazaar-demo-page .diagnosis-card-panel,
@@ -187,6 +204,7 @@
   .bazaar-demo-page .scenario-card-grid,
   .bazaar-demo-page .demo-assist-grid,
   .bazaar-demo-page .demo-grid,
+  .bazaar-demo-page .dimension-evidence-grid,
   .bazaar-demo-page .diagnosis-guidance-grid { grid-template-columns: minmax(0, 1fr); }
   .bazaar-demo-page .demo-panel { padding: 18px; }
   .bazaar-demo-page .metric-panel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
