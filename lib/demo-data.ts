@@ -140,6 +140,20 @@ export const fourteenDaySampleRows: MetricRow[] = [
   row("2026-06-21", "Sample Game", "Interstitial", "BR", "AppLovin", 42.9, 6.0, 7150, 9150, 8050, 133)
 ];
 
+export function rebaseSampleDatesToRecentWindow(rows: MetricRow[], referenceDate = new Date()) {
+  const dates = [...new Set(rows.map((item) => item.date))].sort();
+  if (dates.length === 0) return [];
+
+  const dayMs = 24 * 60 * 60 * 1000;
+  const today = Date.UTC(referenceDate.getFullYear(), referenceDate.getMonth(), referenceDate.getDate());
+  const firstTargetDay = today - dates.length * dayMs;
+  const dateMap = new Map(
+    dates.map((date, index) => [date, new Date(firstTargetDay + index * dayMs).toISOString().slice(0, 10)])
+  );
+
+  return rows.map((item) => ({ ...item, date: dateMap.get(item.date) ?? item.date }));
+}
+
 export function metricRowsToCsv(rows: MetricRow[]) {
   const columns: Array<{ header: string; value: (item: MetricRow) => string | number | undefined }> = [
     { header: "date", value: (item) => item.date },

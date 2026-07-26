@@ -20,7 +20,7 @@ import { combineCsvReports, createFieldStatuses, parseCsv, type FieldStatus, typ
 import { CsvParseError, getCsvParseErrorCategory, getUnsupportedFileType, type CsvParseErrorCategory } from "@/lib/csv-upload-validation";
 import { buildDimensionMovements, chooseDriver, percentChange, type Driver } from "@/lib/diagnosis-analysis";
 import { aggregateDiagnosisRows } from "@/lib/diagnosis-math";
-import { demoRows, demoScenarios, fourteenDaySampleRows, metricRowsToCsv, type DemoScenarioId } from "@/lib/demo-data";
+import { demoRows, demoScenarios, fourteenDaySampleRows, metricRowsToCsv, rebaseSampleDatesToRecentWindow, type DemoScenarioId } from "@/lib/demo-data";
 import { useLanguagePreference } from "@/lib/language";
 import { demoReviewDraftStorageKey, type DemoReviewDraft } from "@/lib/review-draft";
 import type { MetricRow } from "@/lib/types";
@@ -1221,7 +1221,9 @@ export default function DemoPage() {
       if (responses.some((response) => !response.ok)) throw new Error("sample_fetch_failed");
       const csv = combineCsvReports(await Promise.all(responses.map((response) => response.text())));
       const parsed = parseCsv(csv);
-      applyParsedRows(parsed);
+      const recentRows = rebaseSampleDatesToRecentWindow(parsed.rows);
+      const recentCsv = metricRowsToCsv(recentRows);
+      applyParsedRows({ ...parsed, rows: recentRows });
       trackEvent("sample_demo_started", {
         page_path: "/demo/",
         source_cta: sourceCta,
@@ -1230,7 +1232,7 @@ export default function DemoPage() {
       });
       setSource("synthetic");
       setComparisonMode(mode);
-      setPastedCsv(csv);
+      setPastedCsv(recentCsv);
       if (updateUrl) replaceDemoUrl(null, mode, "synthetic");
     } catch {
       setSampleLoadError(true);

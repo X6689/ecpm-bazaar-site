@@ -5,6 +5,7 @@ import test from "node:test";
 import { buildDimensionMovements, chooseDriver, percentChange } from "../lib/diagnosis-analysis";
 import { combineCsvReports, parseCsv } from "../lib/csv-parser";
 import { aggregateDiagnosisRows } from "../lib/diagnosis-math";
+import { rebaseSampleDatesToRecentWindow } from "../lib/demo-data";
 
 const root = process.cwd();
 const baselineCsv = readFileSync(join(root, "public/demo-data/ecpm-baseline.csv"), "utf8");
@@ -24,6 +25,17 @@ test("synthetic reports use the production parser and cover fourteen dates", () 
   assert.equal(new Set(parsed.rows.map((row) => row.date)).size, 14);
   assert.equal(parsed.fields.find((field) => field.field === "matchedRequests")?.matchedHeader, "matchedRequests");
   assert.equal(parsed.fields.find((field) => field.field === "adFormat")?.matchedHeader, "adFormat");
+});
+
+test("synthetic sample dates roll forward to the latest two complete seven-day windows", () => {
+  const rebased = rebaseSampleDatesToRecentWindow(parsed.rows, new Date(2026, 6, 27, 12));
+  const dates = [...new Set(rebased.map((row) => row.date))].sort();
+
+  assert.equal(dates[0], "2026-07-13");
+  assert.equal(dates[6], "2026-07-19");
+  assert.equal(dates[7], "2026-07-20");
+  assert.equal(dates[13], "2026-07-26");
+  assert.equal(parsed.rows[0].date, "2026-06-01");
 });
 
 test("every synthetic row is internally consistent", () => {
