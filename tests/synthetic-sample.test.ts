@@ -117,3 +117,10 @@ test("demo page exposes the sample CTA and both public reports", () => {
   assert.match(page, /\/demo-data\/ecpm-comparison\.csv/);
   assert.match(page, /This demonstration does not contain real customer or app data/);
 });
+
+test("homepage diagnosis preview uses period labels instead of stale calendar dates", () => {
+  const visuals = readFileSync(join(root, "app/components/diagnosis-visuals.tsx"), "utf8");
+
+  assert.match(visuals, /Baseline -> Comparison/);
+  assert.doesNotMatch(visuals, /14 Jun - 15 Jun/);
+});

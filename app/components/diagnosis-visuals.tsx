@@ -132,6 +132,7 @@ export function DiagnosisPreview({ lang = "en" }: { lang?: "en" | "zh" }) {
     ? {
         sample: "样例数据 / 方向性诊断",
         title: "收入变化概览",
+        period: "基准期 → 对比期",
         revenue: "收入",
         impressions: "展示量",
         fill: "填充率",
@@ -144,6 +145,7 @@ export function DiagnosisPreview({ lang = "en" }: { lang?: "en" | "zh" }) {
     : {
         sample: "Sample data / directional diagnosis",
         title: "Revenue change overview",
+        period: "Baseline -> Comparison",
         revenue: "Revenue",
         impressions: "Impressions",
         fill: "Fill rate",
@@ -163,7 +165,7 @@ export function DiagnosisPreview({ lang = "en" }: { lang?: "en" | "zh" }) {
       <div className="diagnosis-preview-heading">
         <div>
           <p>{text.title}</p>
-          <strong>14 Jun - 15 Jun</strong>
+          <strong>{text.period}</strong>
         </div>
         <span className="preview-window">2 periods</span>
       </div>
