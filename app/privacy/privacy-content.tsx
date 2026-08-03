@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Mail, ShieldCheck } from "lucide-react";
 import { useLanguagePreference } from "@/lib/language";
+import { publicContactEmail } from "@/lib/site-contact";
 import { SiteFooter } from "../site-footer";
 
 const principles = [
@@ -77,6 +78,33 @@ const doNotSend = [
   { en: "screenshots containing private account identifiers", zh: "包含私密账号标识的截图" }
 ];
 
+const androidDisclosures = [
+  {
+    en: "The app does not require account registration or sign-in.",
+    zh: "应用不要求注册账号或登录。"
+  },
+  {
+    en: "You choose CSV files yourself through the Android system Document Picker. The app reads, parses, and diagnoses those files only on your device. CSV contents are not uploaded to the developer's servers.",
+    zh: "CSV 文件由你通过 Android 系统文件选择器主动选择。应用只在你的设备上读取、解析和诊断这些文件，CSV 内容不会上传到开发者服务器。"
+  },
+  {
+    en: "Saved diagnosis History is stored in the app's private local storage. You can delete individual saved diagnoses from History. Uninstalling the app deletes its private local data from the device.",
+    zh: "已保存的诊断 History 存放在应用私有本地存储中。你可以在 History 中逐条删除已保存诊断；卸载应用会删除设备上的应用私有本地数据。"
+  },
+  {
+    en: "The Android share sheet opens only after you tap Share report. The report is then passed to the third-party app you choose, and that app's privacy policy governs its subsequent handling.",
+    zh: "只有在你主动点击 Share report 后，应用才会打开 Android 系统分享面板。报告随后会交给你选择的第三方应用，后续处理受该应用隐私政策约束。"
+  },
+  {
+    en: "The current version contains no advertising, analytics, crash-reporting, push-notification, attribution, or account SDKs.",
+    zh: "当前版本不包含广告、分析、崩溃报告、推送、归因或账号 SDK。"
+  },
+  {
+    en: "The current version does not request Android permissions for Internet access, storage, camera, microphone, contacts, location, notifications, or the advertising ID.",
+    zh: "当前版本不请求互联网、存储、相机、麦克风、联系人、定位、通知或广告 ID 权限。"
+  }
+];
+
 const copy = {
   en: {
     back: "Back to site",
@@ -95,6 +123,10 @@ const copy = {
     privateTitle: "Keep these private",
     ok: "OK",
     private: "Private",
+    androidLabel: "ANDROID APP PRIVACY",
+    androidTitle: "eCPM Bazaar Android App",
+    androidEffective: "Effective date: August 1, 2026",
+    androidContact: "Privacy questions",
     ctaTitle: "Need a directional diagnosis?",
     ctaText: "Use the free diagnosis page to copy the field list and prepare anonymized rows.",
     freeDiagnosis: "Free diagnosis"
@@ -115,6 +147,10 @@ const copy = {
     privateTitle: "这些信息请保持私密",
     ok: "可以",
     private: "私密",
+    androidLabel: "ANDROID 应用隐私",
+    androidTitle: "eCPM Bazaar Android App",
+    androidEffective: "生效日期：2026 年 8 月 1 日",
+    androidContact: "隐私问题联系邮箱",
     ctaTitle: "需要方向性诊断？",
     ctaText: "到免费诊断页复制字段列表，准备脱敏数据行即可。",
     freeDiagnosis: "免费诊断"
@@ -167,6 +203,23 @@ export function PrivacyContent() {
             <p>{item[lang].text}</p>
           </article>
         ))}
+      </section>
+
+      <section className="field-section" aria-labelledby="android-app-privacy">
+        <div>
+          <p className="section-label">{t.androidLabel}</p>
+          <h2 id="android-app-privacy">{t.androidTitle}</h2>
+          <p>{t.androidEffective}</p>
+        </div>
+        <article className="resource-card">
+          {androidDisclosures.map((item) => (
+            <p key={item.en}>{item[lang]}</p>
+          ))}
+          <p>
+            {t.androidContact}:{" "}
+            <a href={`mailto:${publicContactEmail}`}>{publicContactEmail}</a>
+          </p>
+        </article>
       </section>
 
       <section className="field-section">
