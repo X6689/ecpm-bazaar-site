@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: siteTitle,
     template: "%s | eCPM Bazaar"
   },
-  description: `${siteDescription} / 帮小型游戏和 App 团队诊断广告收入为什么下降。`,
+  description: siteDescription,
   applicationName: "eCPM Bazaar",
   authors: [{ name: "Xia Yu", url: siteUrl }],
   creator: "Xia Yu",

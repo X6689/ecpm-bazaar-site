@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, CheckCircle2, ClipboardCheck, Mail, Route } from "lucide-react";
 import { pageMetadata } from "@/lib/site-metadata";
-import { getSeoGuide, seoGuides } from "@/lib/seo-pages";
+import { defaultSeoGuideExample, getSeoGuide, seoGuides } from "@/lib/seo-pages";
 import { SiteFooter } from "../../site-footer";
 
 type GuidePageProps = {
@@ -35,6 +35,13 @@ export default function GuidePage({ params }: GuidePageProps) {
   const relatedGuides = guide.related
     .map((slug) => getSeoGuide(slug))
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
+  const example = guide.example ?? defaultSeoGuideExample;
+  const [primaryMetric, ...supportingMetrics] = example.metrics;
+
+  const formatMetric = (metric: (typeof example.metrics)[number]) => {
+    const comparison = metric.before && metric.after ? `${metric.before} to ${metric.after}` : metric.value;
+    return [comparison, metric.direction].filter(Boolean).join(" · ");
+  };
 
   return (
     <main className="resource-page bazaar-page bazaar-resource-page bazaar-guide-page">
@@ -84,36 +91,33 @@ export default function GuidePage({ params }: GuidePageProps) {
             </ol>
           </div>
 
-          <aside className="mini-diagnosis-card guide-diagnosis-card" aria-label="Example diagnosis card">
+          <aside className="mini-diagnosis-card guide-diagnosis-card" aria-label="Illustrative sample diagnosis card">
             <span className="share-card-brand">eCPM Bazaar</span>
-            <h2>Example diagnosis card</h2>
-            <div className="mini-score">
-              <span>Revenue</span>
-              <strong>-32%</strong>
-            </div>
+            <h2>{example.headline}</h2>
+            {primaryMetric ? (
+              <div className="mini-score">
+                <span>{primaryMetric.label}</span>
+                <strong>{formatMetric(primaryMetric)}</strong>
+              </div>
+            ) : null}
             <div className="mini-cause">
               <span>Most likely driver</span>
-              <strong>Fill rate drop</strong>
+              <strong>{example.likelyDriver}</strong>
             </div>
             <dl>
-              <div>
-                <dt>eCPM</dt>
-                <dd>Stable</dd>
-              </div>
-              <div>
-                <dt>Impressions</dt>
-                <dd>Stable</dd>
-              </div>
-              <div>
-                <dt>Fill rate</dt>
-                <dd>81% to 54%</dd>
-              </div>
-              <div>
-                <dt>Severity</dt>
-                <dd>High</dd>
-              </div>
+              {supportingMetrics.map((metric) => (
+                <div key={metric.label}>
+                  <dt>{metric.label}</dt>
+                  <dd>{formatMetric(metric)}</dd>
+                </div>
+              ))}
             </dl>
-            <p>Check mediation source availability, waterfall / floor settings, and platform status first.</p>
+            <p>{example.summary}</p>
+            <ul>
+              {example.supportingSignals.map((signal) => (
+                <li key={signal}>{signal}</li>
+              ))}
+            </ul>
           </aside>
         </section>
 

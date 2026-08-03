@@ -1048,7 +1048,7 @@ export default function DemoPage() {
         `${t.cardPlacement}: ${diagnosisCard.placement}`,
         `${t.cardAdSource}: ${diagnosisCard.adSource}`,
         `${t.cardSuggestedAction}: ${diagnosisCard.suggestedAction}`,
-        "http://ecpmbazaar.com/demo/"
+        "https://ecpmbazaar.com/demo/"
       ].join("\n"),
     [diagnosisCard, t]
   );
@@ -1099,7 +1099,7 @@ export default function DemoPage() {
         "",
         "下一步动作：",
         `- ${t.nextActionText}`,
-        "Demo: http://ecpmbazaar.com/demo/"
+        "Demo: https://ecpmbazaar.com/demo/"
       ].filter(Boolean).join("\n");
     }
 
@@ -1136,7 +1136,7 @@ export default function DemoPage() {
       "",
       "Next action:",
       `- ${t.nextActionText}`,
-      "Demo: http://ecpmbazaar.com/demo/"
+      "Demo: https://ecpmbazaar.com/demo/"
     ].filter(Boolean).join("\n");
   }, [caveats, lang, rankedDrivers, report, suggestedChecks, supportingSignals, t]);
 

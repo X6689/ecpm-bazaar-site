@@ -4,7 +4,7 @@ import { FreeDiagnosisContent } from "./free-diagnosis-content";
 
 export const metadata: Metadata = pageMetadata(
   "Free Mobile Ad Revenue Diagnosis",
-  "Request a directional diagnosis of a mobile ad revenue drop using anonymized report rows across traffic, fill, country mix, placement, ad source, timing, and weighted eCPM.",
+  "Request a directional mobile ad revenue diagnosis using anonymized rows across traffic, fill, country mix, placement, ad source, timing, and weighted eCPM.",
   "/free-diagnosis/"
 );
 

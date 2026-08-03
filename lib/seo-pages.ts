@@ -1,3 +1,19 @@
+export type SeoGuideMetric = {
+  label: string;
+  before?: string;
+  after?: string;
+  value?: string;
+  direction?: string;
+};
+
+export type SeoGuideExample = {
+  headline: string;
+  summary: string;
+  metrics: SeoGuideMetric[];
+  likelyDriver: string;
+  supportingSignals: string[];
+};
+
 export type SeoGuide = {
   slug: string;
   title: string;
@@ -6,6 +22,7 @@ export type SeoGuide = {
   metaDescription?: string;
   eyebrow: string;
   intro: string;
+  example?: SeoGuideExample;
   sections?: {
     title: string;
     text: string;
@@ -16,6 +33,17 @@ export type SeoGuide = {
   diagnosis: string;
   nextAction: string;
   related: string[];
+};
+
+export const defaultSeoGuideExample: SeoGuideExample = {
+  headline: "Sample diagnosis: decompose the change",
+  summary: "Illustrative sample data only. Compare two equivalent periods before drawing a conclusion.",
+  metrics: [
+    { label: "Revenue", value: "Review first", direction: "Start with the outcome" },
+    { label: "Next split", value: "Traffic, fill, pricing, and mix" }
+  ],
+  likelyDriver: "Requires metric decomposition",
+  supportingSignals: ["No single metric is enough to identify the cause."]
 };
 
 export const seoGuides: SeoGuide[] = [
@@ -30,6 +58,18 @@ export const seoGuides: SeoGuide[] = [
     eyebrow: "AdMob revenue drop",
     intro:
       "A revenue drop is only the final symptom. Before changing floors, SDKs, or mediation settings, split the drop into traffic, fill, pricing, and mix changes.",
+    example: {
+      headline: "Sample diagnosis: mix and demand changed",
+      summary: "Illustrative sample data only. Stable impressions rule out a broad traffic loss, while pricing and GEO mix moved together.",
+      metrics: [
+        { label: "Revenue", before: "$420", after: "$292", direction: "Down" },
+        { label: "Impressions", value: "Broadly stable" },
+        { label: "Weighted eCPM", value: "Down" },
+        { label: "High-value GEO share", value: "Down" }
+      ],
+      likelyDriver: "Country mix and demand change",
+      supportingSignals: ["Impression volume stayed stable.", "Weighted eCPM and high-value GEO share both declined."]
+    },
     checksTitle: "Check in this order",
     checks: [
       "Did impressions or requests drop first?",
@@ -57,6 +97,18 @@ export const seoGuides: SeoGuide[] = [
     eyebrow: "Match rate diagnosis",
     intro:
       "A match rate drop usually means requests are still happening, but fewer requests are turning into matched ads. That can crush revenue even when eCPM looks normal.",
+    example: {
+      headline: "Sample diagnosis: fewer requests matched",
+      summary: "Illustrative sample data only. Request volume grew slightly, but the match-rate loss reduced the number of monetizable requests.",
+      metrics: [
+        { label: "Requests", before: "120,000", after: "123,000", direction: "Stable" },
+        { label: "Match rate", before: "78%", after: "51%", direction: "Down" },
+        { label: "eCPM", before: "$6.20", after: "$6.10", direction: "Near stable" },
+        { label: "Revenue", value: "Meaningfully down" }
+      ],
+      likelyDriver: "Lower matched requests",
+      supportingSignals: ["Requests did not fall.", "Pricing stayed close to the prior period."]
+    },
     checksTitle: "First checks",
     checks: [
       "Look for policy center messages or ad serving limits.",
@@ -83,6 +135,18 @@ export const seoGuides: SeoGuide[] = [
     eyebrow: "Stable impressions, lower eCPM",
     intro:
       "When impressions are stable but eCPM drops, the problem may be pricing, demand, traffic mix, or format mix. The goal is to avoid treating blended eCPM as one clean signal.",
+    example: {
+      headline: "Sample diagnosis: lower auction value",
+      summary: "Illustrative sample data only. Impression volume and fill stayed stable while weighted eCPM declined.",
+      metrics: [
+        { label: "Impressions", before: "510,000", after: "505,000", direction: "Stable" },
+        { label: "Weighted eCPM", before: "$8.10", after: "$5.90", direction: "Down" },
+        { label: "Fill rate", value: "Broadly stable" },
+        { label: "Revenue", value: "Down with pricing" }
+      ],
+      likelyDriver: "Country, format, or demand mix",
+      supportingSignals: ["Impressions changed by less than 1%.", "The largest movement was weighted eCPM."]
+    },
     checksTitle: "Useful splits",
     checks: [
       "Split eCPM by country before judging the blended average.",
@@ -109,6 +173,18 @@ export const seoGuides: SeoGuide[] = [
     eyebrow: "Time-of-day diagnosis",
     intro:
       "A revenue drop can look like a monetization problem at first. But if impressions fall during the app's normal peak hours while eCPM and match rate stay stable, the issue may be user behavior, not ad demand.",
+    example: {
+      headline: "Sample diagnosis: event-window behavior shifted",
+      summary: "Illustrative sample data only. The decline is concentrated in the usual peak window instead of appearing across the full day.",
+      metrics: [
+        { label: "Peak-hour impressions", value: "Down" },
+        { label: "Rewarded placement usage", value: "Down" },
+        { label: "eCPM", value: "Stable" },
+        { label: "Country / session mix", value: "Changed" }
+      ],
+      likelyDriver: "Event-driven traffic behavior",
+      supportingSignals: ["Off-peak performance remained close to normal.", "Players reached fewer rewarded moments during the event window."]
+    },
     sections: [
       {
         title: "Why daily revenue can be misleading",
@@ -168,6 +244,18 @@ export const seoGuides: SeoGuide[] = [
     eyebrow: "Country mix diagnosis",
     intro:
       "Blended eCPM can drop even when your top-country eCPM is stable. If more impressions shift toward lower-eCPM countries, the average can look worse without a global demand collapse.",
+    example: {
+      headline: "Sample diagnosis: country mix pulled down the average",
+      summary: "Illustrative sample data only. US pricing stayed stable, but its impression share fell as lower-eCPM GEOs gained share.",
+      metrics: [
+        { label: "US eCPM", before: "$14.20", after: "$14.10", direction: "Stable" },
+        { label: "US impression share", before: "58%", after: "31%", direction: "Down" },
+        { label: "Lower-eCPM GEO share", before: "24%", after: "49%", direction: "Up" },
+        { label: "Blended eCPM", before: "$8.40", after: "$5.90", direction: "Down" }
+      ],
+      likelyDriver: "Country mix shift",
+      supportingSignals: ["Top-GEO pricing barely changed.", "Lower-eCPM GEOs accounted for much more volume."]
+    },
     sections: [
       {
         title: "What blended eCPM hides",
@@ -221,6 +309,18 @@ export const seoGuides: SeoGuide[] = [
     eyebrow: "Rewarded ads",
     intro:
       "Rewarded ads often drive a large share of mobile game ad revenue. When fill rate drops, revenue can fall even if player activity and eCPM do not look terrible.",
+    example: {
+      headline: "Sample diagnosis: rewarded inventory stopped filling",
+      summary: "Illustrative sample data only. Players continued requesting rewarded ads, but fewer requests filled and reached a showable state.",
+      metrics: [
+        { label: "Rewarded requests", value: "Stable" },
+        { label: "Rewarded fills", value: "Down" },
+        { label: "Show rate", value: "Down" },
+        { label: "Source availability", value: "Reduced" }
+      ],
+      likelyDriver: "Rewarded inventory or mediation issue",
+      supportingSignals: ["Placement demand from players stayed stable.", "Fills and show readiness weakened together."]
+    },
     checksTitle: "What to inspect",
     checks: [
       "Compare rewarded requests, fills, impressions, and show rate.",
@@ -247,6 +347,18 @@ export const seoGuides: SeoGuide[] = [
     eyebrow: "Impression diagnosis",
     intro:
       "Stable eCPM does not protect revenue if fewer ads are shown. When impressions fall, start with traffic and ad exposure before changing floors, bidders, or mediation settings.",
+    example: {
+      headline: "Sample diagnosis: fewer ad opportunities",
+      summary: "Illustrative sample data only. Pricing stayed normal while audience activity and placement exposure produced fewer impressions.",
+      metrics: [
+        { label: "Impressions", before: "520,000", after: "340,000", direction: "Down" },
+        { label: "eCPM", before: "$6.40", after: "$6.35", direction: "Stable" },
+        { label: "DAU / sessions", value: "Down" },
+        { label: "Placement exposure", value: "Down" }
+      ],
+      likelyDriver: "Traffic or placement exposure",
+      supportingSignals: ["The eCPM change was negligible.", "DAU or sessions fell in the affected period."]
+    },
     sections: [
       {
         title: "Separate fewer users from fewer ad opportunities",
@@ -286,10 +398,22 @@ export const seoGuides: SeoGuide[] = [
       "A diagnosis checklist for fill-rate drops after a mediation update, covering requests, fills, match rate, source availability, SDK releases, floors, and rollout scope.",
     metaTitle: "Fill rate dropped after a mediation update",
     metaDescription:
-      "Check a post-update fill-rate drop by comparing requests, fills, match rate, source availability, rollout scope, SDK changes, and price floors before changing more settings.",
+      "Diagnose a post-update fill-rate drop by comparing requests, fills, match rate, source availability, rollout scope, SDK changes, and price floors.",
     eyebrow: "Mediation update diagnosis",
     intro:
       "A fill-rate drop after a mediation change is a timing signal, not proof that the update caused it. Compare the same segments before and after the rollout, then inspect what changed in serving behavior.",
+    example: {
+      headline: "Sample diagnosis: serving changed after rollout",
+      summary: "Illustrative sample data only. Requests stayed stable, while fills fell in segments using the updated source integration.",
+      metrics: [
+        { label: "Requests", value: "Stable" },
+        { label: "Fills", value: "Down after source update" },
+        { label: "Adapter / SDK", value: "Version changed" },
+        { label: "Unaffected sources", value: "Stable" }
+      ],
+      likelyDriver: "Integration or source availability",
+      supportingSignals: ["The decline begins at the rollout boundary.", "The affected segment uses the updated adapter or SDK."]
+    },
     sections: [
       {
         title: "Confirm the rollout boundary",
@@ -329,10 +453,22 @@ export const seoGuides: SeoGuide[] = [
       "How to diagnose an ad source that stopped filling without confusing a low source-level rate with app-level fill, bidding competition, or revenue contribution.",
     metaTitle: "One ad source stopped filling: what to check",
     metaDescription:
-      "Diagnose a source that stopped filling by separating app-level serving from source-level bids, fills, wins, impressions, revenue share, configuration, and demand availability.",
+      "Diagnose an ad source that stopped filling by comparing app-level serving, source-level bids, fills, wins, revenue share, configuration, and demand.",
     eyebrow: "Ad source diagnosis",
     intro:
       "A weak source-level fill or match rate does not automatically mean the whole app cannot serve ads. In bidding and waterfall setups, another source may win, fill, or take most of the eligible volume.",
+    example: {
+      headline: "Sample diagnosis: one source stopped serving",
+      summary: "Illustrative sample data only. The app-level loss is concentrated in Source A while the other sources remain stable.",
+      metrics: [
+        { label: "Source A fills", before: "Normal", after: "Near zero", direction: "Down" },
+        { label: "Other sources", value: "Relatively stable" },
+        { label: "Total fill", value: "Down" },
+        { label: "Revenue", value: "Down" }
+      ],
+      likelyDriver: "Source-specific serving or configuration",
+      supportingSignals: ["Other sources did not show the same break.", "Total fill moved with Source A's loss."]
+    },
     sections: [
       {
         title: "Start at the app and ad-unit level",
@@ -372,10 +508,22 @@ export const seoGuides: SeoGuide[] = [
       "What to check when mobile ad revenue falls after changing price floors, including requests, fills, impressions, eCPM, country mix, source behavior, and rollout scope.",
     metaTitle: "Revenue dropped after changing price floors",
     metaDescription:
-      "Diagnose a revenue drop after changing price floors by checking request volume, fills, impressions, weighted eCPM, country mix, source behavior, and the rollout before changing floors again.",
+      "Diagnose a revenue drop after changing price floors by checking requests, fills, impressions, weighted eCPM, country mix, source behavior, and rollout scope.",
     eyebrow: "Price-floor diagnosis",
     intro:
       "A higher floor can raise the price of some winning impressions while reducing eligible demand or total fills. Diagnose total revenue per request and per impression before deciding whether a floor change helped.",
+    example: {
+      headline: "Sample diagnosis: the higher floor cost too much fill",
+      summary: "Illustrative sample data only. Winning impressions became more valuable, but the loss in filled volume was larger than the eCPM gain.",
+      metrics: [
+        { label: "Price floor", before: "$5", after: "$9", direction: "Up" },
+        { label: "eCPM", before: "$6.80", after: "$8.20", direction: "Up" },
+        { label: "Fill rate", before: "73%", after: "41%", direction: "Down" },
+        { label: "Revenue", value: "Down" }
+      ],
+      likelyDriver: "Floor reduced fill more than eCPM improved",
+      supportingSignals: ["The eCPM increase did not offset lost volume.", "Fill declined immediately after the floor change."]
+    },
     sections: [
       {
         title: "Do not judge only by eCPM",
@@ -419,6 +567,19 @@ export const seoGuides: SeoGuide[] = [
     eyebrow: "Diagnosis checklist",
     intro:
       "Small teams do not need another wall of metrics first. They need to know what changed first, which segment changed most, and what to inspect before making risky monetization changes.",
+    example: {
+      headline: "Sample workflow: decompose before changing settings",
+      summary: "Illustrative diagnostic sequence, not a customer case or industry benchmark. Follow the metrics from outcome to the smallest affected segment.",
+      metrics: [
+        { label: "Step 1", value: "Revenue" },
+        { label: "Step 2", value: "Impressions" },
+        { label: "Step 3", value: "Weighted eCPM" },
+        { label: "Step 4", value: "Fill or match" },
+        { label: "Step 5", value: "Country, placement, and source" }
+      ],
+      likelyDriver: "Requires metric decomposition",
+      supportingSignals: ["Find the first upstream metric that moved.", "Then isolate the affected GEO, placement, or source."]
+    },
     checksTitle: "Checklist",
     checks: [
       "Check impressions and requests before revenue.",
