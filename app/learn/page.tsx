@@ -4,7 +4,7 @@ import { LearnContent } from "./learn-content";
 
 export const metadata: Metadata = pageMetadata(
   "Mobile Ad Revenue Diagnosis Guides",
-  "Practical eCPM Bazaar guides for diagnosing AdMob revenue drops, match rate drops, rewarded ad fill issues, and mobile game ad monetization changes.",
+  "Diagnose AdMob and mobile ad revenue drops by starting with the metric that moved first, then follow focused guides for traffic, fill, eCPM, and mix.",
   "/learn/"
 );
 

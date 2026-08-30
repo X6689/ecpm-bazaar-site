@@ -14,6 +14,21 @@ export type SeoGuideExample = {
   supportingSignals: string[];
 };
 
+export type SeoGuideLink = {
+  slug: string;
+  label: string;
+};
+
+export type SeoGuideTable = {
+  title: string;
+  intro?: string;
+  columns: [string, string, string];
+  rows: {
+    cells: [string, string, string];
+    guide?: SeoGuideLink;
+  }[];
+};
+
 export type SeoGuide = {
   slug: string;
   title: string;
@@ -22,6 +37,31 @@ export type SeoGuide = {
   metaDescription?: string;
   eyebrow: string;
   intro: string;
+  directAnswer?: string[];
+  formula?: {
+    expression: string;
+    explanation: string;
+  };
+  definitions?: {
+    term: string;
+    definition: string;
+  }[];
+  diagnosticTable?: SeoGuideTable;
+  deepDiveSections?: {
+    title: string;
+    paragraphs: string[];
+    links?: SeoGuideLink[];
+  }[];
+  caution?: {
+    title: string;
+    intro: string;
+    items: string[];
+  };
+  branchLinks?: {
+    title: string;
+    intro: string;
+    links: SeoGuideLink[];
+  };
   example?: SeoGuideExample;
   sections?: {
     title: string;
@@ -49,15 +89,123 @@ export const defaultSeoGuideExample: SeoGuideExample = {
 export const seoGuides: SeoGuide[] = [
   {
     slug: "why-did-my-admob-revenue-drop",
-    title: "Why did my AdMob revenue drop?",
+    title: "Why Did My AdMob Revenue Drop?",
     description:
-      "A practical checklist for diagnosing AdMob revenue drops by separating impressions, eCPM, match rate, country mix, placements, and ad sources.",
-    metaTitle: "Why did my AdMob revenue drop?",
+      "Find why AdMob revenue dropped by tracing impressions, eCPM, match rate, country mix, placement, mediation, ad sources, floors, and timing.",
+    metaTitle: "Why Did My AdMob Revenue Drop?",
     metaDescription:
-      "Diagnose AdMob revenue drops by checking impressions, match rate, fill rate, country mix, placements, ad sources, and eCPM in the right order.",
+      "Find why AdMob revenue dropped by tracing impressions, eCPM, match rate, country mix, placement, mediation, ad sources, floors, and timing.",
     eyebrow: "AdMob revenue drop",
     intro:
-      "A revenue drop is only the final symptom. Before changing floors, SDKs, or mediation settings, split the drop into traffic, fill, pricing, and mix changes.",
+      "An AdMob revenue drop is the final symptom, not the diagnosis. Find the metric that moved first, isolate the smallest affected segment, and then choose one check that can confirm or reject the leading explanation.",
+    directAnswer: [
+      "Start by comparing two equivalent periods and decomposing revenue into impressions and weighted eCPM. If impressions moved first, investigate traffic and ad opportunities. If impressions stayed stable, split weighted eCPM by country, format, placement, ad source, and time. Match rate and fill rate help explain how requests became monetizable impressions, but they are not interchangeable and should not be treated as the same metric.",
+      "Do not begin with a floor change, mediation rebuild, or SDK rollback just because revenue is lower. Those actions can alter several signals at once and erase the evidence you need. A useful diagnosis identifies when the decline began, which metric led it, where it is concentrated, and what changed near that boundary. The flow below turns a broad revenue question into a limited next check."
+    ],
+    formula: {
+      expression: "Revenue ≈ Impressions × weighted eCPM ÷ 1,000",
+      explanation:
+        "This is a diagnostic relationship, not a revenue forecast or guarantee. Use weighted eCPM for the same impressions represented in the revenue total; a simple average of country, format, or ad-unit eCPMs can give the wrong answer."
+    },
+    diagnosticTable: {
+      title: "What changed first?",
+      intro:
+        "Use the first confirmed movement to choose a branch. A later change may be an effect rather than the cause.",
+      columns: ["First signal", "Likely direction", "Follow this branch"],
+      rows: [
+        {
+          cells: ["Impressions fell while eCPM stayed near normal", "Traffic, ad opportunities, show rate, or timing", "Trace the impression loss before changing price settings."],
+          guide: { slug: "admob-impressions-dropped-ecpm-normal", label: "Diagnose falling impressions" }
+        },
+        {
+          cells: ["Impressions stayed stable while weighted eCPM fell", "Country, format, placement, source, period, or demand mix", "Separate the pricing and mix components."],
+          guide: { slug: "admob-ecpm-dropped-impressions-stable", label: "Diagnose stable impressions and lower eCPM" }
+        },
+        {
+          cells: ["Match rate fell before revenue", "Serving restrictions, consent, request quality, segment mix, or integration", "Compare matched requests with ad requests."],
+          guide: { slug: "admob-match-rate-dropped", label: "Diagnose a match-rate drop" }
+        },
+        {
+          cells: ["Blended eCPM fell while segment eCPMs looked stable", "Country share changed", "Rebuild the weighted country view."],
+          guide: { slug: "country-mix-blended-ecpm", label: "Check country mix" }
+        },
+        {
+          cells: ["Fill weakened after a mediation update", "Rollout, adapter, mapping, source eligibility, or configuration", "Anchor the comparison to the release boundary."],
+          guide: { slug: "fill-rate-dropped-after-mediation-update", label: "Check the mediation update" }
+        },
+        {
+          cells: ["Revenue fell after floor changes", "Higher price per served impression may not offset lost volume", "Compare total revenue and fill, not eCPM alone."],
+          guide: { slug: "revenue-dropped-after-changing-price-floors", label: "Review the floor change" }
+        },
+        {
+          cells: ["One source lost fill or contribution", "Source-specific eligibility, mapping, credentials, adapter, or demand", "Keep the investigation at source and segment level."],
+          guide: { slug: "one-ad-source-stopped-filling", label: "Diagnose the ad source" }
+        }
+      ]
+    },
+    deepDiveSections: [
+      {
+        title: "Read the outcome as a chain of signals",
+        paragraphs: [
+          "Revenue combines quantity and value. Impressions describe served ad volume, while weighted eCPM describes the revenue value of those impressions. Upstream, requests, match rate, fill rate, and show behavior explain whether available ad opportunities became impressions. Traffic volume, session depth, placement exposure, consent, serving status, and mediation eligibility can all affect that chain. Looking only at the final revenue line hides which link actually weakened.",
+          "Write a short timeline before opening dozens of reports: the last normal date, the first clearly abnormal date, app releases, consent or CMP changes, mediation changes, floor experiments, traffic campaigns, live events, holidays, and account notices. The timeline does not prove causation. It limits the candidates and tells you which before-and-after periods can be compared without mixing unrelated states."
+        ]
+      },
+      {
+        title: "Compare periods that answer the same question",
+        paragraphs: [
+          "Use equal-length windows with the same weekdays whenever possible. A Monday-to-Wednesday window should not be compared with a weekend, and a partial current day should not be compared with a completed day. Check reporting timezone, data latency, currency, and whether both periods include the same apps and ad units. If a holiday, sports event, school schedule, or user-acquisition campaign changed usage patterns, add a second reference period instead of forcing one misleading comparison.",
+          "Record both absolute values and rates. A match rate can decline while matched requests stay flat if requests grew quickly. eCPM can rise while revenue falls if impression volume collapses. Blended eCPM can fall even though every major country is stable when more impressions come from lower-value markets. The absolute numerator, denominator, and mix are what make a rate interpretable."
+        ]
+      },
+      {
+        title: "Find the smallest segment that still contains the drop",
+        paragraphs: [
+          "Start broad, then split in a fixed order: app, country, format, placement or ad unit, ad source, app version, and time. Stop when the decline becomes concentrated enough to test. If one rewarded placement in one country explains most of the loss, a global mediation rewrite is disproportionate. If every app, format, country, and source moves at the same boundary, look for account-wide serving, consent, reporting, or broad demand factors.",
+          "Use contribution as well as percentage change. A tiny placement can show a dramatic percentage decline without explaining the revenue total. Rank segments by the amount of lost revenue or impressions they contribute, then inspect the largest contributors first. This keeps the diagnosis tied to the business outcome without treating sample data or generic thresholds as a benchmark."
+        ]
+      },
+      {
+        title: "Read each branch without jumping to a fix",
+        paragraphs: [
+          "An impressions-first decline points toward fewer users, shorter sessions, fewer eligible opportunities, lower show rate, changed placement exposure, or timing. A weighted-eCPM-first decline with stable impressions points toward demand or a shift in country, format, placement, source, or period mix. A match-rate decline points upstream of impressions, but still requires segment evidence before you label it a policy, consent, or mediation problem.",
+          "A change that began immediately after a release deserves a controlled comparison, not an automatic rollback. Compare affected and unaffected app versions, placements, or sources. If only one source changed, inspect its mapping, eligibility, adapter state, credentials, and contribution. If a floor experiment preceded the loss, compare the revenue gained from higher prices with the revenue lost from fewer matched or served impressions."
+        ]
+      },
+      {
+        title: "Turn evidence into one next action",
+        paragraphs: [
+          "State the working diagnosis in one sentence: what changed, where, when, and what evidence supports it. Then choose the smallest next check that could disprove it. For example: ‘Revenue fell because rewarded impressions declined in one country after version 4.2; compare request and show behavior for versions 4.1 and 4.2.’ This is more useful than ‘AdMob performance is down’ because it defines an observable decision boundary.",
+          "Preserve a control segment and change one variable at a time. Document the expected signal, the observation window, and the rollback condition before acting. If the next check does not support the hypothesis, return to the table and take the next evidence-backed branch. A diagnosis is complete enough to act when the proposed change matches the affected scope and you can tell whether it improved the leading metric."
+        ]
+      }
+    ],
+    caution: {
+      title: "What not to change first",
+      intro:
+        "Keep the evidence stable until you know which branch explains the loss. Avoid broad changes that alter several metrics together.",
+      items: [
+        "Do not raise or remove price floors across every country and format based only on blended eCPM.",
+        "Do not rebuild mediation or disable multiple ad sources before identifying the affected source and segment.",
+        "Do not roll back an SDK or app release without comparing affected and unaffected versions.",
+        "Do not change placement frequency, consent flow, and serving configuration in the same test.",
+        "Do not treat the illustrative sample as a benchmark, forecast, or customer result."
+      ]
+    },
+    branchLinks: {
+      title: "Follow the evidence into a focused guide",
+      intro:
+        "Each guide below continues one diagnostic branch without repeating this overview.",
+      links: [
+        { slug: "admob-impressions-dropped-ecpm-normal", label: "Impressions dropped but eCPM stayed normal" },
+        { slug: "admob-ecpm-dropped-impressions-stable", label: "eCPM dropped but impressions stayed stable" },
+        { slug: "admob-match-rate-dropped", label: "Match rate dropped" },
+        { slug: "country-mix-blended-ecpm", label: "Country mix changed blended eCPM" },
+        { slug: "fill-rate-dropped-after-mediation-update", label: "Fill rate dropped after a mediation update" },
+        { slug: "revenue-dropped-after-changing-price-floors", label: "Revenue dropped after changing price floors" },
+        { slug: "one-ad-source-stopped-filling", label: "One ad source stopped filling" }
+      ]
+    },
     example: {
       headline: "Sample diagnosis: mix and demand changed",
       summary: "Illustrative sample data only. Stable impressions rule out a broad traffic loss, while pricing and GEO mix moved together.",
@@ -70,33 +218,152 @@ export const seoGuides: SeoGuide[] = [
       likelyDriver: "Country mix and demand change",
       supportingSignals: ["Impression volume stayed stable.", "Weighted eCPM and high-value GEO share both declined."]
     },
-    checksTitle: "Check in this order",
+    checksTitle: "AdMob Revenue Drop Diagnostic Flow",
     checks: [
-      "Did impressions or requests drop first?",
-      "Did match rate, fill rate, or show rate move?",
-      "Did traffic shift by country or device?",
-      "Did one ad unit, placement, or format change?",
-      "Did one ad source or mediation source stop filling?",
-      "Did time-of-day behavior, holidays, or live events reduce peak-hour impressions?",
-      "Did eCPM fall after the upstream metrics stayed stable?"
+      "Confirm the reporting window. Compare equal-length, completed periods with the same weekdays, timezone, apps, ad units, and currency.",
+      "Ask whether impressions changed first. If they fell, trace traffic, ad opportunities, show behavior, placement exposure, and timing.",
+      "If impressions stayed stable, compare weighted eCPM and then split it by country, format, placement, source, and period.",
+      "Check match rate and fill rate with their underlying requests and matched or filled counts; do not use the terms interchangeably.",
+      "Locate the smallest segment that still contains most of the loss, and rank segments by contribution rather than percentage change alone.",
+      "Mark what changed near the start: release, CMP, serving notice, mediation, source, floor, campaign, event, or traffic mix.",
+      "Choose one next check that can confirm or reject the leading explanation while preserving a control segment."
     ],
     diagnosisTitle: "Common interpretation",
     diagnosis:
-      "If impressions and fill are stable but eCPM dropped, the issue may be demand or auction pricing. If fill or impressions moved first, the revenue drop is probably not an eCPM problem.",
-    nextAction: "Use anonymized before/after rows to identify which metric moved first.",
+      "If impressions and upstream serving signals stayed stable while weighted eCPM declined across comparable segments, demand or auction value is a credible direction. If impressions, match rate, fill rate, country share, or one source moved first, follow that upstream change instead of calling the whole decline an eCPM problem.",
+    nextAction: "Write one falsifiable diagnosis and test the smallest affected segment with one controlled change.",
     related: ["admob-match-rate-dropped", "country-mix-blended-ecpm", "admob-revenue-drop-live-events"]
   },
   {
     slug: "admob-match-rate-dropped",
-    title: "AdMob match rate dropped: what should you check?",
+    title: "AdMob Match Rate Dropped: What Should You Check?",
     description:
-      "Diagnose an AdMob match rate drop by checking account status, ad serving limits, consent, country mix, ad format, placement, and request quality.",
-    metaTitle: "AdMob match rate dropped: what to check",
+      "Diagnose an AdMob match rate drop by checking requests, serving limits, consent, GEO and format changes, mediation, SDK updates, and ad sources.",
+    metaTitle: "AdMob Match Rate Dropped: What to Check",
     metaDescription:
-      "Check AdMob match rate drops across ad serving limits, consent, country mix, ad format, placement, request quality, and mediation changes.",
+      "Diagnose an AdMob match rate drop by checking requests, serving limits, consent, GEO and format changes, mediation, SDK updates, and ad sources.",
     eyebrow: "Match rate diagnosis",
     intro:
-      "A match rate drop usually means requests are still happening, but fewer requests are turning into matched ads. That can crush revenue even when eCPM looks normal.",
+      "A falling AdMob match rate means a smaller share of ad requests received a matched ad. Confirm the denominator, locate the affected segment, and check serving, consent, release, mediation, and source changes before altering monetization settings.",
+    directAnswer: [
+      "First confirm that the decline appears in comparable, completed periods and that ad requests did not change in a way that distorts the rate. Then split match rate into the smallest useful segments: country, format, placement or ad unit, app version, ad source, and time. A broad decline and a one-country decline point to different investigations, even when the account-level chart looks identical.",
+      "Match rate is an upstream serving signal, not a synonym for fill rate or show rate. A request can be matched and still not become a shown impression. Use the counts behind each rate, mark the exact start of the decline, and compare that boundary with account restrictions, consent changes, app or SDK releases, mediation updates, source eligibility, and traffic mix."
+    ],
+    formula: {
+      expression: "Match rate = matched requests / ad requests",
+      explanation:
+        "Read the numerator and denominator with the percentage. If ad requests rise rapidly while matched requests stay flat, match rate falls even though the number of matched requests did not. If both matched requests and the rate fall, the revenue risk is more direct."
+    },
+    definitions: [
+      {
+        term: "Match rate is not fill rate",
+        definition:
+          "Match rate describes the share of AdMob ad requests that received a matched ad. Fill rate can be defined differently across mediation platforms and reports, so verify the product's numerator and denominator before comparing it with AdMob match rate."
+      },
+      {
+        term: "Match rate is not show rate",
+        definition:
+          "Show rate concerns what happened after an ad was available: whether a matched or loaded ad produced an impression. A placement or app-flow issue can reduce shown impressions while match rate remains stable."
+      },
+      {
+        term: "A rate is not a volume",
+        definition:
+          "Always keep ad requests and matched requests next to the percentage. Rate movement without the supporting counts can exaggerate a mix change or hide the segment that contributes most of the loss."
+      }
+    ],
+    diagnosticTable: {
+      title: "Read the signal before choosing a cause",
+      intro:
+        "These patterns narrow the first check; they do not prove a root cause on their own.",
+      columns: ["Signal", "Likely direction", "First check"],
+      rows: [
+        {
+          cells: ["Requests stable, match rate down", "Fewer requests are receiving matched ads", "Check matched-request volume, serving notices, consent, then country and format concentration."]
+        },
+        {
+          cells: ["Only one country declined", "GEO demand, consent, traffic quality, or country mix", "Compare the same format, placement, app version, and source inside that country."]
+        },
+        {
+          cells: ["Decline starts after an SDK or mediation release", "Integration, adapter, mapping, rollout, or version-specific behavior", "Compare affected and unaffected app versions and inspect the release timeline."],
+          guide: { slug: "fill-rate-dropped-after-mediation-update", label: "Check the mediation branch" }
+        },
+        {
+          cells: ["Decline starts after a floor change", "Eligibility or served volume changed with pricing configuration", "Compare match, fill, impressions, weighted eCPM, and total revenue for the changed segments."],
+          guide: { slug: "revenue-dropped-after-changing-price-floors", label: "Review the floor change" }
+        },
+        {
+          cells: ["One ad source declined", "Source mapping, credentials, adapter, eligibility, or source demand", "Inspect the source by country, format, ad unit, and version before changing the whole stack."],
+          guide: { slug: "one-ad-source-stopped-filling", label: "Diagnose the source" }
+        },
+        {
+          cells: ["Match rate stable, impressions down", "The break is probably after matching or outside serving", "Check show behavior, placement opportunities, sessions, traffic, and timing."],
+          guide: { slug: "admob-impressions-dropped-ecpm-normal", label: "Trace the impression loss" }
+        }
+      ]
+    },
+    deepDiveSections: [
+      {
+        title: "Establish the real start and size of the decline",
+        paragraphs: [
+          "Compare equal-length windows with the same weekdays and reporting timezone. Exclude partial days and allow for normal reporting latency. Record ad requests, matched requests, match rate, impressions, weighted eCPM, and revenue for both periods. This makes it possible to distinguish a percentage change caused by a larger denominator from a real loss of monetizable request volume.",
+          "Mark the last normal interval and first abnormal interval as precisely as the data allows. Add account or policy notices, consent changes, app releases, SDK or adapter updates, mediation configuration, app-ads.txt changes, traffic campaigns, and unusual events to the timeline. Timing creates a candidate, not proof; validate it with affected and unaffected segments."
+        ]
+      },
+      {
+        title: "Segment until the broad average becomes specific",
+        paragraphs: [
+          "Start with country and format because both can carry large differences in demand and serving behavior. Continue through placement or ad unit, app version, ad source, and hour or day. Keep the same request definition and time window in every split. If one segment contains most of the lost matched requests, focus there instead of trying to explain the account-wide average.",
+          "Rank segments by lost matched requests or lost revenue contribution, not percentage decline alone. A new low-volume placement may show a severe percentage drop yet contribute little to the total. Conversely, a modest change in a high-volume country can explain most of the loss. Blended rates are useful alerts, but segmented counts locate the work."
+        ]
+      },
+      {
+        title: "Check restrictions, consent, and traffic context",
+        paragraphs: [
+          "Review the Policy center and any ad-serving-limit messages without assuming every decline is a policy event. Confirm whether the affected apps, countries, or ad units match the scope of the notice. For EEA, UK, and Switzerland traffic, place CMP or consent changes on the timeline and compare consent-eligible segments consistently. Do not infer consent status from country-level rate movement alone.",
+          "Inspect unexpected request growth, acquisition-source shifts, and suspicious traffic concentrations. A surge of requests from a new source or region can lower the blended match rate even if established segments remain stable. Keep traffic-quality claims evidence-based: report the observable request and segment change first, then investigate validation or serving evidence through the appropriate platform tools."
+        ]
+      },
+      {
+        title: "Use releases and mediation changes as testable boundaries",
+        paragraphs: [
+          "If the decline begins near an app, SDK, adapter, or mediation release, compare old and new app versions over the same countries, formats, placements, and sources. Look for changed ad-unit mappings, initialization order, request timing, consent handoff, adapter state, or rollout coverage. A version-specific split is stronger evidence than a release date that merely happens to be nearby.",
+          "When mediation is involved, confirm which report defines each rate. A network's fill metric, the mediation platform's fill metric, and AdMob match rate may cover different stages or inventories. Use source-level requests, responses or fills, impressions, and revenue together. Continue with the mediation-update guide when the change aligns with a rollout, or the source guide when one source is isolated."
+        ],
+        links: [
+          { slug: "fill-rate-dropped-after-mediation-update", label: "Diagnose fill after a mediation update" },
+          { slug: "one-ad-source-stopped-filling", label: "Diagnose one ad source that stopped filling" }
+        ]
+      },
+      {
+        title: "How to interpret the combined evidence",
+        paragraphs: [
+          "A broad match-rate decline with stable requests and a simultaneous serving notice supports a serving investigation. A decline isolated to consent-sensitive traffic after a CMP change supports a consent-flow comparison. A version-specific decline after an integration update supports an implementation check. A one-source decline supports a source-level review. None of these conclusions should be generalized beyond the segment in which the evidence appears.",
+          "If match rate is stable but impressions and revenue are down, stop trying to repair match rate. The loss may be in traffic, ad opportunities, load-to-show behavior, placement exposure, or timing. If match rate is down but weighted eCPM on served impressions is stable, quantify whether fewer matched requests explain the revenue gap before attributing the outcome to pricing."
+        ],
+        links: [
+          { slug: "why-did-my-admob-revenue-drop", label: "Return to the complete revenue-drop flow" }
+        ]
+      },
+      {
+        title: "Turn the finding into a controlled next check",
+        paragraphs: [
+          "Summarize the evidence in one sentence that includes time, segment, and leading metric. For example: ‘Matched requests fell in rewarded ads for version 3.8 in two countries immediately after the adapter rollout, while other versions stayed stable.’ Then choose a check that could falsify that statement, such as validating mappings and request logs for the affected version against a control.",
+          "Define the expected signal and observation window before changing anything. Preserve one unaffected segment when possible, change one variable, and record the outcome in the same metrics used for diagnosis. If the test fails to improve matched-request volume or exposes a different boundary, revert the experimental change and follow the next supported branch."
+        ]
+      }
+    ],
+    caution: {
+      title: "What not to change first",
+      intro:
+        "Avoid changes that disturb the denominator, serving path, and price signal at the same time.",
+      items: [
+        "Do not change multiple mediation groups, adapters, or ad sources in one diagnostic test.",
+        "Do not raise or remove global price floors solely because match rate fell.",
+        "Do not roll back every SDK or app version without a version-specific comparison.",
+        "Do not redesign placements or request frequency before confirming whether the break is matching or showing.",
+        "Do not label traffic invalid, consent broken, or serving restricted without supporting segment or platform evidence."
+      ]
+    },
     example: {
       headline: "Sample diagnosis: fewer requests matched",
       summary: "Illustrative sample data only. Request volume grew slightly, but the match-rate loss reduced the number of monetizable requests.",
@@ -109,32 +376,150 @@ export const seoGuides: SeoGuide[] = [
       likelyDriver: "Lower matched requests",
       supportingSignals: ["Requests did not fall.", "Pricing stayed close to the prior period."]
     },
-    checksTitle: "First checks",
+    checksTitle: "A seven-step diagnostic order",
     checks: [
-      "Look for policy center messages or ad serving limits.",
-      "Compare match rate by country, format, and ad unit.",
-      "Check consent / CMP changes for EEA, UK, and Switzerland traffic.",
-      "Review recent SDK, mediation, app release, or app-ads.txt changes.",
-      "Check whether requests increased from low-quality or unexpected traffic.",
-      "Avoid changing multiple mediation settings at once while diagnosing."
+      "Build comparable time windows: equal length, same weekdays and timezone, completed data, and the same app and inventory scope.",
+      "Read ad requests, matched requests, match rate, impressions, weighted eCPM, and revenue together before interpreting the percentage.",
+      "Find the smallest affected segment across country, format, placement or ad unit, app version, source, and time.",
+      "Check Policy center and serving limits, then place CMP or consent changes beside the affected GEO and start time.",
+      "Compare the decline boundary with app releases, SDK or adapter updates, mediation configuration, and app-ads.txt changes.",
+      "Inspect ad sources one at a time for mapping, eligibility, adapter state, demand, and lost contribution.",
+      "Change one variable, preserve a control, define the expected signal, and measure matched-request volume as well as the rate."
     ],
     diagnosisTitle: "Common interpretation",
     diagnosis:
-      "If requests stay high but match rate collapses across many segments, treat it as a serving, policy, consent, or traffic-quality issue before blaming eCPM.",
-    nextAction: "Create a simple timeline of app releases, traffic changes, consent changes, and account notices.",
-    related: ["why-did-my-admob-revenue-drop", "rewarded-ads-fill-rate-dropped", "mobile-game-ad-revenue-diagnosis-checklist"]
+      "If requests stay comparable while matched requests fall across many segments, investigate broad serving, consent, integration, or traffic changes. If the decline is isolated, keep the conclusion inside that country, format, placement, version, or source. If match rate stays stable, follow the downstream impression or pricing signal instead.",
+    nextAction: "Document the smallest affected segment and run one check that could disprove the leading cause.",
+    related: ["why-did-my-admob-revenue-drop", "fill-rate-dropped-after-mediation-update", "one-ad-source-stopped-filling"]
   },
   {
     slug: "admob-ecpm-dropped-impressions-stable",
-    title: "AdMob eCPM dropped but impressions are stable",
+    title: "AdMob eCPM Dropped but Impressions Stayed Stable",
     description:
-      "What to check when AdMob eCPM drops while impressions remain stable, including country mix, format mix, placement, advertiser demand, and seasonality.",
-    metaTitle: "AdMob eCPM dropped but impressions stayed stable",
+      "Diagnose an AdMob eCPM drop with stable impressions by separating country, format, placement, ad source, time period, and demand changes.",
+    metaTitle: "AdMob eCPM Dropped but Impressions Stayed Stable",
     metaDescription:
-      "Diagnose AdMob eCPM drops when impressions are stable by separating country mix, ad format, placement exposure, seasonality, and demand changes.",
+      "Diagnose an AdMob eCPM drop with stable impressions by separating country, format, placement, ad source, time period, and demand changes.",
     eyebrow: "Stable impressions, lower eCPM",
     intro:
-      "When impressions are stable but eCPM drops, the problem may be pricing, demand, traffic mix, or format mix. The goal is to avoid treating blended eCPM as one clean signal.",
+      "When impressions stay stable but AdMob eCPM falls, revenue usually follows the lower value per thousand impressions. The next task is to separate broad demand movement from a country, format, placement, source, or period mix shift.",
+    directAnswer: [
+      "Confirm first that total impressions are genuinely stable across two comparable, completed periods. Then use weighted eCPM for the same impression set as revenue and split it in a fixed order: country, format, placement or ad unit, ad source, and time. If the decline disappears inside those segments, the blended average is hiding a mix shift. If comparable segments decline together, broader demand or auction value becomes a more credible direction.",
+      "Do not assume lower eCPM means an SDK defect or that a higher floor will restore revenue. eCPM is an outcome of served impressions, their markets and formats, source contribution, auction conditions, and timing. The diagnostic goal is to find where the lower value entered the total before changing the serving configuration."
+    ],
+    formula: {
+      expression: "Revenue ≈ Impressions × eCPM ÷ 1,000",
+      explanation:
+        "This relationship is for decomposition, not a forecast or earnings promise. Use weighted eCPM: total revenue divided by total impressions and multiplied by 1,000. A simple average of segment eCPMs gives each segment equal weight even when their impression volumes differ."
+    },
+    definitions: [
+      {
+        term: "Stable impressions define this diagnostic branch",
+        definition:
+          "A small normal fluctuation can be acceptable, but the impression total should be close enough that lower value per thousand impressions explains most of the revenue movement. If impressions also fell materially, diagnose both quantity and value instead of forcing the case into an eCPM-only explanation."
+      },
+      {
+        term: "Weighted eCPM is the relevant blended measure",
+        definition:
+          "Recalculate from total revenue and impressions for the exact scope and period. Do not average displayed country or ad-unit eCPMs unless you weight each segment by its impressions."
+      }
+    ],
+    diagnosticTable: {
+      title: "Five patterns that change the diagnosis",
+      intro:
+        "Use the pattern that survives segmentation; the account-level blended decline is only the starting alert.",
+      columns: ["Signal", "Likely direction", "First check"],
+      rows: [
+        {
+          cells: ["Most comparable countries and formats fell", "Broad demand, auction, seasonal, or period effect", "Verify the same placements and sources, then compare a second reference period."]
+        },
+        {
+          cells: ["Only some countries fell", "GEO-specific demand or traffic-quality change", "Hold format and placement constant inside each affected country."],
+          guide: { slug: "country-mix-blended-ecpm", label: "Inspect country mix" }
+        },
+        {
+          cells: ["Segment eCPMs are stable but blended eCPM fell", "More impressions came from lower-value segments", "Rebuild weighted country, format, placement, and source contributions."],
+          guide: { slug: "country-mix-blended-ecpm", label: "Rebuild the weighted mix" }
+        },
+        {
+          cells: ["Only one format or placement fell", "Format-specific demand, exposure, user mix, or source contribution", "Compare that format by country, ad unit, source, and app version."]
+        },
+        {
+          cells: ["Impressions also changed materially", "This is not a stable-impressions-only case", "Decompose the impression change before attributing the full revenue loss to eCPM."],
+          guide: { slug: "admob-impressions-dropped-ecpm-normal", label: "Diagnose the impression branch" }
+        }
+      ]
+    },
+    deepDiveSections: [
+      {
+        title: "Confirm the comparison before explaining it",
+        paragraphs: [
+          "Use equal-length, completed windows with the same weekdays, reporting timezone, apps, ad units, and currency. Avoid comparing a partial day with a full day. Mark holidays, large live events, campaign shifts, and reporting delays. If the decline appears only against one unusual reference period, add a second normal period before treating it as a sustained change.",
+          "Calculate total revenue, total impressions, and weighted eCPM for both windows. Quantify how much of the revenue gap the eCPM change would explain at the observed impression volume. The formula is approximate because reporting adjustments and metric definitions can differ, but it prevents an impression loss from being mislabeled as a pure pricing problem."
+        ]
+      },
+      {
+        title: "Split 1: country",
+        paragraphs: [
+          "Compare each major country's impressions, revenue, and weighted eCPM, then calculate its share of total impressions. Two different effects can lower the blend: eCPM can fall inside a country, or a lower-value country can gain impression share while country-level eCPMs remain stable. Keep these effects separate because one points toward GEO demand and the other toward traffic mix.",
+          "Rank countries by their contribution to the lost revenue, not only by percentage change. A small country with a dramatic fall may matter less than a modest decline in the largest market. Hold format and placement constant when possible so a changed rewarded-versus-banner mix does not masquerade as a country effect."
+        ],
+        links: [
+          { slug: "country-mix-blended-ecpm", label: "See how country mix changes blended eCPM" }
+        ]
+      },
+      {
+        title: "Split 2: format",
+        paragraphs: [
+          "Separate rewarded, interstitial, banner, native, and other formats. They represent different inventory, user moments, and auction values, so a shift in format share can move blended eCPM while the experience inside each format is stable. Compare the same format inside the same countries before deciding that demand moved everywhere.",
+          "If one format fell broadly, continue by placement and source within that format. Check whether its country share, app version, or traffic source changed. Do not use a higher-performing format's eCPM as the expected benchmark for another format; the purpose is before-and-after diagnosis within comparable inventory."
+        ]
+      },
+      {
+        title: "Split 3: placement and ad unit",
+        paragraphs: [
+          "A stable format average can hide movement between placements. One rewarded placement may appear earlier in the user journey, reach a different user cohort, or receive a larger share of impressions after a product change. Compare placement-level impressions, revenue, weighted eCPM, show behavior, and app version without assuming that attention or auction value stayed constant.",
+          "Look for the smallest placement or ad-unit group that contains most of the decline. If a release changed frequency, trigger timing, or screen exposure, keep the evidence scoped to that placement. A placement shift can alter both user mix and source competition even when total impressions remain stable."
+        ]
+      },
+      {
+        title: "Split 4: ad source",
+        paragraphs: [
+          "For mediated inventory, compare source-level impressions, revenue, and contribution share. A high-value source may contribute fewer impressions while lower-value sources replace the volume, leaving total impressions stable but reducing weighted eCPM. That is a source-mix explanation, not proof that every source's auction value declined.",
+          "If one source changed, inspect its affected countries, formats, placements, mappings, adapter state, eligibility, and time boundary. Keep rate definitions consistent across reports. Do not remove several sources at once; that changes competition and makes the original source contribution impossible to observe cleanly."
+        ]
+      },
+      {
+        title: "Split 5: time and period",
+        paragraphs: [
+          "Compare hour of day, day of week, and equivalent seasonal periods. Advertiser demand and user mix can move within a day even when daily impressions are unchanged. A daily blend may fall because more impressions were served in lower-value hours. Check whether the decline is continuous, limited to certain hours, or aligned with a holiday, event, month boundary, or campaign change.",
+          "Use more than one reference period when seasonality is plausible. A year-over-year comparison can add context, but only if app scale, countries, formats, and placements remain comparable. The objective is not to find a universal seasonal benchmark; it is to see whether the affected segments moved together at a shared boundary."
+        ]
+      },
+      {
+        title: "Turn the split into a diagnosis",
+        paragraphs: [
+          "Summarize the surviving pattern with scope and timing. ‘Weighted eCPM fell’ is an alert. ‘Rewarded eCPM fell across the three largest countries after the month boundary while source shares and placements stayed stable’ is a testable demand direction. ‘Country eCPMs stayed stable, but lower-value GEOs gained twelve points of impression share’ is a mix diagnosis. These statements lead to different next checks.",
+          "Choose one action that matches the affected scope and could disprove the explanation. Preserve a control country, format, placement, or source when possible. Define the expected signal and observation window, then track total revenue alongside eCPM so a higher price metric does not conceal lost volume elsewhere."
+        ],
+        links: [
+          { slug: "why-did-my-admob-revenue-drop", label: "Use the full AdMob revenue-drop flow" },
+          { slug: "revenue-dropped-after-changing-price-floors", label: "Review revenue after a price-floor change" }
+        ]
+      }
+    ],
+    caution: {
+      title: "What not to do",
+      intro:
+        "Keep the comparison interpretable until the decline has a segment and a time boundary.",
+      items: [
+        "Do not average segment eCPMs without weighting them by impressions.",
+        "Do not raise global floors simply to make the displayed eCPM higher; measure fill, impressions, and total revenue together.",
+        "Do not mix countries, formats, placements, and app versions differently across the two periods.",
+        "Do not change mediation sources, SDKs, placement frequency, and floors in the same experiment.",
+        "Do not treat illustrative sample values as a benchmark, forecast, or customer result."
+      ]
+    },
     example: {
       headline: "Sample diagnosis: lower auction value",
       summary: "Illustrative sample data only. Impression volume and fill stayed stable while weighted eCPM declined.",
@@ -147,20 +532,19 @@ export const seoGuides: SeoGuide[] = [
       likelyDriver: "Country, format, or demand mix",
       supportingSignals: ["Impressions changed by less than 1%.", "The largest movement was weighted eCPM."]
     },
-    checksTitle: "Useful splits",
+    checksTitle: "Split the decline in this order",
     checks: [
-      "Split eCPM by country before judging the blended average.",
-      "Compare rewarded, interstitial, banner, native, and MREC separately.",
-      "Check whether one placement now gets different user attention.",
-      "Compare weekdays, weekends, holidays, and major live-event windows.",
-      "Check ad source contribution if you use mediation.",
-      "Compare the same country and format across before/after periods."
+      "Country: compare eCPM within each GEO and measure how each country's impression share changed.",
+      "Format: separate rewarded, interstitial, banner, native, and other formats before reading the blend.",
+      "Placement or ad unit: isolate the screen, trigger, app version, and user cohort where value changed.",
+      "Ad source: compare source-level eCPM, impressions, revenue, and contribution share for mediated inventory.",
+      "Time and period: compare equivalent weekdays and hours, then check seasonal, event, and campaign boundaries."
     ],
     diagnosisTitle: "Common interpretation",
     diagnosis:
-      "If every country and format dropped at the same time, demand may have moved. If only one country or format changed, the blended eCPM is hiding the real driver.",
-    nextAction: "Diagnose country mix and format mix before making SDK or floor changes.",
-    related: ["why-did-my-admob-revenue-drop", "country-mix-blended-ecpm", "admob-revenue-drop-live-events"]
+      "If comparable countries, formats, placements, and sources decline together while impressions remain stable, broad demand or auction value is a credible direction. If segment eCPMs remain stable but their impression shares change, the blend is reporting a mix shift. If impressions also move materially, return to the full revenue decomposition.",
+    nextAction: "State which segment and boundary explain the weighted decline, then test one scoped variable while tracking total revenue.",
+    related: ["country-mix-blended-ecpm", "why-did-my-admob-revenue-drop", "revenue-dropped-after-changing-price-floors"]
   },
   {
     slug: "admob-revenue-drop-live-events",

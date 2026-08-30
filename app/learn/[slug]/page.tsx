@@ -67,6 +67,65 @@ export default function GuidePage({ params }: GuidePageProps) {
           <p>{guide.intro}</p>
         </header>
 
+        {guide.directAnswer ? (
+          <section className="guide-section-list" aria-label="Direct answer">
+            <article>
+              <h2>Direct answer</h2>
+              {guide.directAnswer.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </article>
+          </section>
+        ) : null}
+
+        {guide.formula || guide.definitions ? (
+          <section className="guide-section-list" aria-label="Metric definition">
+            {guide.formula ? (
+              <article>
+                <h2>Start with the metric relationship</h2>
+                <p><strong>{guide.formula.expression}</strong></p>
+                <p>{guide.formula.explanation}</p>
+              </article>
+            ) : null}
+            {guide.definitions?.map((definition) => (
+              <article key={definition.term}>
+                <h2>{definition.term}</h2>
+                <p>{definition.definition}</p>
+              </article>
+            ))}
+          </section>
+        ) : null}
+
+        {guide.diagnosticTable ? (
+          <section className="guide-explanation" aria-labelledby="diagnostic-table-title">
+            <h2 id="diagnostic-table-title">{guide.diagnosticTable.title}</h2>
+            {guide.diagnosticTable.intro ? <p>{guide.diagnosticTable.intro}</p> : null}
+            <div className="overflow-x-auto">
+              <table className="guide-diagnostic-table">
+                <thead>
+                  <tr>
+                    {guide.diagnosticTable.columns.map((column) => <th scope="col" key={column}>{column}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {guide.diagnosticTable.rows.map((row) => (
+                    <tr key={row.cells[0]}>
+                      {row.cells.map((cell, index) => (
+                        <td key={cell}>
+                          {cell}
+                          {index === row.cells.length - 1 && row.guide ? (
+                            <> <a href={`../${row.guide.slug}/`}>{row.guide.label}</a></>
+                          ) : null}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        ) : null}
+
         {guide.sections ? (
           <section className="guide-section-list" aria-label="Guide sections">
             {guide.sections.map((section) => (
@@ -80,10 +139,17 @@ export default function GuidePage({ params }: GuidePageProps) {
 
         <section className="guide-two-column">
           <div className="guide-checks">
-            <p className="section-label">
-              <Route size={16} aria-hidden="true" />
-              {guide.checksTitle}
-            </p>
+            {guide.directAnswer ? (
+              <h2 className="section-label">
+                <Route size={16} aria-hidden="true" />
+                {guide.checksTitle}
+              </h2>
+            ) : (
+              <p className="section-label">
+                <Route size={16} aria-hidden="true" />
+                {guide.checksTitle}
+              </p>
+            )}
             <ol>
               {guide.checks.map((check) => (
                 <li key={check}>{check}</li>
@@ -121,6 +187,37 @@ export default function GuidePage({ params }: GuidePageProps) {
           </aside>
         </section>
 
+        {guide.deepDiveSections ? (
+          <section className="guide-section-list" aria-label="Detailed diagnostic guidance">
+            {guide.deepDiveSections.map((section) => (
+              <article key={section.title}>
+                <h2>{section.title}</h2>
+                {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                {section.links ? (
+                  <p>
+                    {section.links.map((link, index) => (
+                      <span key={link.slug}>
+                        {index > 0 ? " · " : ""}
+                        <a href={`../${link.slug}/`}>{link.label}</a>
+                      </span>
+                    ))}
+                  </p>
+                ) : null}
+              </article>
+            ))}
+          </section>
+        ) : null}
+
+        {guide.caution ? (
+          <section className="guide-explanation">
+            <h2>{guide.caution.title}</h2>
+            <p>{guide.caution.intro}</p>
+            <ul>
+              {guide.caution.items.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </section>
+        ) : null}
+
         <section className="guide-explanation">
           <p className="section-label">How to read it</p>
           <h2>{guide.diagnosisTitle}</h2>
@@ -130,6 +227,22 @@ export default function GuidePage({ params }: GuidePageProps) {
             <span>{guide.nextAction}</span>
           </div>
         </section>
+
+        {guide.branchLinks ? (
+          <section className="guide-related" aria-label={guide.branchLinks.title}>
+            <h2>{guide.branchLinks.title}</h2>
+            <p>{guide.branchLinks.intro}</p>
+            <div>
+              {guide.branchLinks.links.map((link) => (
+                <a href={`../${link.slug}/`} key={link.slug}>
+                  <strong>{link.label}</strong>
+                  <span>Focused diagnostic branch</span>
+                  <ArrowUpRight size={16} aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <section className="guide-related" aria-label="Related diagnosis guides">
           <p className="section-label">Related guides</p>
