@@ -100,6 +100,14 @@ export function SiteFooter({ lang }: SiteFooterProps) {
             <span>{publicContactEmail}</span>
           </a>
           <p>{t.note}</p>
+          <a href="https://whatisnew.today/p/ecpm-bazaar?ref=badge">
+            <img
+              src="https://whatisnew.today/badge/ecpm-bazaar.svg?theme=dark"
+              alt="eCPM Bazaar on What's New Today"
+              width="172"
+              height="40"
+            />
+          </a>
         </div>
       </div>
     </footer>
